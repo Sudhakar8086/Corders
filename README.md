@@ -1,2 +1,2 @@
 # Corders
-Corders - Bussiness Intel
+Corders - Business Intel
