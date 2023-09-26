@@ -3653,6 +3653,13 @@
   dependencies:
     "prop-types" "^15.5.7"
 
+"react-bootstrap-icons@^1.10.3":
+  "integrity" "sha512-j4hSby6gT9/enhl3ybB1tfr1slZNAYXDVntcRrmVjxB3//2WwqrzpESVqKhyayYVaWpEtnwf9wgUQ03cuziwrw=="
+  "resolved" "https://registry.npmjs.org/react-bootstrap-icons/-/react-bootstrap-icons-1.10.3.tgz"
+  "version" "1.10.3"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-chartjs-2@5.2.0":
   "integrity" "sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA=="
   "resolved" "https://registry.npmjs.org/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz"
@@ -3664,6 +3671,11 @@
   "version" "0.8.3"
   dependencies:
     "payment" "^2.3.0"
+
+"react-date-object@^2.1.5":
+  "integrity" "sha512-810eaGk/xvQBJNncPvhwXaKcSwPRKX48jtY/5U5T1bSUnGFqmBdMvl4EVl76cyzQ8U3KX6hpF6xZ1c0eY9vvJA=="
+  "resolved" "https://registry.npmjs.org/react-date-object/-/react-date-object-2.1.7.tgz"
+  "version" "2.1.7"
 
 "react-datepicker@4.11.0":
   "integrity" "sha512-50n93o7mQwBEhg05tbopjFKgs8qgi8VBCAOMC4VqrKut72eAjESc/wXS/k5hRtnP0oe2FCGw7MJuIwh37wuXOw=="
@@ -3704,6 +3716,11 @@
     "attr-accept" "^2.2.2"
     "file-selector" "^0.6.0"
     "prop-types" "^15.8.1"
+
+"react-element-popper@^2.1.6":
+  "integrity" "sha512-8va7mUmrKIkUnaM2t5Dyctd8cjgVgVcrv5vVD0FRay0sN6EPBCKa0bDi1/KmVDAjfgSIn7zQnjtc4VojcGrkgQ=="
+  "resolved" "https://registry.npmjs.org/react-element-popper/-/react-element-popper-2.1.6.tgz"
+  "version" "2.1.6"
 
 "react-fast-compare@^3.0.1":
   "integrity" "sha512-xTYf9zFim2pEif/Fw16dBiXpe0hoy5PxcD8+OwBnTtNLfIm3g6WxhKNurY+6OmdH1u6Ta/W/Vl6vjbYP1MFnDg=="
@@ -3749,6 +3766,14 @@
   "integrity" "sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA=="
   "resolved" "https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz"
   "version" "3.0.4"
+
+"react-multi-date-picker@^4.3.1":
+  "integrity" "sha512-FBL7U9Ee3njRb3KAYijo4ySQDFWFZBKCrFd+FyXPHHoA4gPoY3yPk/gnKPX1M2/LetKVIM5bo8Moh7UJgDVX5g=="
+  "resolved" "https://registry.npmjs.org/react-multi-date-picker/-/react-multi-date-picker-4.3.1.tgz"
+  "version" "4.3.1"
+  dependencies:
+    "react-date-object" "^2.1.5"
+    "react-element-popper" "^2.1.6"
 
 "react-onclickoutside@^6.12.2":
   "integrity" "sha512-ty8So6tcUpIb+ZE+1HAhbLROvAIJYyJe/1vRrrcmW+jLsaM+/powDRqxzo6hSh9CuRZGSL1Q8mvcF5WRD93a0A=="
@@ -4253,6 +4278,16 @@
     "css-tree" "^2.2.1"
     "csso" "^5.0.5"
     "picocolors" "^1.0.0"
+
+"sweetalert2-react-content@^5.0.7":
+  "integrity" "sha512-8Fk82Mpk45lFXpJWKIFF/lq8k/dJKDDQGFcuqVosaL/qRdViyAs5+u37LoTGfnOIvf+rfQB3PAXcp1XLLn+0ew=="
+  "resolved" "https://registry.npmjs.org/sweetalert2-react-content/-/sweetalert2-react-content-5.0.7.tgz"
+  "version" "5.0.7"
+
+"sweetalert2@^11.7.31":
+  "integrity" "sha512-AVNODg41LqhC241UHTanW2ZQdh0ziiw+Gc3Dmy1EuCFP+g09P3mBEhvauU88J3JLEX6UpTfhp7iok9t8uhEdQQ=="
+  "resolved" "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.7.31.tgz"
+  "version" "11.7.31"
 
 "synckit@^0.8.4", "synckit@^0.8.5":
   "integrity" "sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q=="

@@ -17,7 +17,8 @@ import InputAdornment from '@mui/material/InputAdornment'
 import CircularProgress from '@mui/material/CircularProgress'
 import ListItem from '@mui/material/ListItem'
 import Button from '@mui/material/Button'
-
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
@@ -30,6 +31,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Modal from '@mui/material/Modal'
 import { format } from 'date-fns'
 import axios from 'axios'
+import Badge from '@mui/material/Badge'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -76,13 +78,21 @@ const MailLog = props => {
   const [providerData, setProviderData] = useState([])
   const [providerOptions, setProviderOptions] = useState([])
   const [selectedProviderId, setselectedProviderId] = useState(null)
+  const [selectedProviderIds, setSelectedProviderIds] = useState([])
+
   const [hospitalData, setHospitalData] = useState([])
   const [hospitalOptios, setHospitalOptions] = useState([])
   const [selectedHospitalId, setSelectedHospitalId] = useState(null)
+  const [isSearched, setIsSearched] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [searchData, setSearchData] = useState([])
+
+  const formattedStartDate = startDate ? format(startDate, 'yyyy-MM-dd') : ''
+  const formattedEndDate = endDate ? format(endDate, 'yyyy-MM-dd') : ''
 
   //API
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
-  const ScheduleApi = process.env.REACT_APP_PHYSICIAN_SCHEDULING
+  const ScheduleApi = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
 
   const handleClick = () => {
     setIsExpand(!isExpand)
@@ -110,10 +120,18 @@ const MailLog = props => {
     boxShadow: 20,
     borderRadius: '5px'
   }
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary
+  }))
+
   //api for Provider
   useEffect(() => {
     const ProviderFetch = async () => {
-      //setLoading(true)
+      setLoading(true)
       try {
         const resp = await axios({
           method: 'POST',
@@ -146,7 +164,7 @@ const MailLog = props => {
   //api for hospital
   useEffect(() => {
     const HospitalFetch = async () => {
-      //setLoading(true);
+      setLoading(true)
       try {
         const resp = await axios({
           method: 'POST',
@@ -159,7 +177,7 @@ const MailLog = props => {
             accountId: '1'
           })
         })
-        //setLoading(false);
+        setLoading(false)
         if ((Object.values(resp.data)[0] !== undefined || []) && resp.data.facilityList.length !== 0) {
           // Extract the provider data and set it in the state
           const hospitals = resp.data.facilityList.map(hos => ({
@@ -169,7 +187,7 @@ const MailLog = props => {
           setHospitalOptions(hospitals)
         }
       } catch (err) {
-        //setLoading(false);
+        setLoading(false)
         console.error(err)
       }
     }
@@ -185,7 +203,7 @@ const MailLog = props => {
         },
         data: JSON.stringify({
           requestType: 'Scheduling',
-          providerId: selectedProviderId,
+          userId: selectedProviderId,
           hospitalId: selectedHospitalId,
           fromDate: startDateModal,
           toDate: endDateModal,
@@ -193,7 +211,7 @@ const MailLog = props => {
           accountId: 1
         })
       })
-      console.log('Selected Hospital Id:', selectedHospitalId)
+      console.log(resp)
       // if (resp.data.leaveDatesApproved.length !== 0) {
       //   MySwal.fire({
       //     title: `Provider is on Leave on`,
@@ -216,38 +234,39 @@ const MailLog = props => {
       console.error(err)
     }
   }
-  //search data
+  //search data api
   const SearchFetch = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const resp = await axios({
-        method: "POST",
+        method: 'POST',
         url: ScheduleApi,
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: JSON.stringify({
-          requestType: "search",
-          searchProviderId: Array.isArray(provider)
-            ? provider?.map((i) => i?.value).join()
-            : "",
-          hospitalId: hospital,
-          fromDate: startDate,
-          toDate: EndDate,
-        }),
-      });
-       
-      setIsSearched(true);
-      setLoading(false);
+          requestType: 'search',
+          searchProviderId: selectedProviderId,
+          hospitalId: selectedHospitalId,
+          fromDate: formattedStartDate,
+          toDate: formattedEndDate
+        })
+      })
+
+      console.log(selectedProviderId, 'userID')
+
+      setIsSearched(true)
+      setLoading(false)
+
       {
-        setSearchData(resp.data.providerLeavesView);
+        setSearchData(resp.data.providerLeavesView)
       }
     } catch (err) {
-      setIsSearched(true);
-      setLoading(false);
-      console.error(err);
+      setIsSearched(true)
+      setLoading(false)
+      console.error(err)
     }
-  };
+  }
 
   return (
     <>
@@ -258,11 +277,18 @@ const MailLog = props => {
           style={{
             backgroundColor: '#ffffff',
             width: isExpand ? '100%' : '100%',
-            height: isExpand ? '20%' : '100%',
-            padding: '16px'
+            height: isExpand ? '20%' : 'auto',
+            padding: '16px',
+            overflowY: 'scroll',
+            overflowX: 'visible'
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between'
+            }}
+          >
             <div style={{ marginTop: '-15px' }}>
               <h3>Physician Scheduling</h3>
             </div>
@@ -327,7 +353,7 @@ const MailLog = props => {
                         console.log('Selected Provider:', newValue)
                         // Update the selected hospital's hospitalId
                         if (newValue) {
-                          setselectedProviderId(newValue.hospitalId)
+                          setselectedProviderId(newValue.userId)
                         } else {
                           setselectedProviderId(null)
                         }
@@ -424,13 +450,24 @@ const MailLog = props => {
                 <Autocomplete
                   multiple
                   id='Provider'
-                  size='small'
                   getOptionLabel={option => option.firstName}
                   options={providerOptions}
                   value={providerData}
                   onChange={(event, newValue) => {
                     setProviderData(newValue)
+                    console.log('Selected Providers:', newValue)
+
+                    // Update the selected provider IDs as a comma-separated string
+                    if (newValue) {
+                      const selectedIds = newValue.map(provider => provider.userId)
+                      const idString = selectedIds.join(',') // Join the array with commas
+                      setselectedProviderId(idString)
+                    } else {
+                      setselectedProviderId(null) // Set it to null if no providers are selected
+                    }
                   }}
+                  size='small'
+                  style={{ marginTop: '23px' }}
                   renderInput={params => <TextField {...params} label='Provider' placeholder='Select Provider' />}
                 />
               </Grid>
@@ -444,12 +481,27 @@ const MailLog = props => {
                   size='small'
                   onChange={(event, newValue) => {
                     setHospitalData(newValue)
+                    console.log('Selected his:', newValue)
+                    // Update the selected hospital's hospitalId
+                    if (newValue) {
+                      setSelectedHospitalId(newValue.hospitalId)
+                    } else {
+                      setSelectedHospitalId(null)
+                    }
                   }}
+                  style={{ marginTop: '23px' }}
                   renderInput={params => <TextField {...params} label='Hospital' placeholder='Select Hospital' />}
                 />
               </Grid>
               <Grid item xs={6} style={{ display: 'flex', zIndex: '999', position: 'relative' }}>
                 <DatePicker
+                  PopperProps={{
+                    sx: {
+                      '& .react-datepicker-popper': {
+                        marginTop: '-10px'
+                      }
+                    }
+                  }}
                   selected={startDate}
                   onChange={date => setStartDate(date)}
                   customInput={
@@ -497,6 +549,106 @@ const MailLog = props => {
                   Cancel
                 </Button>
               </Grid>
+              <div style={{ backgroundColor: '#E7EAEC' }}>
+                {searchData?.length && !loading ? (
+                  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{ padding: '20px' }}>
+                    {searchData.map((i, index) => (
+                      <Grid item xs={4} key={index}>
+                        <Card className='miui-card' style={{ marginTop: '30px', borderTop: '3px solid #3BAFDA' }}>
+                          {i.providerInfo.length > 0 ? (
+                            <CardContent className='miui-card-content' style={{ marginTop: '-10px' }}>
+                              <span
+                                className='miui-badge'
+                                style={{
+                                  backgroundColor: '#7367F0',
+                                  color: '#fff',
+                                  padding: '2px',
+                                  borderRadius: '10px',
+                                  fontSize: '13px'
+                                }}
+                              >
+                                {i.date}
+                              </span>
+
+                              {i.providerInfo.map((item, index) => (
+                                <div className='miui-card-text' key={index}>
+                                  <div className='d-flex justify-content-between align-items-center'>
+                                    <Typography className='miui-provider-name' variant='h5'>
+                                      <span> {item.providerName} - </span>
+                                    </Typography>
+                                    {item.leaveDescription || item.hospitalName ? (
+                                      <div>
+                                        <Typography className='miui-hospital-name' variant='h6'>
+                                          {item.hospitalName
+                                            ? `${item.hospitalName}${item.leaveDescription ? ', ' : ''}`
+                                            : ''}
+                                          <span className='miui-leave-description'>
+                                            {item.leaveDescription === 'Leave Applied' ? (
+                                              <>
+                                                {item.leaveDescription}
+                                                <span
+                                                  className='miui-check-icon'
+                                                  onClick={() => {
+                                                    setScheduleData(item)
+                                                    setLeaveApprovalModal(!leaveApprovalModal)
+                                                  }}
+                                                >
+                                                  ✓
+                                                </span>
+                                                <span
+                                                  className='miui-x-icon'
+                                                  onClick={() => {
+                                                    setScheduleData(item)
+                                                    setLeaveDeniedModal(!leaveDeniedModal)
+                                                  }}
+                                                >
+                                                  ✗
+                                                </span>
+                                              </>
+                                            ) : item.leaveDescription === 'Leave Approved' ? (
+                                              <Button
+                                                size='small'
+                                                color='warning'
+                                                onClick={() => {
+                                                  setScheduleData(item)
+                                                  handleDenial(item)
+                                                }}
+                                              >
+                                                {item.leaveDescription}
+                                              </Button>
+                                            ) : (
+                                              item.leaveDescription
+                                            )}
+                                          </span>
+                                        </Typography>
+                                      </div>
+                                    ) : (
+                                      <span
+                                        className={`miui-schedule-badge ${
+                                          new Date(i.date) > new Date() ? 'miui-primary' : 'miui-secondary'
+                                        }`}
+                                        onClick={() => {
+                                          if (new Date(i.date) > new Date()) {
+                                            setModalSuccess(!modalSuccess)
+                                          }
+                                        }}
+                                      >
+                                        Schedule
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </CardContent>
+                          ) : null}
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                ) : isSearched && !loading ? (
+                  <div className='miui-no-data'>No Search Data Found...</div>
+                ) : null}
+              </div>
             </Grid>
           )}
         </div>
