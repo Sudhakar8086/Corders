@@ -24,7 +24,7 @@ const AuthContext = createContext(defaultProvider)
 const AuthProvider = ({ children }) => {
   // ** States
   const [user, setUser] = useState(defaultProvider.user)
-  const [loading, setLoading] = useState(defaultProvider.loading)
+  const [loading, setLoading] = useState(false)
 
   // ** Hooks
   const router = useRouter()
