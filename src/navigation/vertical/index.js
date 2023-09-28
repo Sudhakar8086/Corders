@@ -624,7 +624,12 @@ const navigation = () => {
       title: 'Schedule',
       icon: 'tabler:users',
       path: '/apps/email'
-    }
+    },
+    {
+        title: 'Leave Check',
+        icon: 'tabler:eye',
+        path: '/apps/ui_leave'
+    },
   ]
 }
 
