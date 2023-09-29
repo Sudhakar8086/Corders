@@ -88,10 +88,10 @@ const LeaveCheck = ({ popperPlacement }) => {
             );
     };
 
-
+    // height: 515,
     return (
         <Fade in={visibility} timeout={300}>
-            <Card sx={{ position: 'relative', height: 900 }}>
+            <Card sx={{ position: 'relative', height: 515, overflowY:"auto" }}>
                 <CardHeader
                     title='Provider Leave Check'
                     action={
@@ -158,43 +158,55 @@ const LeaveCheck = ({ popperPlacement }) => {
                         </Box>
                     <Loading />
                     {isSearched ? (
-                    <div style={{ backgroundColor: "#E7EAEC " }} lg="3" md="2" xs="1" >
-                        <Grid container spacing={4}>
-                        <div style={{ maxHeight: '800px', display: 'flex',margin:'14px', padding: '10px', flexWrap: 'wrap' }}>
+                    // <div  lg="3" md="2" xs="1" >
+                        <Grid container spacing={1} style={{padding: '5px', backgroundColor: "#E7EAEC " }}>
+                        {/* <div style={{ maxHeight: '800px', display: 'flex',margin:'14px', padding: '10px', flexWrap: 'wrap' }}> */}
                         {leaveData?.length && !loading ? (
                             leaveData?.map((i, index) => (
-                                <Grid item lg={4} md={6} xs={12} key={index}>
+                                <Grid item xs={12} sm={6} md={4} key={index}>
                                     <>
                                         <Card
                                             key={index}
-                                            className="ml-500"
                                             style={{ borderTop: "3px solid #3BAFDA", margin: '10px'  }}
                                         >
                                             <CardContent>
                                             <Badge color="primary" badgeContent={i.date} overlap="rectangle" sx={{width:100}}>
                                             </Badge>
-                                                {i.leaveStatusResponse.map((item, index) => (
-                                                        <div key={index} className="d-flex justify-content-between align-items-center">
-                                                        <div className="d-flex ">
-                                                            <h5 >
-                                                                <span> {item.firstName} - </span>
-                                                            </h5>
+                            {/* <Typography>
+                                <span
+                                  style={{
+                                    backgroundColor: '#7367F0',
+                                    color: '#fff',
+                                    padding: '3px',
+                                    borderRadius: '10px',
+                                    fontSize: '12px'
+                                  }}
+                                >
+                                  {i.date}
+                                </span>
+                              </Typography> */}
+                                                {i.leaveStatusResponse.map((item, subIndex) => (
+                                                        <div key={subIndex} >
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
+                                                            {/* <h5 > */}
+                                                            <span style={{ fontSize:'15px', margin:'5px' }}>{item.firstName} - </span>
+                                                            {/* </h5> */}
                                                             {item.leaveStatus === 1 ? (
                                                                 <div>
-                                                                    <h6 className="ms-75">
-                                                                        <span style={{ color: "orange" }}>
+                                                                    {/* <h6 className="ms-175"> */}
+                                                                        <span style={{ color: "orange", fontSize:'15px', margin:'5px' }}>
                                                                             Leave Approved
                                                                         </span>
-                                                                    </h6>
+                                                                    {/* </h6> */}
                                                                 </div>
                                                             ) : (<div>
-                                                                <h6 className="ms-75">
+                                                                {/* <h6 className="ms-75"> */}
                                                                     {`${item.leaveStatus ? ", " : ""
                                                                         }`}
-                                                                    <span style={{ color: "orange" }}>
+                                                                    <span style={{ color: "orange" , fontSize:'15px', margin:'5px'}}>
                                                                         Leave Applied
                                                                     </span>
-                                                                </h6>
+                                                                {/* </h6> */}
                                                             </div>)}
                                                         </div>
                                                         </div>
@@ -209,9 +221,9 @@ const LeaveCheck = ({ popperPlacement }) => {
                                                 No Search Data Found...
                                             </span>
                                            ) : null}  
-                                           </div>
+                                           {/* </div> */}
                                            </Grid>
-                                        </div>
+                                        // </div>
                                         ) : null
                                         }
 {/* className="m-20 p-20" */}
