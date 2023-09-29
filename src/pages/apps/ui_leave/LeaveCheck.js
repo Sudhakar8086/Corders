@@ -194,7 +194,7 @@ const LeaveCheck = ({ popperPlacement }) => {
                                                             {item.leaveStatus === 1 ? (
                                                                 <div>
                                                                     {/* <h6 className="ms-175"> */}
-                                                                        <span style={{ color: "orange", fontSize:'15px', margin:'5px' }}>
+                                                                        <span style={{ color: "orange", fontSize:'15px', marginTop:'5px' }}>
                                                                             Leave Approved
                                                                         </span>
                                                                     {/* </h6> */}
@@ -203,7 +203,7 @@ const LeaveCheck = ({ popperPlacement }) => {
                                                                 {/* <h6 className="ms-75"> */}
                                                                     {`${item.leaveStatus ? ", " : ""
                                                                         }`}
-                                                                    <span style={{ color: "orange" , fontSize:'15px', margin:'5px'}}>
+                                                                    <span style={{ color: "orange" , fontSize:'15px', marginTop:'5px'}}>
                                                                         Leave Applied
                                                                     </span>
                                                                 {/* </h6> */}
