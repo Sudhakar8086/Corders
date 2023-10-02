@@ -32,7 +32,10 @@ import Modal from '@mui/material/Modal'
 import { format } from 'date-fns'
 import axios from 'axios'
 import Badge from '@mui/material/Badge'
-
+import withReactContent from 'sweetalert2-react-content'
+import Swal from 'sweetalert2'
+import toast from 'react-hot-toast'
+import { Check, X } from 'react-feather'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -78,7 +81,6 @@ const MailLog = props => {
   const [providerData, setProviderData] = useState([])
   const [providerOptions, setProviderOptions] = useState([])
   const [selectedProviderId, setselectedProviderId] = useState(null)
-  const [selectedProviderIds, setSelectedProviderIds] = useState([])
 
   const [hospitalData, setHospitalData] = useState([])
   const [hospitalOptios, setHospitalOptions] = useState([])
@@ -86,6 +88,14 @@ const MailLog = props => {
   const [isSearched, setIsSearched] = useState(false)
   const [loading, setLoading] = useState(false)
   const [searchData, setSearchData] = useState([])
+  const [leaves, setLeaves] = useState(false)
+  const [leaveData, setLeaveData] = useState([])
+  const [scheduleData, setScheduleData] = useState({})
+  const MySwal = withReactContent(Swal)
+  const [leaveDeniedModal, setLeaveDeniedModal] = useState(false)
+  const [leaveApprovalModal, setLeaveApprovalModal] = useState('')
+
+  const userRole = JSON.parse(localStorage.getItem('userData'))
 
   const formattedStartDate = startDate ? format(startDate, 'yyyy-MM-dd') : ''
   const formattedEndDate = endDate ? format(endDate, 'yyyy-MM-dd') : ''
@@ -93,6 +103,7 @@ const MailLog = props => {
   //API
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
   const ScheduleApi = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
+  const LeaveApprovalApi = process.env.NEXT_PUBLIC_LEAVE_DETAILS
 
   const handleClick = () => {
     setIsExpand(!isExpand)
@@ -120,13 +131,6 @@ const MailLog = props => {
     boxShadow: 20,
     borderRadius: '5px'
   }
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary
-  }))
 
   //api for Provider
   useEffect(() => {
@@ -268,6 +272,177 @@ const MailLog = props => {
     }
   }
 
+  //show only leaves
+  const OnlyLeavesFetch = async () => {
+    setLoading(true)
+    try {
+      const resp = await axios({
+        method: 'POST',
+        url: ScheduleApi,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: JSON.stringify({
+          requestType: 'onlyleaves',
+          searchProviderId: selectedProviderId,
+          hospitalId: selectedHospitalId,
+          fromDate: formattedStartDate,
+          toDate: formattedEndDate
+        })
+      })
+      setIsSearched(true)
+      setLoading(false)
+      {
+        setLeaveData(resp.data.providerLeavesView)
+      }
+    } catch (err) {
+      setIsSearched(true)
+      setLoading(false)
+      console.error(err)
+    }
+  }
+
+  const handleApproval = async () => {
+    setLoading(false)
+    const data = []
+    if (leaveData === undefined) {
+      leaveData.forEach(dt => {
+        dt.onlyLeaves.forEach(dat => {
+          if (dat.leaveStatus === 0) {
+            data.push({
+              date: dat.scheduledDate,
+              isHalfday: 1,
+              providerId: dat.providerId,
+              alteredBy: 1
+            })
+          }
+        })
+      })
+    } else {
+      searchData.forEach(dt => {
+        dt.providerInfo.forEach(dat => {
+          if (dat.leaveStatus === '0') {
+            data.push({
+              date: dat.scheduledDate,
+              isHalfday: 1,
+              providerId: dat.providerId,
+              alteredBy: 1
+            })
+          }
+        })
+      })
+    }
+    MySwal.fire({
+      title: 'Are you Sure?',
+      text: `You want to approve all leaves`,
+      icon: 'Info',
+      showCancelButton: true,
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: 'POST',
+          url: LeaveApprovalApi,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: JSON.stringify({
+            requestType: 'BulkLeaveApprovals',
+            bulkLeaveList: data
+          })
+        }).then(res => {
+          if (res.data.bulkLeaveApprovalResponse.message === 'Successfully Approved') {
+            toast.success('Successfully Approved')
+            setLoading(false)
+            SearchFetch()
+            OnlyLeavesFetch()
+          }
+        })
+      }
+    })
+  }
+  // Leave Approval
+  const LeaveApprovalFetch = async leaveStatus => {
+    setLoading(true)
+    try {
+      await axios({
+        method: 'POST',
+        url: LeaveApprovalApi,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: JSON.stringify({
+          requestType: 'LeaveApprovals',
+          isHalfday: 0,
+          alteredBy: userRole.userId,
+          providerId: scheduleData.providerId,
+          date: scheduleData.scheduledDate,
+          status: leaveStatus
+        })
+      })
+      setLoading(false)
+      SearchFetch()
+      OnlyLeavesFetch()
+    } catch (err) {
+      setLoading(false)
+      console.error(err)
+    }
+  }
+  const handleDenial = async item => {
+    MySwal.fire({
+      title: 'Are you Sure?',
+      text: `You want to deny the leave on ${item.scheduledDate} for ${
+        item.firstName === undefined ? item.providerName : item.firstName
+      }`,
+      icon: 'error',
+      confirmButtonText: 'Deny',
+      showCancelButton: true,
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        setLoading(true)
+        axios({
+          method: 'POST',
+          url: LeaveApprovalApi,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: JSON.stringify({
+            requestType: 'LeaveApprovals',
+            isHalfday: 0,
+            alteredBy: userRole.userId,
+            providerId: item.providerId,
+            date: item.scheduledDate,
+            status: 2
+          })
+        })
+        setLoading(false)
+        SearchFetch()
+        OnlyLeavesFetch()
+      }
+    })
+  }
+  const style11 = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'aliceblue',
+    border: '2px solid #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3
+  }
   return (
     <>
       {hide ? (
@@ -541,118 +716,382 @@ const MailLog = props => {
                 />
               </Grid>
               <Grid item xs={6} style={{ marginTop: '30px' }}>
-                <FormControlLabel control={<Checkbox />} label='Show only leaves' />
-                <Button variant='contained' size='small' onClick={SearchFetch}>
+                <FormControlLabel
+                  control={<Checkbox checked={leaves} onClick={() => setLeaves(!leaves)} />}
+                  label='Show only leaves'
+                />
+
+                <Button variant='contained' size='small' onClick={leaves ? OnlyLeavesFetch : SearchFetch}>
                   Search
                 </Button>
                 <Button size='small' style={{ marginLeft: '20px', backgroundColor: '#82868B', color: 'white' }}>
                   Cancel
                 </Button>
               </Grid>
-              <div style={{ backgroundColor: '#E7EAEC' }}>
-                {searchData?.length && !loading ? (
-                  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{ padding: '20px' }}>
-                    {searchData.map((i, index) => (
-                      <Grid item xs={4} key={index}>
-                        <Card className='miui-card' style={{ marginTop: '30px', borderTop: '3px solid #3BAFDA' }}>
-                          {i.providerInfo.length > 0 ? (
-                            <CardContent className='miui-card-content' style={{ marginTop: '-10px' }}>
-                              <span
-                                className='miui-badge'
-                                style={{
-                                  backgroundColor: '#7367F0',
-                                  color: '#fff',
-                                  padding: '2px',
-                                  borderRadius: '10px',
-                                  fontSize: '13px'
-                                }}
-                              >
-                                {i.date}
-                              </span>
-
-                              {i.providerInfo.map((item, index) => (
-                                <div className='miui-card-text' key={index}>
-                                  <div className='d-flex justify-content-between align-items-center'>
-                                    <Typography className='miui-provider-name' variant='h5'>
-                                      <span> {item.providerName} - </span>
-                                    </Typography>
-                                    {item.leaveDescription || item.hospitalName ? (
+              <div style={{ marginLeft: '350px' }}>
+                {leaveData.length > 0 || searchData.length > 0 ? (
+                  <div style={{ padding: '30px' }}>
+                    <Button
+                      style={{ backgroundColor: '#00CFE8', color: '#fff', padding: '10px' }}
+                      onClick={() => handleApproval()}
+                    >
+                      Approve All Leaves
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+              {leaves === true ? (
+                leaveData?.length && !loading ? (
+                  <Grid container spacing={2} style={{ padding: '20px', backgroundColor: '#E7EAEC' }}>
+                    {leaveData?.map((i, index) => (
+                      <Grid item xs={12} sm={6} md={4} key={index}>
+                        {i.onlyLeaves.length > 0 ? (
+                          <Card style={{ borderTop: '3px solid #3BAFDA', marginTop: '20px ' }}>
+                            <CardContent>
+                              <Typography>
+                                <span
+                                  style={{
+                                    backgroundColor: '#7367F0',
+                                    color: '#fff',
+                                    padding: '3px',
+                                    borderRadius: '10px',
+                                    fontSize: '12px'
+                                  }}
+                                >
+                                  {i.date}
+                                </span>
+                              </Typography>
+                              {i.onlyLeaves.map((item, subIndex) => (
+                                <div key={subIndex}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                    <span style={{ fontWeight: 'bold' }}>{item.firstName} -</span>
+                                    {item.leaveDescription ? (
                                       <div>
-                                        <Typography className='miui-hospital-name' variant='h6'>
-                                          {item.hospitalName
-                                            ? `${item.hospitalName}${item.leaveDescription ? ', ' : ''}`
-                                            : ''}
-                                          <span className='miui-leave-description'>
+                                        <span>
+                                          <span style={{ color: 'orange' }}>
                                             {item.leaveDescription === 'Leave Applied' ? (
                                               <>
                                                 {item.leaveDescription}
-                                                <span
-                                                  className='miui-check-icon'
+                                                <Check
                                                   onClick={() => {
                                                     setScheduleData(item)
                                                     setLeaveApprovalModal(!leaveApprovalModal)
                                                   }}
-                                                >
-                                                  ✓
-                                                </span>
-                                                <span
-                                                  className='miui-x-icon'
+                                                  size={20}
+                                                  style={{ color: '#79e577' }}
+                                                />
+                                                <X
                                                   onClick={() => {
                                                     setScheduleData(item)
                                                     setLeaveDeniedModal(!leaveDeniedModal)
                                                   }}
-                                                >
-                                                  ✗
-                                                </span>
+                                                  size={20}
+                                                  style={{ color: '#FF9F43' }}
+                                                />
                                               </>
                                             ) : item.leaveDescription === 'Leave Approved' ? (
-                                              <Button
-                                                size='small'
-                                                color='warning'
-                                                onClick={() => {
-                                                  setScheduleData(item)
-                                                  handleDenial(item)
-                                                }}
-                                              >
+                                              <Button size='sm' color='warning' onClick={() => handleDenial(item)}>
                                                 {item.leaveDescription}
                                               </Button>
                                             ) : (
                                               item.leaveDescription
                                             )}
                                           </span>
-                                        </Typography>
+                                        </span>
                                       </div>
                                     ) : (
                                       <span
-                                        className={`miui-schedule-badge ${
-                                          new Date(i.date) > new Date() ? 'miui-primary' : 'miui-secondary'
-                                        }`}
-                                        onClick={() => {
-                                          if (new Date(i.date) > new Date()) {
-                                            setModalSuccess(!modalSuccess)
-                                          }
+                                        style={{
+                                          background: 'rgba(255, 159, 67, 0.2)',
+                                          color: '#5E50EE',
+                                          padding: '3px',
+                                          fontSize: '15px'
                                         }}
                                       >
-                                        Schedule
+                                        Not Applied
                                       </span>
                                     )}
                                   </div>
                                 </div>
                               ))}
                             </CardContent>
-                          ) : null}
-                        </Card>
+                          </Card>
+                        ) : null}
                       </Grid>
                     ))}
                   </Grid>
                 ) : isSearched && !loading ? (
-                  <div className='miui-no-data'>No Search Data Found...</div>
-                ) : null}
-              </div>
+                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    No Search Data Found
+                  </span>
+                ) : null
+              ) : (
+                <div style={{ backgroundColor: '#E7EAEC' }}>
+                  {searchData?.length && !loading ? (
+                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{ padding: '20px' }}>
+                      {searchData.map((i, index) => (
+                        <Grid item xs={4} key={index}>
+                          <Card className='miui-card' style={{ marginTop: '30px ', borderTop: '3px solid #3BAFDA' }}>
+                            {i.providerInfo.length > 0 ? (
+                              <CardContent className='miui-card-content' style={{ marginTop: '-10px' }}>
+                                <span
+                                  className='miui-badge'
+                                  style={{
+                                    backgroundColor: '#7367F0',
+                                    color: '#fff',
+                                    padding: '3px',
+                                    borderRadius: '10px',
+                                    fontSize: '13px'
+                                  }}
+                                >
+                                  {i.date}
+                                </span>
+                                {i.providerInfo.map((item, subIndex) => (
+                                  <div className='miui-card-text' key={subIndex}>
+                                    <div
+                                      style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}
+                                    >
+                                      <Typography className='miui-provider-name' variant='h6'>
+                                        <span> {item.providerName} - </span>
+                                      </Typography>
+                                      {item.leaveDescription || item.hospitalName ? (
+                                        <div>
+                                          <Typography className='miui-hospital-name' variant='h6'>
+                                            {item.hospitalName
+                                              ? `${item.hospitalName}${item.leaveDescription ? ', ' : ''}`
+                                              : ''}
+                                            <span className='miui-leave-description'>
+                                              {item.leaveDescription === 'Leave Applied' ? (
+                                                <>
+                                                  {item.leaveDescription}
+                                                  <span
+                                                    className='miui-check-icon'
+                                                    onClick={() => {
+                                                      setScheduleData(item)
+                                                      setLeaveApprovalModal(!leaveApprovalModal)
+                                                    }}
+                                                    style={{
+                                                      color: '#79E577',
+                                                      fontSize: '20px',
+                                                      marginLeft: '1px',
+                                                      cursor: 'pointer'
+                                                    }}
+                                                  >
+                                                    ✓
+                                                  </span>
+                                                  <span
+                                                    className='miui-x-icon'
+                                                    onClick={() => {
+                                                      setScheduleData(item)
+                                                      setLeaveDeniedModal(!leaveDeniedModal)
+                                                    }}
+                                                    style={{ color: '#FFB6BD', fontSize: '20px', cursor: 'pointer' }}
+                                                  >
+                                                    ✗
+                                                  </span>
+                                                </>
+                                              ) : item.leaveDescription === 'Leave Approved' ? (
+                                                <Button
+                                                  size='small'
+                                                  color='warning'
+                                                  onClick={() => {
+                                                    setScheduleData(item)
+                                                    handleDenial(item)
+                                                  }}
+                                                >
+                                                  {item.leaveDescription}
+                                                </Button>
+                                              ) : (
+                                                item.leaveDescription
+                                              )}
+                                            </span>
+                                          </Typography>
+                                        </div>
+                                      ) : (
+                                        <span
+                                          style={{
+                                            backgroundColor: '#82868B',
+                                            color: '#fff',
+                                            borderRadius: '0.65rem',
+                                            fontSize: '0.80rem',
+                                            padding: '0.1rem'
+                                          }}
+                                          className={`miui-schedule-badge ${
+                                            new Date(i.date) > new Date() ? 'miui-primary' : 'miui-secondary'
+                                          }`}
+                                          onClick={() => {
+                                            if (new Date(i.date) > new Date()) {
+                                              setModalSuccess(!modalSuccess)
+                                            }
+                                          }}
+                                        >
+                                          Schedule
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </CardContent>
+                            ) : null}
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  ) : isSearched && !loading ? (
+                    <div className='miui-no-data'>No Search Data Found...</div>
+                  ) : null}
+                </div>
+              )}
             </Grid>
           )}
         </div>
       )}
+
+      <Modal
+        open={leaveApprovalModal}
+        onClose={() => setLeaveApprovalModal(false)}
+        toggle={() => setLeaveApprovalModal(!leaveApprovalModal)}
+        aria-labelledby='leave-approval-modal-title'
+        aria-describedby='leave-approval-modal-description'
+        style={{
+          position: 'absolute',
+          top: '40%',
+          left: '30%',
+          width: '500px',
+          height: '200px',
+          boxShadow: 24
+        }}
+      >
+        <div style={{ backgroundColor: 'white', padding: '5px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: '#f8f8f8',
+              color: '#7367F0',
+              padding: '0.40rem'
+            }}
+          >
+            <span id='leave-approval-modal-title' toggle={() => setLeaveApprovalModal(!leaveApprovalModal)}>
+              Leave Approval
+            </span>
+            <Icon
+              icon='tabler:x'
+              style={{
+                position: 'absolute',
+                left: '96%',
+                bottom: '88%',
+                boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                borderRadius: '20%',
+                padding: '5px',
+                backgroundColor: '#fff',
+                cursor: 'pointer',
+                height: '30px',
+                width: '30px'
+              }}
+              onClick={() => setLeaveApprovalModal(false)}
+            />
+          </div>
+          <p id='leave-approval-modal-description'>Are You Sure you want to Approve Leave?</p>
+          <div style={{ borderTop: '1px solid #ebeae8' }}></div>
+          <div style={{ marginTop: '5px', marginLeft: '350px' }}>
+            <Button
+              size='medium'
+              variant='contained'
+              onClick={() => {
+                LeaveApprovalFetch(1), setLeaveApprovalModal(false)
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              size='medium'
+              variant='info'
+              onClick={() => {
+                toast.error('You Are Requested Cancelled', {
+                  position: 'bottom-right'
+                })
+                setLeaveApprovalModal(false)
+              }}
+            >
+              No
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={leaveDeniedModal}
+        toggle={() => setLeaveDeniedModal(!leaveDeniedModal)}
+        onClose={() => setLeaveDeniedModal(false)}
+        aria-labelledby='leave-denied-modal-title'
+        aria-describedby='leave-denied-modal-description'
+        style={{
+          position: 'absolute',
+          top: '40%',
+          left: '30%',
+          width: '500px',
+          height: '200px',
+          boxShadow: 24
+        }}
+      >
+        <div style={{ backgroundColor: 'white', padding: '5px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: '#f8f8f8',
+              color: '#7367F0',
+              padding: '0.40rem'
+            }}
+          >
+            <span id='leave-denied-modal-title' toggle={() => setLeaveDeniedModal(!leaveDeniedModal)}>
+              Leave Denied
+            </span>
+            <Icon
+              icon='tabler:x'
+              style={{
+                position: 'absolute',
+                left: '96%',
+                bottom: '88%',
+                boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                borderRadius: '20%',
+                padding: '5px',
+                backgroundColor: '#fff',
+                cursor: 'pointer',
+                height: '30px',
+                width: '30px'
+              }}
+              onClick={() => setLeaveDeniedModal(false)}
+            />
+          </div>
+          <p id='leave-denied-modal-description'>Are You Sure you want to Deny Leave?</p>
+          <div style={{ borderTop: '1px solid #ebeae8' }}></div>
+          <div style={{ marginTop: '5px', marginLeft: '350px' }}>
+            <Button
+              variant='contained'
+              color='primary'
+              size='medium'
+              onClick={() => {
+                LeaveApprovalFetch(2), setLeaveDeniedModal(!leaveDeniedModal)
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              size='medium'
+              onClick={() => {
+                toast.error('You Are Requested Cancelled', {
+                  position: 'bottom-right'
+                })
+                setLeaveDeniedModal(!leaveDeniedModal)
+              }}
+            >
+              No
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   )
 }
