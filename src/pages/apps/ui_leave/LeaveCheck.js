@@ -134,7 +134,7 @@ const LeaveCheck = ({ popperPlacement }) => {
                                     style={{ width: '80%' }}
                                     placeholderText="Select Start Date"
                                     onChange={(date) => setPicker(date)}
-                                    customInput={<CustomInput label='Start Date' />}
+                                    customInput={<CustomInput label='Start Date' fullWidth />}
                                     required
 
                                 />
@@ -147,7 +147,7 @@ const LeaveCheck = ({ popperPlacement }) => {
                                     popperPlacement={popperPlacement}
                                     placeholderText="Select End Date"
                                     onChange={(date) => setEndPicker(date)}
-                                    customInput={<CustomInput label='End Date' />}
+                                    customInput={<CustomInput label='End Date' fullWidth />}
                                     required
 
                                 />
