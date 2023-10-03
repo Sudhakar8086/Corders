@@ -19,6 +19,11 @@ const navigation = () => {
       title: 'Table',
       icon: 'tabler:table',
       path: '/storage/documents'
+    },
+    {
+      title: 'Change Password',
+      icon: 'tabler:password-user',
+      path: '/apps/change_password'
     }
   ]
 }
