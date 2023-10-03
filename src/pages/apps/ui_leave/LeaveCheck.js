@@ -125,37 +125,38 @@ const LeaveCheck = ({ popperPlacement }) => {
                 />
                 <Collapse in={collapsed}>
                     <CardContent>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }} className='demo-space-x'>
-                        <div style={{ margin: '50px 0' }}> {/* Add margin to create space */}
-                                <DatePicker
-                                    selected={picker}
-                                    popperPlacement={popperPlacement}
-                                    id='basic-input'
-                                    style={{ width: '80%' }}
-                                    placeholderText="Select Start Date"
-                                    onChange={(date) => setPicker(date)}
-                                    customInput={<CustomInput label='Start Date' fullWidth />}
-                                    required
+                    <Grid container spacing={2} alignItems="center"> {/* Adjust spacing as needed and align items */}
+  <Grid item xs={12} sm={6} md={4}> {/* Adjust the grid breakpoints */}
+    <DatePicker
+      selected={picker}
+      popperPlacement={popperPlacement}
+      id='basic-input'
+      style={{ width: '100%' }}
+      placeholderText="Select Start Date"
+      onChange={(date) => setPicker(date)}
+      customInput={<CustomInput label='Start Date' fullWidth/>}
+      required
+    />
+  </Grid>
+  <Grid item xs={12} sm={6} md={4}> {/* Adjust the grid breakpoints */}
+    <DatePicker
+      selected={endPicker}
+      id='basic-input'
+      style={{ width: '100%' }} 
+      popperPlacement={popperPlacement}
+      placeholderText="Select End Date"
+      onChange={(date) => setEndPicker(date)}
+      customInput={<CustomInput label='End Date' fullWidth />}
+      required
+    />
+  </Grid>
+  <Grid item xs={12} sm={6} md={4} style={{ display: 'flex', justifyContent: 'flex-end' }}> {/* Button aligned to the right */}
+    <Button variant='contained' size='medium' onClick={OnlyLeavesFetch}>
+      Search
+    </Button>
+  </Grid>
+</Grid>
 
-                                />
-                            </div>
-                            <div style={{ margin: '50px 0' }}> {/* Add margin to create space */}
-                                <DatePicker
-                                    selected={endPicker}
-                                    id='basic-input'
-                                    style={{ width: '80%' }}
-                                    popperPlacement={popperPlacement}
-                                    placeholderText="Select End Date"
-                                    onChange={(date) => setEndPicker(date)}
-                                    customInput={<CustomInput label='End Date' fullWidth />}
-                                    required
-
-                                />
-                            </div>
-                            <div style={{ margin: '50px 0' }}>
-                                <Button variant='contained' size='medium' sx={{ ml: 130,mt:3, width: 110 }} onClick={OnlyLeavesFetch}>Search</Button>
-                            </div>
-                        </Box>
                     <Loading />
                     {isSearched ? (
                     // <div  lg="3" md="2" xs="1" >

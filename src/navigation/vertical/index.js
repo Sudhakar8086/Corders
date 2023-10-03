@@ -15,6 +15,11 @@ const navigation = () => {
         icon: 'tabler:eye',
         path: '/apps/ui_leave'
     },
+    {
+      title: 'Table',
+      icon: 'tabler:table',
+      path: '/tables/mui'
+    }
   ]
 }
 

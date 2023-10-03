@@ -1,90 +1,282 @@
-// ** Next Import
-import Link from 'next/link'
+import React, { useState } from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import { styled } from '@mui/material/styles';
+import TableHead from '@mui/material/TableHead';
+import TableBody from '@mui/material/TableBody';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import Icon from 'src/@core/components/icon'
+const icons=[
+  'mdi:file-outline',
+  'heroicons:folder-20-solid',
+  'mdi:folder-open',
+  'uil:edit-alt',
+  'ci:house-01',
+  'ci:chevron-left-duo',
+  'mdi:application-edit-outline',
+  'bx:file',
+  'openmoji:delete'
+]
 
-// ** MUI Imports
-import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
-import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.common.black,
+    minWidth: '590px', 
+    flex: '20 30 auto',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14
+  }
+}));
 
-// ** Custom Components Imports
-import PageHeader from 'src/@core/components/page-header'
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover
+  },
 
-// ** Demo Components Imports
-import TableBasic from 'src/views/table/mui/TableBasic'
-import TableDense from 'src/views/table/mui/TableDense'
-import TableSpanning from 'src/views/table/mui/TableSpanning'
-import TableCustomized from 'src/views/table/mui/TableCustomized'
-import TableSortSelect from 'src/views/table/mui/TableSortSelect'
-import TableCollapsible from 'src/views/table/mui/TableCollapsible'
-import TableStickyHeader from 'src/views/table/mui/TableStickyHeader'
-
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  color: theme.palette.primary.main
-}))
+  // hide last border
+  '&:last-of-type td, &:last-of-type th': {
+    border: 0
+  }
+}));
 
 const MUITable = () => {
-  return (
-    <Grid container spacing={6}>
-      <PageHeader
-        title={
-          <Typography variant='h4'>
-            <LinkStyled href='https://mui.com/material-ui/react-table/' target='_blank'>
-              MUI Tables
-            </LinkStyled>
-          </Typography>
-        }
-        subtitle={
-          <Typography sx={{ color: 'text.secondary' }}>
-            Tables display sets of data. They can be fully customized
-          </Typography>
-        }
-      />
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Basic Table' />
-          <TableBasic />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Dense Table' />
-          <TableDense />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Sticky Header' />
-          <TableStickyHeader />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Collapsible Table' />
-          <TableCollapsible />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Spanning Table' />
-          <TableSpanning />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Customized Table' />
-          <TableCustomized />
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <TableSortSelect />
-        </Card>
-      </Grid>
-    </Grid>
-  )
-}
+  const [showSpecialRows, setShowSpecialRows] = useState(false);
+  const [showCoderDocumentSystem, setShowCoderDocumentSystem] = useState(false);
+  const [showAdditionalRow, setShowAdditionalRow] = useState(false);
+  const handleBackClick = () => {
+    setShowSpecialRows(false);
+    setShowCoderDocumentSystem(false);
+    setShowAdditionalRow(false);
+  };
+  const handleFishRoomClick = () => {
+    setShowSpecialRows(false);
+    setShowAdditionalRow(!showAdditionalRow);
+    console.log(showSpecialRows);
+    console.log(showAdditionalRow);
+  };
+  const extraRows = [
+    {
+      icon: (
+        <div className="icon-container">
+          <Icon icon="mdi:folder-open" />
+        </div>
+      ),
+      label: (
+        <div onClick={ handleFishRoomClick} style={{ cursor: 'pointer' }}>
+          Fish Room
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ marginLeft: 'Auto' }}>
+              <Icon icon="openmoji:delete" />
+              <div>Archive</div>
+            </div>
+            <div style={{ marginLeft: '50PX' }}>
+              <Icon icon="uil:edit-alt" />
+              <div>Rename</div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  
+    {
+      icon: (
+        <div className="icon-container">
+          <Icon icon="mdi:folder-open" />
+        </div>
+      ),
+      label: (
+        <div>
+          Nuts Room
+          
 
-export default MUITable
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginLeft: 'Auto' }}>
+          <Icon icon="openmoji:delete" />
+          <div>Archive</div>
+            </div>
+          <div style={{ marginLeft: '50PX' }}>
+          <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+            </div>
+          </div>
+        </div>
+      ),
+    }
+  ];
+ 
+  const additionalRows = [
+    {
+      icon: (
+        <div className="icon-container">
+          <Icon icon="mdi:folder-open" />
+        </div>
+      ),
+      label: (
+        <div>
+          wi-001
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginLeft: 'Auto' }}>
+          <Icon icon="openmoji:delete" />
+          <div>Archive</div>
+            </div>
+          <div style={{ marginLeft: '50PX' }}>
+          <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      icon: (
+        <div className="icon-container">
+          <Icon icon="mdi:folder-open" />
+        </div>
+      ),
+      label: (
+        <div>
+          wi-003
+        
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginLeft: 'Auto' }}>
+          <Icon icon="openmoji:delete" />
+          <div>Archive</div>
+            </div>
+          <div style={{ marginLeft: '50PX' }}>
+          <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+            </div>
+          </div>
+        </div>
+      ),
+    }
+  ];
+  const rowsToDisplay = showSpecialRows ? additionalRows : extraRows;
+  
+
+  const handleCoderDocumentClick = () => {
+    setShowSpecialRows(!showSpecialRows);
+  };
+  
+  return (
+    <>
+   
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+      {showSpecialRows && (
+        <div onClick={handleBackClick} style={{ cursor: 'pointer', marginRight: '10px' }}>
+          <Icon icon="ci:chevron-left-duo" />
+          Back
+        </div>
+      )}
+
+<div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+|<Icon icon="ci:house-01" />
+        Home
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+       |<Icon icon="mdi:application-edit-outline" />
+        <div style={{ marginLeft: '5px' }}>Add Document</div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+     |<Icon icon="bx:file" />
+        <div style={{ marginLeft: '5px' }}>Add Directory</div>
+      </div>
+      </div>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Type</StyledTableCell>
+            <StyledTableCell>Document</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {showSpecialRows ? (
+            <>
+              {extraRows.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell>{row.icon}</StyledTableCell>
+                  <StyledTableCell>{row.label}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </>
+            
+          ) : (
+            
+            <StyledTableRow onClick={handleCoderDocumentClick}>
+              <StyledTableCell>
+                <div className="icon-container">
+                <Icon icon="mdi:folder-open" />
+                </div>
+              </StyledTableCell>
+              <StyledTableCell>
+                Coder document system
+              </StyledTableCell>
+              <StyledTableCell>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {name}
+                  <div style={{ marginLeft: '-200PX' }}>
+                  <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+                  </div>
+                </div>
+      </StyledTableCell>
+            </StyledTableRow>
+            
+     )}
+      {!showSpecialRows && (
+            <>
+         
+           <StyledTableRow >
+      <StyledTableCell>
+        <div className="icon-container">
+        <Icon icon="mdi:folder-open" />
+        </div>
+      </StyledTableCell>
+      <StyledTableCell>
+       External
+      </StyledTableCell>
+      <StyledTableCell>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+                 
+                  <div style={{ marginLeft: '-200PX' }}>
+                  <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+            
+                  </div>
+                </div>
+      </StyledTableCell>
+    </StyledTableRow>
+    <StyledTableRow >
+      <StyledTableCell>
+        <div className="icon-container">
+        <Icon icon="mdi:folder-open" />
+        </div>
+      </StyledTableCell>
+      <StyledTableCell>
+      Internal
+      </StyledTableCell>
+      <StyledTableCell>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+              
+                  <div style={{ marginLeft: '-200PX' }}>
+                  <Icon icon="uil:edit-alt" />
+                    <div>Rename</div>
+                  </div>
+                </div>
+      </StyledTableCell>
+    </StyledTableRow>
+    </>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    </>
+  );
+};
+
+export default MUITable;
