@@ -18,7 +18,7 @@ const navigation = () => {
     {
       title: 'Table',
       icon: 'tabler:table',
-      path: '/tables/mui'
+      path: '/storage/documents'
     }
   ]
 }
