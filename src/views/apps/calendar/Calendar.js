@@ -183,6 +183,27 @@ const Calendar = props => {
     }
   }, [calendarApi, setCalendarApi])
 
+  const handleClick = (info) => {
+    if (
+      userRole &&
+      userRole.userValidation &&
+      userRole.userValidation.rolesList &&
+      Array.isArray(userRole.userValidation.rolesList)
+    ) {
+      const rolesList = userRole.userValidation.rolesList;
+      console.log(rolesList, "rolelist")
+      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
+        const ev = blankEvent;
+        // const ev = { ...blankEvent }
+        ev.start = info.date;
+        console.log(ev.start, "ev")
+        ev.end = info.date;
+        dispatch(selectEvent(ev));
+        handleAddEventSidebar();
+      }
+    }
+  }
+
   const handleClickedEvent = (clickedEvent) => {
     if (userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin")) {
       if ((new Date(clickedEvent.start) > new Date()) || (new Date(clickedEvent.start).getDate() === new Date().getDate())) {
@@ -202,25 +223,7 @@ const Calendar = props => {
     }
   }
 
-  const handleClick = (info) => {
-    if (
-      userRole &&
-      userRole.userValidation &&
-      userRole.userValidation.rolesList &&
-      Array.isArray(userRole.userValidation.rolesList)
-    ) {
-      const rolesList = userRole.userValidation.rolesList;
-      
-      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
-        const ev = blankEvent;
-        // const ev = { ...blankEvent }
-        ev.start = info.date;
-        ev.end = info.date;
-        dispatch(selectEvent(ev));
-        handleAddEventSidebar();
-      }
-    }
-  }
+ 
 
   const handleMonthChange = payload => {
     console.log(payload, 'payload')

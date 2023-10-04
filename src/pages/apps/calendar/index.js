@@ -28,21 +28,36 @@ import {
   handleAllCalendars,
   handleCalendarsUpdate,
   selectEvent,
-  removeEvent
+  removeEvent,
+   updateFilter, updateAllFilterTitle, updateFiltertitle, updateAllFilters
 
 } from 'src/store/apps/calendar'
 
+// const blankEvent = {
+//   title: '',
+//   start: '',
+//   end: '',
+//   allDay: true,
+//   url: '',
+//   extendedProps: {
+//     calendar: '',
+//     title: ''
+//   }
+// }
 const blankEvent = {
   title: '',
   start: '',
   end: '',
-  allDay: true,
+  allDay: false,
   url: '',
   extendedProps: {
     calendar: '',
-    title: ''
+    guests: [],
+    location: '',
+    description: ''
   }
 }
+
 
 // ** CalendarColors
 // const calendarsColor = {
@@ -94,8 +109,14 @@ const AppCalendar = () => {
     dispatch(fetchEvents(store.selectedCalendars))
   }, [monthChange])
 
-    // ** AddEventSidebar Toggle Function
-    const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
+   // ** refetchEvents
+   const refetchEvents = () => {
+    if (calendarApi !== null) {
+      calendarApi.refetchEvents()
+    }
+  }
+  // ** AddEventSidebar Toggle Function
+  const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
   return (
     <CalendarWrapper
@@ -119,7 +140,13 @@ const AppCalendar = () => {
         handleLeftSidebarToggle={handleLeftSidebarToggle}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         handleAddEventSidebar={handleAddEventSidebar}
+        updateFilter={updateFilter}
+        updateFiltertitle={updateFiltertitle}
+        // toggleSidebar={toggleSidebar}
+        updateAllFilters={updateAllFilters}
+        updateAllFilterTitle={updateAllFilterTitle}
       />
+      
       <Box
         sx={{
           p: 6,
@@ -136,6 +163,7 @@ const AppCalendar = () => {
           dispatch={dispatch}
           direction={direction}
           updateEvent={updateEvent}
+          blankEvent={blankEvent}
           calendarApi={calendarApi}
           calendarsColor={calendarsColor}
           setCalendarApi={setCalendarApi}
@@ -159,6 +187,10 @@ const AppCalendar = () => {
         addEventSidebarOpen={addEventSidebarOpen}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         handleAddEventSidebar={handleAddEventSidebar}
+        selectEvent={selectEvent}
+        refetchEvents={refetchEvents}
+        calendarsColor={calendarsColor}
+        fetchEvents = { fetchEvents }
       />
     </CalendarWrapper>
   )

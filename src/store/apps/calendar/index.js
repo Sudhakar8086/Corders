@@ -21,15 +21,35 @@ const date = new Date()
 const input = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`
 
 // fetch providers
+// const fetchProvider = async () => {
+//   await axios.post(ProviderCalendarView, {
+//   requestType:"Provider",
+//   accountId:"1"
+// }).then(res => {
+//   console.log(res, "res from fetchprovider")
+//   localStorage.setItem('provider', JSON.stringify(res.data.providersList))
+//   return res
+// })
+// }
+
 const fetchProvider = async () => {
-  await axios.post(ProviderCalendarView, {
-  requestType:"Provider",
-  accountId:"1"
-}).then(res => {
-  localStorage.setItem('provider', JSON.stringify(res.data.providersList))
-  return res
-})
-}
+  try {
+    const res = await axios.post(ProviderCalendarView, {
+      requestType: "Provider",
+      accountId: "1"
+    });
+    console.log(res, "res from fetchprovider");
+    
+    // Use localStorage in a client-side context
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('provider', JSON.stringify(res.data.providersList));
+    }
+    
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // fetch Facility
 const fetchFacility = async () => {
