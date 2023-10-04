@@ -1,5 +1,5 @@
 // ** Demo Components Imports
-import Email from 'src/views/apps/email/Email'
+import Email from 'src/views/apps/schedule/Email'
 
 const EmailApp = () => <Email folder='inbox' />
 EmailApp.contentHeightFixed = true

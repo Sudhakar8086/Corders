@@ -13,9 +13,9 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Email App Component Imports
-import MailLog from 'src/views/apps/email/MailLog'
-import SidebarLeft from 'src/views/apps/email/SidebarLeft'
-import ComposePopup from 'src/views/apps/email/ComposePopup'
+import MailLog from 'src/views/apps/schedule/MailLog'
+import SidebarLeft from 'src/views/apps/schedule/SidebarLeft'
+import ComposePopup from 'src/views/apps/schedule/ComposePopup'
 
 // ** Actions
 import {
