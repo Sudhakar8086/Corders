@@ -124,8 +124,11 @@ const Calendar = props => {
     calendarsColor,
     setCalendarApi,
     handleSelectEvent,
+    selectEvent,
     handleLeftSidebarToggle,
-    handleAddEventSidebarToggle
+    handleAddEventSidebarToggle,
+    setMonthChange,
+    handleAddEventSidebar
   } = props
   function Alert(props) {
     return <MuiAlert elevation={6} variant='filled' {...props} />
@@ -135,7 +138,7 @@ const Calendar = props => {
   const calendarRef = useRef()
   const MySwal = withReactContent(Swal)
   const datePickerRef = useRef()
-  const [monthChange, setMonthChange] = useState()
+  // const [monthChange, setMonthChange] = useState()
   const [month, setMonth] = useState()
   const [selectedPreviousMonth, setSelectedPreviousMonth] = useState()
   const [selectedMonth, setSelectedMonth] = useState()
@@ -173,12 +176,51 @@ const Calendar = props => {
   const [datePicker, setDatePicker] = useState('')
 
   // You should set the selectedPreviousMonth as needed
-
+ console.log(month, "month")
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current?.getApi())
     }
   }, [calendarApi, setCalendarApi])
+
+  const handleClickedEvent = (clickedEvent) => {
+    if (userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin")) {
+      if ((new Date(clickedEvent.start) > new Date()) || (new Date(clickedEvent.start).getDate() === new Date().getDate())) {
+        dispatch(selectEvent(clickedEvent))
+        handleAddEventSidebarToggle()
+      } else {
+        return MySwal.fire({
+          title: `Not Accessible`,
+          text: `Date before current date is not been Changed`,
+          icon: "info",
+          customClass: {
+            confirmButton: "btn btn-success"
+          },
+          buttonsStyling: false
+        })
+      }
+    }
+  }
+
+  const handleClick = (info) => {
+    if (
+      userRole &&
+      userRole.userValidation &&
+      userRole.userValidation.rolesList &&
+      Array.isArray(userRole.userValidation.rolesList)
+    ) {
+      const rolesList = userRole.userValidation.rolesList;
+      
+      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
+        const ev = blankEvent;
+        // const ev = { ...blankEvent }
+        ev.start = info.date;
+        ev.end = info.date;
+        dispatch(selectEvent(ev));
+        handleAddEventSidebar();
+      }
+    }
+  }
 
   const handleMonthChange = payload => {
     console.log(payload, 'payload')
@@ -186,9 +228,9 @@ const Calendar = props => {
     const date = new Date(payload.endStr)
     if (today.getMonth() + 1 !== date.getMonth()) {
       localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      // setMonthChange(
-      //   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}`
-      // )
+      setMonthChange(
+        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}`
+      )
       setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
       setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate()}`)
     }
@@ -200,13 +242,24 @@ const Calendar = props => {
     //   setCurrentMonth(true)
     // }
   }
+
+  const newArr = store.events.map((obj) => {
+    return {
+      ...obj,
+      title: obj.Leave === "" ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
+    }
+  })
+  const AdminArrr = store.events.map((obj) => {
+    return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
+  })
   // ** calendarOptions(Props)
   const calendarOptions = {
-    events: store.events.length ? store.events : [],
+    // events: store.events.length ? store.events : [],
+    events: userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin") ? AdminArrr.length ? AdminArrr : [] : newArr.length ? newArr : [],
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
-      start: 'sidebarToggle, prev, next, title',
+      start: 'sidebarToggle, prev, title, next',
       end: 'dayGridMonth,listMonth'
     },
     views: {
@@ -217,12 +270,21 @@ const Calendar = props => {
     editable: true,
     eventResizableFromStart: true,
     dragScroll: true,
-    dayMaxEvents: 2,
+    dayMaxEvents: 6,
     navLinks: true,
-    eventClassNames({ event: calendarEvent }) {
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+    // eventClassNames({ event: calendarEvent }) {
+    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
 
-      return [`bg-${colorName}`]
+    //   return [`bg-${colorName}`]
+    // },
+    eventClassNames({ event: calendarEvent }) {
+      // eslint-disable-next-line no-underscore-dangle
+      const colorName =
+        calendarsColor[calendarEvent._def.extendedProps.calendar]
+      return [
+        // Background Color
+        `bg-${colorName}`
+      ]
     },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
@@ -240,12 +302,14 @@ const Calendar = props => {
       // isAddNewEventSidebarActive.value = true
     },
     dateClick(info) {
-      const ev = { ...blankEvent }
-      ev.start = info.date
-      ev.end = info.date
-      ev.allDay = true
-      dispatch(handleSelectEvent(ev))
-      handleAddEventSidebarToggle()
+      console.log(info)
+      handleClick(info)
+      // const ev = { ...blankEvent }
+      // ev.start = info.date
+      // ev.end = info.date
+      // ev.allDay = true
+      // // dispatch(handleSelectEvent(ev))
+      // handleAddEventSidebarToggle()
     },
     eventDrop({ event: droppedEvent }) {
       dispatch(updateEvent(droppedEvent))
@@ -585,6 +649,30 @@ const Calendar = props => {
       })
   }
   // Leave Apply
+  // const handleSuccess = () => {
+  //   axios.post(LeaveStatusCheck, {
+  //     requestType: 'LeaveApply',
+  //     isHalfday: halfDay,
+  //     date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
+  //     providerId: userRole.userId
+  //   })
+  //   return MySwal.fire({
+  //     title: 'Are you Sure ?',
+  //     text: 'You want to take leave!',
+  //     icon: 'info',
+  //     confirmButtonText: 'Confirm',
+  //     showCancelButton: true,
+  //     customClass: {
+  //       confirmButton: 'btn btn-primary',
+  //       cancelButton: 'btn btn-outline-danger ms-1'
+  //     },
+  //     buttonsStyling: false
+  //   }).then(function (result) {
+  //     if (result.value) {
+  //       setFormModal(!formModal)
+  //     }
+  //   })
+  // }
   const handleSuccess = () => {
     axios.post(LeaveStatusCheck, {
       requestType: 'LeaveApply',
@@ -592,23 +680,10 @@ const Calendar = props => {
       date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
       providerId: userRole.userId
     })
-    return MySwal.fire({
-      title: 'Are you Sure ?',
-      text: 'You want to take leave!',
-      icon: 'info',
-      confirmButtonText: 'Confirm',
-      showCancelButton: true,
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
-    }).then(function (result) {
-      if (result.value) {
-        setFormModal(!formModal)
-      }
-    })
+      .then((res) => console.log(res, "res from handlesuccess"))
+      .catch((err) => console.log(err, "err from handlesuccess"))
   }
+
   const removeElement = index => {
     const newDates = picker.filter((_, i) => i !== index)
     setPicker(newDates)
@@ -749,7 +824,7 @@ const Calendar = props => {
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: 400,
+      width: 600,
       bgcolor: 'background.paper',
       border: '2px solid #000',
       boxShadow: 24,
@@ -759,26 +834,30 @@ const Calendar = props => {
     }
     return (
       <div>
-        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleOpen}>
-          Proceed
-        </Button>
+        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleOpen}>Proceed</Button>
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby='child-modal-title'
-          aria-describedby='child-modal-description'
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
         >
-          <Box sx={{ ...style, width: 200 }}>
-            <Info style={info()} />
-            <h2 id='child-modal-title'>Are you Sure ? </h2>
-            <p id='child-modal-description'>You want to take leave!</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
-              <Button variant='contained' color='primary'>
-                Confirm
-              </Button>
-              <Button variant='outlined' color='error' onClick={handleClose}>
-                Cancle
-              </Button>
+          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
+            <div>
+              <h2 id="child-modal-title">Are you Sure ? </h2>
+              <p style={{ fontWeight: "lighter" }}> You want to take leave!</p>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+              {picker.length > 0 ? (
+                <Button color="primary" onClick={() => handleSuccess()}>
+                  Proceed
+                </Button>
+              ) : (
+                <Button color="primary" disabled>
+                  Proceed
+                </Button>
+              )}
+              <Button variant="outlined" color="error" onClick={handleClose}>Cancle</Button>
             </div>
           </Box>
         </Modal>
@@ -803,8 +882,8 @@ const Calendar = props => {
               onClose={() => setFormModal(false)}
               aria-labelledby='modal-title'
               aria-describedby='modal-description'
-              // fullWidth
-              // maxWidth="sm"
+            // fullWidth
+            // maxWidth="sm"
             >
               <DialogTitle>
                 <Tabs value={active} onChange={(_, newValue) => setActive(newValue)} centered>
@@ -898,21 +977,59 @@ const Calendar = props => {
                       ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px' }}>
-                      <Button
+                      {/* <Button
                         variant='contained'
                         color='primary'
                         onClick={() => handleSuccess()}
                         disabled={picker.length === 0}
                       >
                         Proceed
-                      </Button>
+                      </Button> */}
+                      <ChildModal />
                       <Button variant='contained' color='primary' onClick={() => setFormModal(!formModal)}>
                         Close
                       </Button>
                     </div>
                   </Box>
                 )}
-                {active === '2' && <Box>{/* Add UI for Cancel Leave here */}</Box>}
+                {active === '2' &&
+                  <Box>
+                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                      {leaves && leaves.map((dt, index) => (
+                        <div key={dt} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              backgroundColor: '#ccf5fa',
+                              justifyContent: 'space-between',
+                              padding: '8px',
+                              border: '1px solid #b6dbe1'
+                            }}
+                          >
+                            <span key={index}>{dt}</span>
+                            <button
+                              type='button'
+                              className='btn btn-close'
+                              aria-label='Close'
+                              onClick={() => removeLeave(dt)}
+                              style={{
+                                borderRadius: '10px',
+                                border: 'none',
+                                backgroundColor: '#7367f0',
+                                color: 'white',
+                                cursor: "pointer"
+                              }}
+                            >
+                              ⨉
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <Button variant='contained' style={{float:"right"}} color='primary' onClick={() => setFormModal(!formModal)}>
+                      Close
+                    </Button>
+                  </Box>}
               </DialogContent>
             </Dialog>
 

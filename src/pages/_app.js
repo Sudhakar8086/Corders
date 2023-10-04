@@ -40,6 +40,10 @@ import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsCo
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
 
+// import Amplify from 'aws-amplify';
+// import awsconfig from '../aws-exports'; 
+
+// // Amplify.configure(awsconfig);
 // ** Utils Imports
 import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
