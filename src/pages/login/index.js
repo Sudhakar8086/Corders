@@ -16,10 +16,6 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
-import screen from '../../../public/images/pages/logo.jpeg'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -34,15 +30,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-import { Auth, Amplify} from 'aws-amplify'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
-import awsExports from '../../../aws-exports'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -93,7 +86,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-
+  password: 'admin',
+  email: 'admin@vuexy.com'
 }
 
 const LoginPage = () => {
@@ -101,14 +95,12 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
-  Amplify.configure(awsExports)
   const auth = useAuth()
   const theme = useTheme()
-  const router = useRouter()
   const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
-  const MySwal = withReactContent(Swal)
+
   // ** Vars
   const { skin } = settings
 
@@ -122,37 +114,9 @@ const LoginPage = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
- 
-  const validate = async (email, password) => {
-    try {
-      const user = await Auth.signIn(email, password)
-      if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-        router.replace('/change-password')
-        // navigate('/change-password', { state: { username: email, Password: password } })
-      }
-      return user
-  } catch (error) {  
-    console.log(error)
-      MySwal.fire({
-        title: 'Error!',
-        text:error.message,
-        icon: 'error',
-        customClass: {
-          confirmButton: 'btn btn-primary'
-        },
-        buttonsStyling: false
-      })
-      if (String(error).includes("UserNotConfirmedException") || String(error).includes("PasswordResetRequiredException")) {
-        // navigate('/forgot-password')
-        router.push('/forgot-password')
-      }
-      return 'Invalid'
-  }
-  }
-  const onSubmit = async (data) => {
+
+  const onSubmit = data => {
     const { email, password } = data
-    const cognito = await validate(email, password)
-    localStorage.setItem('userCognito', JSON.stringify(cognito.signInUserSession))
     auth.login({ email, password, rememberMe }, () => {
       setError('email', {
         type: 'manual',
@@ -160,8 +124,8 @@ const LoginPage = () => {
       })
     })
   }
-  //const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
-  const newimageSource = 'auth-v2-login-illustration'
+  const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
+
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
       {!hidden ? (
@@ -174,36 +138,10 @@ const LoginPage = () => {
             borderRadius: '20px',
             justifyContent: 'center',
             backgroundColor: 'customColors.bodyBg',
-            // margin: theme => theme.spacing(8, 0, 8, 8)
-            width: '40%', // Adjust the width of the image container as needed
-            margin: theme => theme.spacing(-30),
-            maxHeight: '119vh',
-            overflow: 'hidden'
+            margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
-          <FooterIllustrationsV2 /> */}
-          <LoginIllustration
-            alt='login-illustration'
-            src={`/images/pages/${newimageSource}-${theme.palette.mode}.png`}
-            sx={{
-              backgroundColor: 'customColors.bodyBg !important',
-              maxWidth: '100%', // Use available width
-              marginLeft: '200px',
-              marginTop: '190px'
-            }}
-          />
-
-          <Image
-            src={screen}
-            alt='noimg'
-            style={{
-              position: 'absolute',
-              top: '21%', // Adjust the vertical position as needed
-              left: '17%', // Adjust the horizontal position as needed
-              cursor: 'pointer'
-            }}
-          />
+          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -214,13 +152,11 @@ const LoginPage = () => {
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: '70%', // Adjust the width of the image container as needed
-            marginLeft: theme => theme.spacing(35)
+            justifyContent: 'center'
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-            {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
               <path
                 fillRule='evenodd'
                 clipRule='evenodd'
@@ -247,7 +183,7 @@ const LoginPage = () => {
                 fill={theme.palette.primary.main}
                 d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
               />
-            </svg> */}
+            </svg>
             <Box sx={{ my: 6 }}>
               <Typography variant='h3' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! 👋🏻`}
@@ -256,14 +192,14 @@ const LoginPage = () => {
                 Please sign-in to your account and start the adventure
               </Typography>
             </Box>
-            {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
+            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
                 Admin: <strong>admin@vuexy.com</strong> / Pass: <strong>admin</strong>
               </Typography>
               <Typography variant='body2' sx={{ color: 'primary.main' }}>
                 Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
               </Typography>
-            </Alert> */}
+            </Alert>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
@@ -338,7 +274,7 @@ const LoginPage = () => {
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Login
               </Button>
-              {/* <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'text.secondary', mr: 2 }}>New on our platform?</Typography>
                 <Typography href='/register' component={LinkStyled}>
                   Create an account
@@ -372,7 +308,7 @@ const LoginPage = () => {
                 <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
                   <Icon icon='mdi:google' />
                 </IconButton>
-              </Box> */}
+              </Box>
             </form>
           </Box>
         </Box>
