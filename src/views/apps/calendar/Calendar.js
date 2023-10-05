@@ -176,12 +176,33 @@ const Calendar = props => {
   const [datePicker, setDatePicker] = useState('')
 
   // You should set the selectedPreviousMonth as needed
- console.log(month, "month")
+  console.log(month, "month")
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current?.getApi())
     }
   }, [calendarApi, setCalendarApi])
+
+  const handleClick = (info) => {
+    if (
+      userRole &&
+      userRole.userValidation &&
+      userRole.userValidation.rolesList &&
+      Array.isArray(userRole.userValidation.rolesList)
+    ) {
+      const rolesList = userRole.userValidation.rolesList;
+      console.log(rolesList, "rolelist")
+      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
+        const ev = blankEvent;
+        // const ev = { ...blankEvent }
+        ev.start = info.date;
+        console.log(ev.start, "ev")
+        ev.end = info.date;
+        dispatch(selectEvent(ev));
+        handleAddEventSidebar();
+      }
+    }
+  }
 
   const handleClickedEvent = (clickedEvent) => {
     if (userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin")) {
@@ -202,25 +223,7 @@ const Calendar = props => {
     }
   }
 
-  const handleClick = (info) => {
-    if (
-      userRole &&
-      userRole.userValidation &&
-      userRole.userValidation.rolesList &&
-      Array.isArray(userRole.userValidation.rolesList)
-    ) {
-      const rolesList = userRole.userValidation.rolesList;
-      
-      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
-        const ev = blankEvent;
-        // const ev = { ...blankEvent }
-        ev.start = info.date;
-        ev.end = info.date;
-        dispatch(selectEvent(ev));
-        handleAddEventSidebar();
-      }
-    }
-  }
+
 
   const handleMonthChange = payload => {
     console.log(payload, 'payload')
@@ -281,10 +284,20 @@ const Calendar = props => {
       // eslint-disable-next-line no-underscore-dangle
       const colorName =
         calendarsColor[calendarEvent._def.extendedProps.calendar]
-      return [
-        // Background Color
-        `bg-${colorName}`
-      ]
+      console.log('COLORNAME', colorName)
+      //  background: rgba($color_value, 0.12) !important;
+      // color: $color_value !important;
+      // if(colorName)
+      // `back-${colorName}`
+      if (colorName == 'primary') {
+        return ['back-info']
+      } else {
+
+        return [
+          // Background Color
+          'back-error'
+        ]
+      }
     },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
@@ -572,7 +585,7 @@ const Calendar = props => {
   const [formModalOpen, setFormModalOpen] = useState(false)
   // const [active, setActive] = useState("1");
   // const [selectedDate, setSelectedDate] = useState("");
-  const [halfDay, setHalfDay] = useState(false)
+  const [halfDay, setHalfDay] = useState(0)
   const [picker, setPicker] = useState([])
   const [leaves, setLeaves] = useState([])
 
@@ -587,9 +600,9 @@ const Calendar = props => {
   //   setHalfDay(e.target.checked);
   // };
 
-  const onChange = () => {
-    setHalfDay(!halfDay)
-  }
+  // const onChange = () => {
+  //   setHalfDay(!halfDay)
+  // }
   // Check Leave status
   // const handleSelection = (dates) => {
   //   // console.log(datePickerRef, dates)
@@ -768,13 +781,13 @@ const Calendar = props => {
   }
 
   // // set Half day
-  // const onChange = (e) => {
-  //   if (e.target.checked) {
-  //     setHalfDay("0")
-  //   } else {
-  //     setHalfDay("1")
-  //   }
-  // }
+  const onChange = (e) => {
+    if (e.target.checked) {
+      setHalfDay("0")
+    } else {
+      setHalfDay("1")
+    }
+  }
   const handleLeaveOpenDialog = () => {
     setLeaveDialogOPen(true)
   }
@@ -810,6 +823,58 @@ const Calendar = props => {
     const newPicker = [...picker]
     newPicker.splice(index, 1)
     setPicker(newPicker)
+  }
+
+  function leaveChildModal() {
+    const [childOpen, setChildOpen] = useState(false)
+    const handleChildOpen = () => {
+      setChildOpen(true)
+    }
+    const handleChildClose = () => {
+      setOpen(false)
+    }
+    const style = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 600,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      pt: 2,
+      px: 4,
+      pb: 3
+    }
+
+    return (
+      <div>
+        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleChildOpen}>Proceed</Button>
+        <Modal
+          open={childOpen}
+          onClose={handleChildClose}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+        >
+          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
+            <div>
+              <h2 id="child-modal-title">Leave Cancel </h2>
+              <p style={{ fontWeight: "lighter" }}>`Are you sure you want to cancel Leave on ${data}`</p>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+              
+                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
+                  Ok
+                </Button>
+                <Button variant="outlined" color="error" onClick={handleChildClose}>Cancle</Button>
+              
+              
+            </div>
+          </Box>
+        </Modal>
+      </div>
+    )
   }
   function ChildModal() {
     const [open, setOpen] = useState(false)
@@ -849,7 +914,7 @@ const Calendar = props => {
             </div>
             <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
               {picker.length > 0 ? (
-                <Button color="primary" onClick={() => handleSuccess()}>
+                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
                   Proceed
                 </Button>
               ) : (
@@ -1026,7 +1091,7 @@ const Calendar = props => {
                         </div>
                       ))}
                     </div>
-                    <Button variant='contained' style={{float:"right"}} color='primary' onClick={() => setFormModal(!formModal)}>
+                    <Button variant='contained' style={{ float: "right" }} color='primary' onClick={() => setFormModal(!formModal)}>
                       Close
                     </Button>
                   </Box>}

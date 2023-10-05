@@ -16,7 +16,7 @@ const navigation = () => {
         path: '/apps/ui_leave'
     },
     {
-      title: 'Table',
+      title: 'Documents',
       icon: 'tabler:table',
       path: '/storage/documents'
     },

@@ -48,6 +48,7 @@
     "cleave.js": "1.6.0",
     "clipboard-copy": "4.0.1",
     "clsx": "1.2.1",
+    "css-loader": "^6.8.1",
     "date-fns": "2.30.0",
     "draft-js": "0.11.7",
     "i18next": "22.4.15",
@@ -83,10 +84,14 @@
     "react-select": "^5.7.7",
     "reactstrap": "^9.2.0",
     "recharts": "2.5.0",
+    "sass": "^1.68.0",
+    "sass-loader": "^13.3.2",
+    "style-loader": "^3.3.3",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
     "sweetalert2": "^11.7.31",
     "sweetalert2-react-content": "^5.0.7",
+    "yarn": "^1.22.19",
     "yup": "1.1.1"
   },
   "devDependencies": {
