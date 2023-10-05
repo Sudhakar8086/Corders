@@ -8,7 +8,7 @@ const navigation = () => {
     {
       title: 'Schedule',
       icon: 'tabler:users',
-      path: '/apps/email'
+      path: '/apps/schedule'
     },
     {
         title: 'Leave Check',
@@ -19,6 +19,11 @@ const navigation = () => {
       title: 'Document',
       icon: 'tabler:table',
       path: '/storage/documents'
+    },
+    {
+      title: 'Change Password',
+      icon: 'tabler:password-user',
+      path: '/apps/change_password'
     }
   ]
 }

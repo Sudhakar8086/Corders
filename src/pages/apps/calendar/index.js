@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
 
+
 // ** FullCalendar & App Components Imports
 import Calendar from 'src/views/apps/calendar/Calendar'
 import SidebarLeft from 'src/views/apps/calendar/SidebarLeft'
@@ -25,28 +26,58 @@ import {
   updateEvent,
   handleSelectEvent,
   handleAllCalendars,
-  handleCalendarsUpdate
+  handleCalendarsUpdate,
+  selectEvent,
+  removeEvent
+
 } from 'src/store/apps/calendar'
 
+const blankEvent = {
+  title: '',
+  start: '',
+  end: '',
+  allDay: true,
+  url: '',
+  extendedProps: {
+    calendar: '',
+    title: ''
+  }
+}
+
+// ** CalendarColors
+// const calendarsColor = {
+//   Personal: 'error',
+//   Business: 'primary',
+//   Family: 'warning',
+//   Holiday: 'success',
+//   ETC: 'info'
+// }
 // ** CalendarColors
 const calendarsColor = {
-  Personal: 'error',
-  Business: 'primary',
-  Family: 'warning',
-  Holiday: 'success',
-  ETC: 'info'
+  Valley: 'primary',
+  'Quail Run': 'secondary',
+  'Copper Springs': 'success',
+  Oasis: 'danger',
+  'Destiny Springs': 'warning',
+  Zenith: 'info',
+  'Via Linda': 'primary',
+  'Copper East': 'primary'
 }
+
 
 const AppCalendar = () => {
   // ** States
   const [calendarApi, setCalendarApi] = useState(null)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState(false)
+  const [monthChange, setMonthChange] = useState()
+  const [addSidebarOpen, setAddSidebarOpen] = useState(false)
 
   // ** Hooks
   const { settings } = useSettings()
   const dispatch = useDispatch()
   const store = useSelector(state => state.calendar)
+  console.log('STORE', store)
 
   // ** Vars
   const leftSidebarWidth = 300
@@ -58,6 +89,13 @@ const AppCalendar = () => {
   }, [dispatch, store.selectedCalendars])
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
   const handleAddEventSidebarToggle = () => setAddEventSidebarOpen(!addEventSidebarOpen)
+
+  useEffect(() => {
+    dispatch(fetchEvents(store.selectedCalendars))
+  }, [monthChange])
+
+    // ** AddEventSidebar Toggle Function
+    const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
   return (
     <CalendarWrapper
@@ -80,6 +118,7 @@ const AppCalendar = () => {
         handleCalendarsUpdate={handleCalendarsUpdate}
         handleLeftSidebarToggle={handleLeftSidebarToggle}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
+        handleAddEventSidebar={handleAddEventSidebar}
       />
       <Box
         sx={{
@@ -100,9 +139,12 @@ const AppCalendar = () => {
           calendarApi={calendarApi}
           calendarsColor={calendarsColor}
           setCalendarApi={setCalendarApi}
+          selectEvent={selectEvent}
           handleSelectEvent={handleSelectEvent}
           handleLeftSidebarToggle={handleLeftSidebarToggle}
           handleAddEventSidebarToggle={handleAddEventSidebarToggle}
+          setMonthChange={setMonthChange}
+          handleAddEventSidebar={handleAddEventSidebar}
         />
       </Box>
       <AddEventSidebar
@@ -110,12 +152,13 @@ const AppCalendar = () => {
         dispatch={dispatch}
         addEvent={addEvent}
         updateEvent={updateEvent}
-        deleteEvent={deleteEvent}
+        removeEvent={removeEvent}
         calendarApi={calendarApi}
         drawerWidth={addEventSidebarWidth}
         handleSelectEvent={handleSelectEvent}
         addEventSidebarOpen={addEventSidebarOpen}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
+        handleAddEventSidebar={handleAddEventSidebar}
       />
     </CalendarWrapper>
   )
