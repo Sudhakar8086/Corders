@@ -78,6 +78,7 @@ const AddEventSidebar = props => {
     handleSelectEvent,
     addEventSidebarOpen,
     handleAddEventSidebarToggle,
+    calendarsColor,
     selectEvent
   } = props
 
@@ -249,11 +250,12 @@ const AddEventSidebar = props => {
   // ** Select Options
   const facility = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('facility')) : null
   const provider = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('provider')) : null
-
+  const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userData")) : null
+console.log(facility, "facility")
   const color = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'primary', 'primary']
   const facilityData = facility !== null ? facility.map((v, i) => ({ label: v.hospitalName, id: v.hospitalId, value: v.hospitalName, color: color[i] })) : null
   const providerData = provider !== null ? provider.map((v, i) => ({ label: v.firstName, id: v.userId, value: v.firstName, color: color[i] })) : null
-
+console.log(facilityData, "facilitydata")
   //API 
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
   const LeaveDetails = process.env.NEXT_PUBLIC_LEAVE_DETAILS
@@ -261,6 +263,7 @@ const AddEventSidebar = props => {
   // ** Set sidebar fields
   const handleSelectedEvent = async () => {
     if (!isObjEmpty(selectedEvent)) {
+      console.log(selectEvent, "selectedEvent")
       const calendar = selectedEvent.extendedProps.calendar
       const resolveLabel = () => {
         if (calendar.length === undefined) {
@@ -346,6 +349,9 @@ const AddEventSidebar = props => {
     })
     setLeaves(resp.data.providerleavesCheckResponse.providerleaveCheckList)
   }
+
+
+  
   // ** Reset Input Values on Close
   const handleResetInputValues = () => {
     dispatch(selectEvent({}))
@@ -581,6 +587,17 @@ const AddEventSidebar = props => {
       })
     }
   }
+
+
+  useEffect(() => {
+    // This code will run when the component mounts
+    handleSelectedEvent();
+
+    // This code will run when the component unmounts
+    return () => {
+      handleResetInputValues();
+    };
+  }, []);
   const isObjEmpty = obj => Object.keys(obj).length === 0
   // ** Event Action buttons
 
@@ -636,8 +653,8 @@ const AddEventSidebar = props => {
       // onClose={handleSidebarClose}
       className='modal-dialog-centered'
       toggle={handleAddEventSidebarToggle}
-      onClosed={handleResetInputValues}
-      onOpened={handleSelectedEvent}
+      // onClosed={handleResetInputValues}
+      // onOpened={handleSelectedEvent}
     >
       <Box sx={style}>
         <div >
@@ -647,7 +664,7 @@ const AddEventSidebar = props => {
           // style={{ backgroundColor: '#F8F8F8',  borderRadius: '5px', margin:"4px" }}
           >
             {store.selectedEvent !== null && store.selectedEvent.title && store.selectedEvent.title.length ? 'Update Event' : 'Add Event'}
-            <Icon onClick={handleAddEventSidebarToggle} icon='tabler:x' fontSize={20} style={{ color: '#7367F0', cursor:"poniter" }} />
+            <Icon onClick={handleAddEventSidebarToggle} icon='tabler:x' fontSize={20} style={{ color: '#7367F0', cursor: 'pointer' }} />
           </div>
           {/* <div
             style={{

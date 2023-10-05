@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
+// import '@styles/react/apps/app-calendar.scss'
 
 
 // ** FullCalendar & App Components Imports
@@ -67,12 +68,24 @@ const blankEvent = {
 //   Holiday: 'success',
 //   ETC: 'info'
 // }
+
+const getAvatarStyles = (skinColor) => {
+  let avatarStyles
+  avatarStyles = {
+    color: `${skinColor} !important`,
+    backgroundColor: `rgba(${skinColor}, 0.12) !important`
+    // background: rgba($color_value, 0.12) !important;
+  }
+
+  return avatarStyles
+}
+
 // ** CalendarColors
 const calendarsColor = {
   Valley: 'primary',
   'Quail Run': 'secondary',
   'Copper Springs': 'success',
-  Oasis: 'danger',
+  Oasis: 'error',
   'Destiny Springs': 'warning',
   Zenith: 'info',
   'Via Linda': 'primary',
@@ -131,7 +144,7 @@ const AppCalendar = () => {
         mdAbove={mdAbove}
         dispatch={dispatch}
         calendarApi={calendarApi}
-        calendarsColor={calendarsColor}
+        // calendarsColor={calendarsColor}
         leftSidebarOpen={leftSidebarOpen}
         leftSidebarWidth={leftSidebarWidth}
         handleSelectEvent={handleSelectEvent}
