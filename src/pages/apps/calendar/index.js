@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
+// import '@styles/react/apps/app-calendar.scss'
 
 
 // ** FullCalendar & App Components Imports
@@ -28,21 +29,36 @@ import {
   handleAllCalendars,
   handleCalendarsUpdate,
   selectEvent,
-  removeEvent
+  removeEvent,
+   updateFilter, updateAllFilterTitle, updateFiltertitle, updateAllFilters
 
 } from 'src/store/apps/calendar'
 
+// const blankEvent = {
+//   title: '',
+//   start: '',
+//   end: '',
+//   allDay: true,
+//   url: '',
+//   extendedProps: {
+//     calendar: '',
+//     title: ''
+//   }
+// }
 const blankEvent = {
   title: '',
   start: '',
   end: '',
-  allDay: true,
+  allDay: false,
   url: '',
   extendedProps: {
     calendar: '',
-    title: ''
+    guests: [],
+    location: '',
+    description: ''
   }
 }
+
 
 // ** CalendarColors
 // const calendarsColor = {
@@ -52,12 +68,24 @@ const blankEvent = {
 //   Holiday: 'success',
 //   ETC: 'info'
 // }
+
+const getAvatarStyles = (skinColor) => {
+  let avatarStyles
+  avatarStyles = {
+    color: `${skinColor} !important`,
+    backgroundColor: `rgba(${skinColor}, 0.12) !important`
+    // background: rgba($color_value, 0.12) !important;
+  }
+
+  return avatarStyles
+}
+
 // ** CalendarColors
 const calendarsColor = {
   Valley: 'primary',
   'Quail Run': 'secondary',
   'Copper Springs': 'success',
-  Oasis: 'danger',
+  Oasis: 'error',
   'Destiny Springs': 'warning',
   Zenith: 'info',
   'Via Linda': 'primary',
@@ -94,8 +122,14 @@ const AppCalendar = () => {
     dispatch(fetchEvents(store.selectedCalendars))
   }, [monthChange])
 
-    // ** AddEventSidebar Toggle Function
-    const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
+   // ** refetchEvents
+   const refetchEvents = () => {
+    if (calendarApi !== null) {
+      calendarApi.refetchEvents()
+    }
+  }
+  // ** AddEventSidebar Toggle Function
+  const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
   return (
     <CalendarWrapper
@@ -110,7 +144,7 @@ const AppCalendar = () => {
         mdAbove={mdAbove}
         dispatch={dispatch}
         calendarApi={calendarApi}
-        calendarsColor={calendarsColor}
+        // calendarsColor={calendarsColor}
         leftSidebarOpen={leftSidebarOpen}
         leftSidebarWidth={leftSidebarWidth}
         handleSelectEvent={handleSelectEvent}
@@ -119,7 +153,13 @@ const AppCalendar = () => {
         handleLeftSidebarToggle={handleLeftSidebarToggle}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         handleAddEventSidebar={handleAddEventSidebar}
+        updateFilter={updateFilter}
+        updateFiltertitle={updateFiltertitle}
+        // toggleSidebar={toggleSidebar}
+        updateAllFilters={updateAllFilters}
+        updateAllFilterTitle={updateAllFilterTitle}
       />
+      
       <Box
         sx={{
           p: 6,
@@ -136,6 +176,7 @@ const AppCalendar = () => {
           dispatch={dispatch}
           direction={direction}
           updateEvent={updateEvent}
+          blankEvent={blankEvent}
           calendarApi={calendarApi}
           calendarsColor={calendarsColor}
           setCalendarApi={setCalendarApi}
@@ -159,6 +200,10 @@ const AppCalendar = () => {
         addEventSidebarOpen={addEventSidebarOpen}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         handleAddEventSidebar={handleAddEventSidebar}
+        selectEvent={selectEvent}
+        refetchEvents={refetchEvents}
+        calendarsColor={calendarsColor}
+        fetchEvents = { fetchEvents }
       />
     </CalendarWrapper>
   )
