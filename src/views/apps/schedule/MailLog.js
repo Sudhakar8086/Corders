@@ -707,7 +707,13 @@ const MailLog = props => {
                     selected={startDate}
                     onChange={date => setStartDate(date)}
                     customInput={
-                      <TextField {...params} label='Select Start Date' placeholder='Select Start Date' size='small' />
+                      <TextField
+                        {...params}
+                        label='Select Start Date'
+                        placeholder='Select Start Date'
+                        size='small'
+                        style={{ width: '90%' }}
+                      />
                     }
                     popperPlacement='bottom'
                     dateFormat='dd MMMM, yyyy' // Set the custom date format
@@ -728,7 +734,7 @@ const MailLog = props => {
                         label='Select End Date'
                         placeholder='Select End Date'
                         size='small'
-                        style={{ float: 'right' }}
+                        style={{ float: 'right', width: '90%' }}
                       />
                     }
                     popperPlacement='bottom'
