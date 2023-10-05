@@ -8,6 +8,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import Icon from 'src/@core/components/icon'
+import AddDocumentPopup from '../documents/AddDocumentPopup';
+
 const icons=[
   'mdi:file-outline',
   'heroicons:folder-20-solid',
@@ -24,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     color: theme.palette.common.white,
     backgroundColor: theme.palette.common.black,
-    minWidth: '590px', 
+    minWidth: '580px', 
     flex: '20 30 auto',
   },
   [`&.${tableCellClasses.body}`]: {
@@ -43,10 +45,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
+
 const MUITable = () => {
   const [showSpecialRows, setShowSpecialRows] = useState(false);
   const [showCoderDocumentSystem, setShowCoderDocumentSystem] = useState(false);
   const [showAdditionalRow, setShowAdditionalRow] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const togglePopup = () => { 
+    setShowPopup(!showPopup);
+  };
+
   const handleBackClick = () => {
     setShowSpecialRows(false);
     setShowCoderDocumentSystem(false);
@@ -164,20 +173,20 @@ const MUITable = () => {
   
   return (
     <>
-   
+   {showSpecialRows && (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-      {showSpecialRows && (
+      
         <div onClick={handleBackClick} style={{ cursor: 'pointer', marginRight: '10px' }}>
           <Icon icon="ci:chevron-left-duo" />
           Back
         </div>
-      )}
+    
 
 <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
 |<Icon icon="ci:house-01" />
         Home
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+      <div  onClick={togglePopup} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
        |<Icon icon="mdi:application-edit-outline" />
         <div style={{ marginLeft: '5px' }}>Add Document</div>
       </div>
@@ -186,6 +195,7 @@ const MUITable = () => {
         <div style={{ marginLeft: '5px' }}>Add Directory</div>
       </div>
       </div>
+        )}
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
@@ -275,6 +285,7 @@ const MUITable = () => {
         </TableBody>
       </Table>
     </TableContainer>
+    {showPopup && <AddDocumentPopup />}
     </>
   );
 };
