@@ -18,6 +18,8 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
 import screen from '../../../public/images/pages/logo.jpeg'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
@@ -32,12 +34,15 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+import { Auth, Amplify} from 'aws-amplify'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
+import awsExports from '../../../aws-exports'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
-
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -88,8 +93,7 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@vuexy.com'
+
 }
 
 const LoginPage = () => {
@@ -97,12 +101,14 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
+  Amplify.configure(awsExports)
   const auth = useAuth()
   const theme = useTheme()
+  const router = useRouter()
   const bgColors = useBgColor()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
-
+  const MySwal = withReactContent(Swal)
   // ** Vars
   const { skin } = settings
 
@@ -116,9 +122,37 @@ const LoginPage = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-
-  const onSubmit = data => {
+ 
+  const validate = async (email, password) => {
+    try {
+      const user = await Auth.signIn(email, password)
+      if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        router.replace('/change-password')
+        // navigate('/change-password', { state: { username: email, Password: password } })
+      }
+      return user
+  } catch (error) {  
+    console.log(error)
+      MySwal.fire({
+        title: 'Error!',
+        text:error.message,
+        icon: 'error',
+        customClass: {
+          confirmButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+      })
+      if (String(error).includes("UserNotConfirmedException") || String(error).includes("PasswordResetRequiredException")) {
+        // navigate('/forgot-password')
+        router.push('/forgot-password')
+      }
+      return 'Invalid'
+  }
+  }
+  const onSubmit = async (data) => {
     const { email, password } = data
+    const cognito = await validate(email, password)
+    localStorage.setItem('userCognito', JSON.stringify(cognito.signInUserSession))
     auth.login({ email, password, rememberMe }, () => {
       setError('email', {
         type: 'manual',

@@ -10,30 +10,30 @@ const themeConfig = {
   layout: 'vertical' /* vertical | horizontal */,
   mode: 'light' /* light | dark | semi-dark /*! Note: semi-dark value will only work for Vertical Layout */,
   direction: 'ltr' /* ltr | rtl */,
-  skin: 'bordered' /* default | bordered */,
-  contentWidth: 'boxed' /* full | boxed */,
+  skin: 'default' /* default | bordered */,
+  contentWidth: 'full' /* full | boxed */,
   footer: 'static' /* fixed | static | hidden */,
   // ** Routing Configs
-  routingLoader: false /* true | false */,
+  routingLoader: true /* true | false */,
   // ** Navigation (Menu) Configs
   navHidden: false /* true | false */,
   menuTextTruncate: true /* true | false */,
-  navSubItemIcon: 'tabler:circle' /* Icon */,
-  verticalNavToggleType: 'accordion' /* accordion | collapse /*! Note: This is for Vertical navigation menu only */,
-  navCollapsed: false /* true | false /*! Note: This is for Vertical navigation menu only */,
-  navigationSize: 280 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
+  navSubItemIcon: 'mi:circle' /* Icon */,
+  verticalNavToggleType: 'collapse' /* accordion | collapse /*! Note: This is for Vertical navigation menu only */,
+  navCollapsed: true /* true | false /*! Note: This is for Vertical navigation menu only */,
+  navigationSize: 300 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
   collapsedNavigationSize: 90 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
-  afterVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
-  beforeVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
+  afterVerticalNavMenuContentPosition: 'static' /* fixed | static */,
+  beforeVerticalNavMenuContentPosition: 'static' /* fixed | static */,
   horizontalMenuToggle: 'hover' /* click | hover /*! Note: This is for Horizontal navigation menu only */,
   horizontalMenuAnimation: true /* true | false */,
   // ** AppBar Configs
   appBar: 'fixed' /* fixed | static | hidden /*! Note: hidden value will only work for Vertical Layout */,
-  appBarBlur: true /* true | false */,
+  appBarBlur: false /* true | false */,
   // ** Other Configs
-  responsiveFontSizes: true /* true | false */,
-  disableRipple: true /* true | false */,
-  disableCustomizer: true /* true | false */,
+  responsiveFontSizes: false /* true | false */,
+  disableRipple: false /* true | false */,
+  disableCustomizer: false /* true | false */,
   toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */
 }
 
