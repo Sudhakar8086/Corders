@@ -94,7 +94,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const ResetPasswordV2 = () => {
   // ** States
   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // ** Hooks
   const theme = useTheme()
@@ -113,7 +112,6 @@ const ResetPasswordV2 = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-
 
 
 const newimageSource = 'auth-v2-login-illustration'
@@ -214,19 +212,20 @@ const newimageSource = 'auth-v2-login-illustration'
               />
             </svg> */}
              <Box sx={{ my: 6 }}>
-              <Typography variant='h3' sx={{ mb: 1.5 }}>
-                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
+              <Typography variant='h3' sx={{ mb: 0.5 }}>
+                {/* {`Welcome to ${themeConfig.templateName}! 👋🏻`} */}
+                Reset Password 
               </Typography>
               {/* <Typography sx={{ color: 'text.secondary' }}>
                 Please sign-in to your account and start the adventure
               </Typography> */}
             </Box>
             <Box sx={{ my: 6 }}>
-              <Typography variant='h3' sx={{ mb: 1.5 }}>
-                Reset Your Password 🔒
+              <Typography variant='h6' sx={{ mb: 1.5 }}>
+               Set New Password
               </Typography>
               {/* <Typography sx={{ display: 'flex' }}>
-                for{' '}
+                for{' '} 🔒
                 <Typography component='span' sx={{ ml: 1, fontWeight: 500 }}>
                   john.doe@email.com
                 </Typography>
@@ -271,9 +270,9 @@ const newimageSource = 'auth-v2-login-illustration'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='············'
-                      error={Boolean(errors.email)}
-                      {...(errors.email && { helperText: errors.email.message })}
+                      placeholder='john@example.com'
+                      // error={Boolean(errors.email)}
+                      // {...(errors.email && { helperText: errors.email.message })}
                     />
                   )}
                 />
@@ -303,7 +302,89 @@ const newimageSource = 'auth-v2-login-illustration'
                   )
                 }}
               /> */}
-              <Box sx={{ mb: 1.5 }}>
+
+              <Box sx={{ mb: 4 }}>
+                <Controller
+                  name='code'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      autoFocus
+                      label='Code'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder='123456'
+                      error={Boolean(errors.code)}
+                      {...(errors.code && { helperText: errors.code.message })}
+                    />
+                  )}
+                />
+              </Box>
+              {/* <CustomTextField
+                fullWidth
+                label='Confirm Password'
+                placeholder='············'
+                sx={{ display: 'flex', mb: 4 }}
+                value={values.confirmNewPassword}
+                id='auth-reset-password-v2-confirm-password'
+                type={values.showConfirmNewPassword ? 'text' : 'password'}
+                onChange={handleConfirmNewPasswordChange('confirmNewPassword')}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onMouseDown={e => e.preventDefault()}
+                        aria-label='toggle password visibility'
+                        onClick={handleClickShowConfirmNewPassword}
+                      >
+                        <Icon
+                          fontSize='1.25rem'
+                          icon={values.showConfirmNewPassword ? 'tabler:eye' : 'tabler:eye-off'}
+                        />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              /> */}
+              {/* <Box sx={{ mb: 4.5 }}>
+                <Controller
+                  name='confirmPassword'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <CustomTextField
+                      fullWidth
+                      value={value}
+                      onBlur={onBlur}
+                      label='Confirm Password'
+                      onChange={onChange}
+                      placeholder='············'
+                      id='auth-login-v2-password'
+                      error={Boolean(errors.confirmPassword)}
+                      {...(errors.confirmPassword && { helperText: errors.confirmPassword.message })}
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onMouseDown={e => e.preventDefault()}
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                              <Icon fontSize='1.25rem' icon={showConfirmPassword ? 'tabler:eye' : 'tabler:eye-off'} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Box> */}
+             <Box sx={{ mb: 4.5 }}>
                 <Controller
                   name='password'
                   control={control}
@@ -337,69 +418,8 @@ const newimageSource = 'auth-v2-login-illustration'
                   )}
                 />
               </Box>
-              {/* <CustomTextField
-                fullWidth
-                label='Confirm Password'
-                placeholder='············'
-                sx={{ display: 'flex', mb: 4 }}
-                value={values.confirmNewPassword}
-                id='auth-reset-password-v2-confirm-password'
-                type={values.showConfirmNewPassword ? 'text' : 'password'}
-                onChange={handleConfirmNewPasswordChange('confirmNewPassword')}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onMouseDown={e => e.preventDefault()}
-                        aria-label='toggle password visibility'
-                        onClick={handleClickShowConfirmNewPassword}
-                      >
-                        <Icon
-                          fontSize='1.25rem'
-                          icon={values.showConfirmNewPassword ? 'tabler:eye' : 'tabler:eye-off'}
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              /> */}
-              <Box sx={{ mb: 4.5 }}>
-                <Controller
-                  name='confirmPassword'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <CustomTextField
-                      fullWidth
-                      value={value}
-                      onBlur={onBlur}
-                      label='Confirm Password'
-                      onChange={onChange}
-                      placeholder='············'
-                      id='auth-login-v2-password'
-                      error={Boolean(errors.confirmPassword)}
-                      {...(errors.confirmPassword && { helperText: errors.confirmPassword.message })}
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton
-                              edge='end'
-                              onMouseDown={e => e.preventDefault()}
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                              <Icon fontSize='1.25rem' icon={showConfirmPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                            </IconButton>
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-              </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
-                Change Password
+                Submit New Password
               </Button>
               <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', '& svg': { mr: 1 } }}>
                 <Typography component={LinkStyled} href='/login'>

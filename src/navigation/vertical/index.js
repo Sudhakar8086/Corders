@@ -24,6 +24,16 @@ const navigation = () => {
       title: 'Change Password',
       icon: 'tabler:password-user',
       path: '/apps/change_password'
+    },
+    {
+      title: 'New Password',
+      icon: 'tabler:shield-lock-filled',
+      path: '/apps/new-password'
+    },
+    {
+      title: 'Forgot Password',
+      icon: 'tabler:lock',
+      path: '/apps/forgot_password'
     }
   ]
 }
