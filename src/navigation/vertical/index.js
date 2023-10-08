@@ -1,3 +1,4 @@
+
 const navigation = () => {
   return [
     {
@@ -19,13 +20,9 @@ const navigation = () => {
       title: 'Documents',
       icon: 'tabler:table',
       path: '/storage/documents'
-    },
-    {
-      title: 'Change Password',
-      icon: 'tabler:password-user',
-      path: '/apps/change_password'
     }
   ]
 }
+
 
 export default navigation
