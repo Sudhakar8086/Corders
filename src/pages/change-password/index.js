@@ -104,6 +104,7 @@ const ChangePasswordV2 = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+<<<<<<< HEAD:src/pages/change-password/index.js
   const onSubmit = async (data) => {
     console.log(data)
     if (data.password === data.confirmPassword) {
@@ -133,6 +134,11 @@ const ChangePasswordV2 = () => {
       })
      }
   }
+=======
+
+
+
+>>>>>>> 737b4e417eac0c1e6447aade95d481964d099d5d:src/pages/apps/change_password/index.js
 const newimageSource = 'auth-v2-login-illustration'
 
   return (
@@ -298,7 +304,7 @@ const newimageSource = 'auth-v2-login-illustration'
                 />
               </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
-                Set New Password
+                Change Password
               </Button>
               <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', '& svg': { mr: 1 } }}>
                 <Typography component={LinkStyled} href='/login'>

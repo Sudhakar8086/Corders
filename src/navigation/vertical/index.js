@@ -20,7 +20,12 @@ const navigation = () => {
       title: 'Documents',
       icon: 'tabler:table',
       path: '/storage/documents'
-    }
+    },
+    {
+      title: 'New Password',
+      icon: 'tabler:shield-lock-filled',
+      path: '/apps/new-password'
+    },
   ]
 }
 
