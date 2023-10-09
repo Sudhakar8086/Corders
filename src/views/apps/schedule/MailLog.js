@@ -626,7 +626,8 @@ const MailLog = props => {
                             <button onClick={increaseMonth}>{'>'}</button>
                           </div>
                         )}
-                        minDate={today}
+                        //minDate={today}
+                        minDate={startDateModal}
                       />
                     </div>
                     <div style={{ borderTop: '1px solid #ebeae8' }}></div>
@@ -746,6 +747,7 @@ const MailLog = props => {
                         <button onClick={increaseMonth}>{'>'}</button>
                       </div>
                     )}
+                    minDate={startDate}
                   />
                 </Grid>
 
