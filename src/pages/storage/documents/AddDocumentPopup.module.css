@@ -1,0 +1,81 @@
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 800px; /* Increase the width as needed */
+  height: 500px; /* Increase the height as needed */
+  }
+  
+  .popup-content {
+    text-align: center;
+  }
+  
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .popup-body {
+    margin: 20px 0;
+  }
+  
+  .popup-footer {
+    text-align: right;
+  }
+  .file-upload {
+    flex: 1;
+    background-color: white; /* Set background color for file upload area */
+    border: 1px solid #ccc; /* Add border for separation */
+    padding: 20px;
+    margin: 10px;
+  }
+  
+.drop-zone {
+  border: 2px dashed #888;
+  border-radius: 4px;
+  text-align: center;
+  padding: 20px;
+}
+
+.drop-zone input {
+  display: none;
+}
+
+.drop-zone p {
+  margin: 0;
+}
+
+.popup-body .file-upload:first-child {
+  margin-right: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end; 
+  margin-top: 100px;
+}
+
+.button-container button {
+  margin-left: 10px; 
+}
+.button-container button,
+.close-popup {
+  cursor: pointer;
+  transition: background-color 0.3s; /* Add transition for smooth effect */
+ 
+}
+
+.button-container button:hover,
+.close-popup:hover {
+  background-color: #8A2BE2;
+  color: white; /* Optionally set text color to white on hover */
+}
+.close-popup{
+  height: 20px;
+}

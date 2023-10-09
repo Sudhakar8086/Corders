@@ -22,8 +22,8 @@ const FallbackSpinner = ({ sx }) => {
             src={screen}
             alt='logo'
             style={{
-              width: '82px',
-              height: '56px'
+              width: 'auto',
+              height: 'auto'
             }}
             priority 
           />

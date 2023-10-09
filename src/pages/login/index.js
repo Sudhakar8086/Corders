@@ -37,7 +37,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { Auth, Amplify} from 'aws-amplify'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
-import awsExports from '../../../aws-exports'
+import awsExports from '../../aws-exports'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -127,7 +127,13 @@ const LoginPage = () => {
     try {
       const user = await Auth.signIn(email, password)
       if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-        router.replace('/change-password')
+        router.replace({
+          pathname: '/change-password',
+          query: {
+            username: email, // Replace with the actual username
+            password: password, // Replace with the actual password
+          },
+        });
         // navigate('/change-password', { state: { username: email, Password: password } })
       }
       return user
@@ -256,14 +262,7 @@ const LoginPage = () => {
                 Please sign-in to your account and start the adventure
               </Typography>
             </Box>
-            {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-              <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
-                Admin: <strong>admin@vuexy.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='body2' sx={{ color: 'primary.main' }}>
-                Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
-              </Typography>
-            </Alert> */}
+       
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
@@ -278,7 +277,7 @@ const LoginPage = () => {
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='admin@vuexy.com'
+                      placeholder='admin@gmail.com'
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
                     />
@@ -384,3 +383,9 @@ LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
 LoginPage.guestGuard = true
 
 export default LoginPage
+
+
+
+
+
+

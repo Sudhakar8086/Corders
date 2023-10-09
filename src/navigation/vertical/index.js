@@ -1,3 +1,4 @@
+
 const navigation = () => {
   return [
     {
@@ -21,11 +22,12 @@ const navigation = () => {
       path: '/storage/documents'
     },
     {
-      title: 'Change Password',
-      icon: 'tabler:password-user',
-      path: '/apps/change_password'
-    }
+      title: 'New Password',
+      icon: 'tabler:shield-lock-filled',
+      path: '/apps/new-password'
+    },
   ]
 }
+
 
 export default navigation

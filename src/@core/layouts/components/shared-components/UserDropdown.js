@@ -13,7 +13,7 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
-
+import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -79,12 +79,12 @@ const UserDropdown = props => {
     logout()
     handleDropdownClose()
   }
-
+ const userData = JSON.parse(localStorage.getItem('userData'))
   return (
     <Fragment>
        <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>John Doe</Typography>
-              <Typography variant='body2'>Admin</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{(userData && userData.userName) || ''}</Typography>
+              <Typography variant='body2'>{(userData && userData.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')) ? 'Admin' : 'Provider'}</Typography>
             </Box>
       <Badge
         overlap='circular'
@@ -96,12 +96,9 @@ const UserDropdown = props => {
           horizontal: 'right'
         }}
       >
-        <Avatar
-          alt='John Doe'
-          src='/images/avatars/1.png'
-          onClick={handleDropdownOpen}
-          sx={{ width: 38, height: 38 }}
-        />
+         <CustomAvatar skin='light-static' color='error'>
+         {(userData && userData.userName.charAt(0).toUpperCase()) || ''}
+      </CustomAvatar>
         
       </Badge>
       <Menu
