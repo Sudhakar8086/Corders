@@ -40,6 +40,7 @@ import { XLg } from 'react-bootstrap-icons'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import MultiDatePicker from 'react-multi-date-picker'
+import Icon from 'src/@core/components/icon'
 // import {
 //   Dialog,
 //   DialogTitle,
@@ -152,6 +153,7 @@ const Calendar = props => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [nestedModal, setNestedModal] = useState(false)
   const [responseData, setResponseData] = useState({
     data: {
       providersDetails: []
@@ -176,46 +178,49 @@ const Calendar = props => {
   const [datePicker, setDatePicker] = useState('')
 
   // You should set the selectedPreviousMonth as needed
-  console.log(month, "month")
+  console.log(month, 'month')
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current?.getApi())
     }
   }, [calendarApi, setCalendarApi])
 
-  const handleClick = (info) => {
+  const handleClick = info => {
     if (
       userRole &&
       userRole.userValidation &&
       userRole.userValidation.rolesList &&
       Array.isArray(userRole.userValidation.rolesList)
     ) {
-      const rolesList = userRole.userValidation.rolesList;
-      console.log(rolesList, "rolelist")
-      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
-        const ev = blankEvent;
+      const rolesList = userRole.userValidation.rolesList
+      console.log(rolesList, 'rolelist')
+      if (rolesList.map(dat => dat.roleName).includes('Admin')) {
+        const ev = blankEvent
         // const ev = { ...blankEvent }
-        ev.start = info.date;
-        console.log(ev.start, "ev")
-        ev.end = info.date;
-        dispatch(selectEvent(ev));
-        handleAddEventSidebar();
+        ev.start = info.date
+        console.log(ev.start, 'ev')
+        ev.end = info.date
+        dispatch(selectEvent(ev))
+        handleAddEventSidebar()
       }
     }
   }
 
-  const handleClickedEvent = (clickedEvent) => {
-    if (userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin")) {
-      if ((new Date(clickedEvent.start) > new Date()) || (new Date(clickedEvent.start).getDate() === new Date().getDate())) {
+  const handleClickedEvent = clickedEvent => {
+    if (userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')) {
+      if (
+        new Date(clickedEvent.start) > new Date() ||
+        new Date(clickedEvent.start).getDate() === new Date().getDate()
+      ) {
         dispatch(selectEvent(clickedEvent))
         handleAddEventSidebarToggle()
       } else {
         return MySwal.fire({
           title: `Not Accessible`,
           text: `Date before current date is not been Changed`,
-          icon: "info",
+          icon: 'info',
           customClass: {
-            confirmButton: "btn btn-success"
+            confirmButton: 'btn btn-success'
           },
           buttonsStyling: false
         })
@@ -223,17 +228,13 @@ const Calendar = props => {
     }
   }
 
-
-
   const handleMonthChange = payload => {
     console.log(payload, 'payload')
     const today = new Date()
     const date = new Date(payload.endStr)
     if (today.getMonth() + 1 !== date.getMonth()) {
       localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonthChange(
-        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}`
-      )
+      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
       setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
       setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate()}`)
     }
@@ -246,20 +247,26 @@ const Calendar = props => {
     // }
   }
 
-  const newArr = store.events.map((obj) => {
+  const newArr = store.events.map(obj => {
     return {
       ...obj,
-      title: obj.Leave === "" ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
+      title: obj.Leave === '' ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
     }
   })
-  const AdminArrr = store.events.map((obj) => {
+  const AdminArrr = store.events.map(obj => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
   console.log(store)
   // ** calendarOptions(Props)
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
-    events: userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin") ? AdminArrr.length ? AdminArrr : [] : newArr.length ? newArr : [],
+    events: userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')
+      ? AdminArrr.length
+        ? AdminArrr
+        : []
+      : newArr.length
+      ? newArr
+      : [],
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
@@ -283,8 +290,7 @@ const Calendar = props => {
     // },
     eventClassNames({ event: calendarEvent }) {
       // eslint-disable-next-line no-underscore-dangle
-      const colorName =
-        calendarsColor[calendarEvent._def.extendedProps.calendar]
+      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
       console.log('COLORNAME', colorName)
       //  background: rgba($color_value, 0.12) !important;
       // color: $color_value !important;
@@ -293,7 +299,6 @@ const Calendar = props => {
       if (colorName == 'primary') {
         return ['back-info']
       } else {
-
         return [
           // Background Color
           'back-error'
@@ -635,6 +640,34 @@ const Calendar = props => {
   //       }
   //     })
   // }
+  // const handleSelection = dates => {
+  //   axios
+  //     .post(LeaveStatusCheck, {
+  //       requestType: 'LeaveStatusCheck',
+  //       date: dates.toString(),
+  //       providerId: userRole.userId
+  //     })
+  //     .then(res => {
+  //       if (
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
+  //       ) {
+  //         setPicker(dates)
+  //         console.log(setPicker(dates), 'setPicker(dates)')
+  //       } else {
+  //         MySwal.fire({
+  //           icon: 'error',
+  //           title: 'Already Applied!',
+  //           text: 'Your already applied for leaves this days!',
+  //           customClass: {
+  //             confirmButton: 'btn btn-success'
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
+
   const handleSelection = dates => {
     axios
       .post(LeaveStatusCheck, {
@@ -651,17 +684,23 @@ const Calendar = props => {
           setPicker(dates)
           console.log(setPicker(dates), 'setPicker(dates)')
         } else {
-          MySwal.fire({
-            icon: 'error',
-            title: 'Already Applied!',
-            text: 'Your already applied for leaves this days!',
-            customClass: {
-              confirmButton: 'btn btn-success'
-            }
-          })
+          // Open SweetAlert dialog here, after the existing Dialog is closed.
+          // setFormModal(false) // Close the existing Dialog first
+          // setTimeout(() => {
+          //   MySwal.fire({
+          //     icon: 'error',
+          //     title: 'Already Applied!',
+          //     text: 'You have already applied for leaves on these days!',
+          //     customClass: {
+          //       confirmButton: 'btn btn-success'
+          //     }
+          //   })
+          // }, 100)
+          setNestedModal(true)
         }
       })
   }
+
   // Leave Apply
   // const handleSuccess = () => {
   //   axios.post(LeaveStatusCheck, {
@@ -688,14 +727,15 @@ const Calendar = props => {
   //   })
   // }
   const handleSuccess = () => {
-    axios.post(LeaveStatusCheck, {
-      requestType: 'LeaveApply',
-      isHalfday: halfDay,
-      date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
-      providerId: userRole.userId
-    })
-      .then((res) => console.log(res, "res from handlesuccess"))
-      .catch((err) => console.log(err, "err from handlesuccess"))
+    axios
+      .post(LeaveStatusCheck, {
+        requestType: 'LeaveApply',
+        isHalfday: halfDay,
+        date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
+        providerId: userRole.userId
+      })
+      .then(res => console.log(res, 'res from handlesuccess'))
+      .catch(err => console.log(err, 'err from handlesuccess'))
   }
 
   const removeElement = index => {
@@ -782,11 +822,11 @@ const Calendar = props => {
   }
 
   // // set Half day
-  const onChange = (e) => {
+  const onChange = e => {
     if (e.target.checked) {
-      setHalfDay("0")
+      setHalfDay('0')
     } else {
-      setHalfDay("1")
+      setHalfDay('1')
     }
   }
   const handleLeaveOpenDialog = () => {
@@ -850,27 +890,33 @@ const Calendar = props => {
 
     return (
       <div>
-        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleChildOpen}>Proceed</Button>
+        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleChildOpen}>
+          Proceed
+        </Button>
         <Modal
           open={childOpen}
           onClose={handleChildClose}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
+          aria-labelledby='child-modal-title'
+          aria-describedby='child-modal-description'
         >
-          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
-            <div>
-              <h2 id="child-modal-title">Leave Cancel </h2>
-              <p style={{ fontWeight: "lighter" }}>`Are you sure you want to cancel Leave on ${data}`</p>
+          <Box
+            sx={{ ...style, width: 450 }}
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div style={{ marginTop: '13px' }}>
+              <Info style={info()} />
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
-              
-                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
-                  Ok
-                </Button>
-                <Button variant="outlined" color="error" onClick={handleChildClose}>Cancle</Button>
-              
-              
+            <div>
+              <h2 id='child-modal-title'>Leave Cancel </h2>
+              <p style={{ fontWeight: 'lighter' }}>`Are you sure you want to cancel Leave on ${data}`</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
+              <Button color='primary' variant='contained' onClick={() => handleSuccess()}>
+                Ok
+              </Button>
+              <Button variant='outlined' color='error' onClick={handleChildClose}>
+                Cancle
+              </Button>
             </div>
           </Box>
         </Modal>
@@ -900,30 +946,39 @@ const Calendar = props => {
     }
     return (
       <div>
-        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleOpen}>Proceed</Button>
+        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleOpen}>
+          Proceed
+        </Button>
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
+          aria-labelledby='child-modal-title'
+          aria-describedby='child-modal-description'
         >
-          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
-            <div>
-              <h2 id="child-modal-title">Are you Sure ? </h2>
-              <p style={{ fontWeight: "lighter" }}> You want to take leave!</p>
+          <Box
+            sx={{ ...style, width: 450 }}
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div style={{ marginTop: '13px' }}>
+              <Info style={info()} />
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+            <div>
+              <h2 id='child-modal-title'>Are you Sure ? </h2>
+              <p style={{ fontWeight: 'lighter' }}> You want to take leave!</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
               {picker.length > 0 ? (
-                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
+                <Button color='primary' variant='contained' onClick={() => handleSuccess()}>
                   Proceed
                 </Button>
               ) : (
-                <Button color="primary" disabled>
+                <Button color='primary' disabled>
                   Proceed
                 </Button>
               )}
-              <Button variant="outlined" color="error" onClick={handleClose}>Cancle</Button>
+              <Button variant='outlined' color='error' onClick={handleClose}>
+                Cancle
+              </Button>
             </div>
           </Box>
         </Modal>
@@ -948,8 +1003,8 @@ const Calendar = props => {
               onClose={() => setFormModal(false)}
               aria-labelledby='modal-title'
               aria-describedby='modal-description'
-            // fullWidth
-            // maxWidth="sm"
+              // fullWidth
+              // maxWidth="sm"
             >
               <DialogTitle>
                 <Tabs value={active} onChange={(_, newValue) => setActive(newValue)} centered>
@@ -1058,47 +1113,105 @@ const Calendar = props => {
                     </div>
                   </Box>
                 )}
-                {active === '2' &&
+                {active === '2' && (
                   <Box>
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                      {leaves && leaves.map((dt, index) => (
-                        <div key={dt} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
-                          <div
-                            style={{
-                              display: 'flex',
-                              backgroundColor: '#ccf5fa',
-                              justifyContent: 'space-between',
-                              padding: '8px',
-                              border: '1px solid #b6dbe1'
-                            }}
-                          >
-                            <span key={index}>{dt}</span>
-                            <button
-                              type='button'
-                              className='btn btn-close'
-                              aria-label='Close'
-                              onClick={() => removeLeave(dt)}
+                      {leaves &&
+                        leaves.map((dt, index) => (
+                          <div key={dt} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
+                            <div
                               style={{
-                                borderRadius: '10px',
-                                border: 'none',
-                                backgroundColor: '#7367f0',
-                                color: 'white',
-                                cursor: "pointer"
+                                display: 'flex',
+                                backgroundColor: '#ccf5fa',
+                                justifyContent: 'space-between',
+                                padding: '8px',
+                                border: '1px solid #b6dbe1'
                               }}
                             >
-                              ⨉
-                            </button>
+                              <span key={index}>{dt}</span>
+                              <button
+                                type='button'
+                                className='btn btn-close'
+                                aria-label='Close'
+                                onClick={() => removeLeave(dt)}
+                                style={{
+                                  borderRadius: '10px',
+                                  border: 'none',
+                                  backgroundColor: '#7367f0',
+                                  color: 'white',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                ⨉
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
-                    <Button variant='contained' style={{ float: "right" }} color='primary' onClick={() => setFormModal(!formModal)}>
+                    <Button
+                      variant='contained'
+                      style={{ float: 'right' }}
+                      color='primary'
+                      onClick={() => setFormModal(!formModal)}
+                    >
                       Close
                     </Button>
-                  </Box>}
+                  </Box>
+                )}
               </DialogContent>
+              <div>
+                <Modal
+                  open={nestedModal}
+                  onClose={() => setNestedModal(false)}
+                  aria-labelledby='modal-title'
+                  aria-describedby='modal-description'
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 550,
+                    height: 250,
+                    boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+                    borderRadius: '15px'
+                  }}
+                >
+                  <div
+                    className='modal-content'
+                    style={{
+                      backgroundColor: '#ffff',
+                      height: '250px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div
+                      style={{
+                        borderRadius: '50%',
+                        border: '2px solid red',
+                        padding: '8px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <Icon icon='tabler:x' fontSize={40} color='red' />
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <h1>Already Applied!</h1>
+                      <div className='modal-body'>Your already applied for leaves on these days!</div>
+                    </div>
+                    <div className='modal-footer ' style={{ marginTop: '10px' }}>
+                      <Button variant='contained' color='success' onClick={() => setNestedModal(false)}>
+                        OK
+                      </Button>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
             </Dialog>
-
             <button className='btn btn-primary mr-2' style={BtnStyle()} onClick={handleOpenMetricsModal}>
               Metrics
             </button>
