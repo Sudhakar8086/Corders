@@ -104,7 +104,6 @@ const ChangePasswordV2 = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-<<<<<<< HEAD:src/pages/change-password/index.js
   const onSubmit = async (data) => {
     console.log(data)
     if (data.password === data.confirmPassword) {
@@ -134,11 +133,6 @@ const ChangePasswordV2 = () => {
       })
      }
   }
-=======
-
-
-
->>>>>>> 737b4e417eac0c1e6447aade95d481964d099d5d:src/pages/apps/change_password/index.js
 const newimageSource = 'auth-v2-login-illustration'
 
   return (

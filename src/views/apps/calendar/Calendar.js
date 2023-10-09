@@ -255,6 +255,7 @@ const Calendar = props => {
   const AdminArrr = store.events.map((obj) => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
+  console.log(store)
   // ** calendarOptions(Props)
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
