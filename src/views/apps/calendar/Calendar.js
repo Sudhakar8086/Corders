@@ -332,6 +332,14 @@ const Calendar = props => {
     //     ]
     //   }
     // },
+<<<<<<< HEAD
+=======
+    eventClassNames({ event: calendarEvent }) {
+      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+
+      return [`bg-${colorName}`]
+    },
+>>>>>>> 2c04afafb0d4b1af2169713b5bc5d992cb73ec42
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
       handleAddEventSidebarToggle()

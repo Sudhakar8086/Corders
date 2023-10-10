@@ -4,10 +4,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 // userRole
-// const userRole = JSON.parse(localStorage.getItem('userData'))
+const userRole = JSON.parse(localStorage.getItem('userData'))
 
 
-const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
+// const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
 
 
 
