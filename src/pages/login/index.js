@@ -37,7 +37,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { Auth, Amplify} from 'aws-amplify'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
-import awsExports from '../../../aws-exports'
+import awsExports from '../../aws-exports'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
