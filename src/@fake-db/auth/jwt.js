@@ -6,25 +6,15 @@ import mock from 'src/@fake-db/mock'
 
 // ** Default AuthConfig
 import defaultAuthConfig from 'src/configs/auth'
+import { Auth, Amplify} from 'aws-amplify'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import awsExports from '../../aws-exports'
+import axios from 'axios'
+const MySwal = withReactContent(Swal)
+Amplify.configure(awsExports)
+const ValidateUser = process.env.NEXT_PUBLIC_SESSION_DEATAILS
 
-const users = [
-  {
-    id: 1,
-    role: 'admin',
-    password: 'admin',
-    fullName: 'John Doe',
-    username: 'johndoe',
-    email: 'admin@vuexy.com'
-  },
-  {
-    id: 2,
-    role: 'client',
-    password: 'client',
-    fullName: 'Jane Doe',
-    username: 'janedoe',
-    email: 'client@vuexy.com'
-  }
-]
 
 // ! These two secrets should be in .env file and not in any other file
 const jwtConfig = {
@@ -32,29 +22,58 @@ const jwtConfig = {
   expirationTime: process.env.NEXT_PUBLIC_JWT_EXPIRATION,
   refreshTokenSecret: process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
 }
-mock.onPost('/jwt/login').reply(request => {
+
+const getDataValidate = async (username) => {
+  const data = await axios.post(ValidateUser, {
+    requestType:"ValidateUser",
+    userName:username
+})
+return data
+}
+mock.onPost('/jwt/login').reply( async (request)=> {
   const { email, password } = JSON.parse(request.data)
-
-  let error = {
-    email: ['Something went wrong']
-  }
-  const user = users.find(u => u.email === email && u.password === password)
-  if (user) {
-    const accessToken = jwt.sign({ id: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expirationTime })
-
-    const response = {
-      accessToken,
-      userData: { ...user, password: undefined }
-    }
-
-    return [200, response]
+  const getData = await getDataValidate(email);
+  if (getData.data.userValidation.status === 'Success') {
+    Object.assign(getData, 
+        {ability:[
+          {
+        action :'manage',
+        subject : 'all'
+      }
+      ], 
+      role:'admin',
+      }
+      )
+    return [200, getData]  
   } else {
-    error = {
-      email: ['email or Password is Invalid']
-    }
+    MySwal.fire({
+      title: 'Error!',
+      text:'Email is not Correct!',
+      icon: 'error',
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    })
+  return [400, { error }]
+  }  
+  // const user = users.find(u => u.email === email && u.password === password)
+  // if (user) {
+  //   const accessToken = jwt.sign({ id: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expirationTime })
 
-    return [400, { error }]
-  }
+  //   const response = {
+  //     accessToken,
+  //     userData: { ...user, password: undefined }
+  //   }
+
+  //   return [200, response]
+  // } else {
+  //   error = {
+  //     email: ['email or Password is Invalid']
+  //   }
+
+  //   return [400, { error }]
+  // }
 })
 mock.onPost('/jwt/register').reply(request => {
   if (request.data.length > 0) {

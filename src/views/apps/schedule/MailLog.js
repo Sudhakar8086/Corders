@@ -626,7 +626,8 @@ const MailLog = props => {
                             <button onClick={increaseMonth}>{'>'}</button>
                           </div>
                         )}
-                        minDate={today}
+                        //minDate={today}
+                        minDate={startDateModal}
                       />
                     </div>
                     <div style={{ borderTop: '1px solid #ebeae8' }}></div>
@@ -707,7 +708,13 @@ const MailLog = props => {
                     selected={startDate}
                     onChange={date => setStartDate(date)}
                     customInput={
-                      <TextField {...params} label='Select Start Date' placeholder='Select Start Date' size='small' />
+                      <TextField
+                        {...params}
+                        label='Select Start Date'
+                        placeholder='Select Start Date'
+                        size='small'
+                        style={{ width: '90%' }}
+                      />
                     }
                     popperPlacement='bottom'
                     dateFormat='dd MMMM, yyyy' // Set the custom date format
@@ -728,7 +735,7 @@ const MailLog = props => {
                         label='Select End Date'
                         placeholder='Select End Date'
                         size='small'
-                        style={{ float: 'right' }}
+                        style={{ float: 'right', width: '90%' }}
                       />
                     }
                     popperPlacement='bottom'
@@ -740,6 +747,7 @@ const MailLog = props => {
                         <button onClick={increaseMonth}>{'>'}</button>
                       </div>
                     )}
+                    minDate={startDate}
                   />
                 </Grid>
 
@@ -976,9 +984,9 @@ const MailLog = props => {
                                             style={{
                                               backgroundColor: '#82868B',
                                               color: '#fff',
-                                              borderRadius: '0.65rem',
-                                              fontSize: '0.80rem',
-                                              padding: '0.1rem',
+                                              borderRadius: '0.70rem',
+                                              fontSize: '0.82rem',
+                                              padding: '0.24rem',
                                               backgroundColor: new Date(i.date) > new Date() ? '#7367F0' : '#808080'
                                             }}
                                             // className={`miui-schedule-badge ${
