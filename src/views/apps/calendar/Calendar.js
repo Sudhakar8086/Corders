@@ -307,25 +307,30 @@ const Calendar = props => {
     //     ]
     //   }
     // },
-    eventClassNames({ event: calendarEvent }) {
-      // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+    // eventClassNames({ event: calendarEvent }) {
+    //   // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
 
-      // return [`bg-${colorName}`]
-      // eslint-disable-next-line no-underscore-dangle
+    //   // return [`bg-${colorName}`]
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+    //   console.log('COLORNAME', colorName)
+    //   //  background: rgba($color_value, 0.12) !important;
+    //   // color: $color_value !important;
+    //   // if(colorName)
+    //   // `back-${colorName}`
+    //   if (colorName == 'primary') {
+    //     return ['back-info']
+    //   } else {
+    //     return [
+    //       // Background Color
+    //       'back-error'
+    //     ]
+    //   }
+    // },
+    eventClassNames({ event: calendarEvent }) {
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-      console.log('COLORNAME', colorName)
-      //  background: rgba($color_value, 0.12) !important;
-      // color: $color_value !important;
-      // if(colorName)
-      // `back-${colorName}`
-      if (colorName == 'primary') {
-        return ['back-info']
-      } else {
-        return [
-          // Background Color
-          'back-error'
-        ]
-      }
+
+      return [`bg-${colorName}`]
     },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
