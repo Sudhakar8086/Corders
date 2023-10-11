@@ -94,7 +94,7 @@ const AuthProvider = ({ children }) => {
         console.log(JSON.stringify(UserData))
         setUser({ ...UserData })
         console.log('login')
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(UserData)) : null
+        window.localStorage.setItem('userData', JSON.stringify(UserData)) 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })

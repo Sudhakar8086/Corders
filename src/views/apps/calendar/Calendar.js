@@ -261,6 +261,19 @@ const Calendar = props => {
         }, 1000) 
       }
   }, [])
+
+  // useEffect(() => {
+  //   const refresh = window.localStorage.getItem('refresh');
+  
+  //   if (refresh !== '1') {
+  //     window.localStorage.setItem('refresh', '1');
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 1000);
+  //   }
+  // }, []);
+  
+
   const newArr = store.events.map(obj => {
     return {
       ...obj,
