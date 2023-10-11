@@ -31,8 +31,8 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
-      const accessToken = JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
-    const refreshToken = JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
+      const accessToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
+    const refreshToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
         setLoading(true)

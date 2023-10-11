@@ -251,7 +251,16 @@ const Calendar = props => {
     //   setCurrentMonth(true)
     // }
   }
-
+  
+  useEffect(() => {
+    const refresh = window.localStorage.getItem('refresh')
+      if (refresh === null) {
+        setTimeout(() => {
+        window.location.reload()    
+        window.localStorage.setItem('refresh', "1")  
+        }, 1000) 
+      }
+  }, [])
   const newArr = store.events.map(obj => {
     return {
       ...obj,
@@ -288,6 +297,7 @@ const Calendar = props => {
     dragScroll: true,
     dayMaxEvents: 6,
     navLinks: true,
+    height: 1100,
     eventClassNames({ event: calendarEvent }) {
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
 
@@ -332,14 +342,6 @@ const Calendar = props => {
     //     ]
     //   }
     // },
-<<<<<<< HEAD
-=======
-    eventClassNames({ event: calendarEvent }) {
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
-      return [`bg-${colorName}`]
-    },
->>>>>>> 2c04afafb0d4b1af2169713b5bc5d992cb73ec42
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
       handleAddEventSidebarToggle()
