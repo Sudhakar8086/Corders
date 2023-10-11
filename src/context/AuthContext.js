@@ -31,10 +31,11 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
-      const accessToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
-    const refreshToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+   const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
+        const users = localStorage.getItem('userCognito')
+        const accessToken = users === null ? null : JSON.parse(users).accessToken.jwtToken
+      const refreshToken = users === null ? null : JSON.parse(users).refreshToken.token
         setLoading(true)
         const user = await Auth.currentAuthenticatedUser()
         console.log(user)
@@ -93,8 +94,7 @@ const AuthProvider = ({ children }) => {
       role:'admin',accessToken : JSON.stringify(accessToken) , refreshToken : JSON.stringify(refreshToken)})
         console.log(JSON.stringify(UserData))
         setUser({ ...UserData })
-        console.log('login')
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(UserData)) : null
+        window.localStorage.setItem('userData', JSON.stringify(UserData))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
