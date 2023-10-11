@@ -232,11 +232,16 @@ const Calendar = props => {
     console.log(payload, 'payload')
     const today = new Date()
     const date = new Date(payload.endStr)
+    console.log(today.getMonth() + 1)
+    console.log(date.getMonth())
     if (today.getMonth() + 1 !== date.getMonth()) {
-      localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate()}`)
+      localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+      setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+    } else {
+      localStorage.setItem('monthChange',`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
+      setMonthChange(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
+      setMonth(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
     }
     setSelectedPreviousMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0') - 1}`)
     setSelectedMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
@@ -246,7 +251,16 @@ const Calendar = props => {
     //   setCurrentMonth(true)
     // }
   }
-
+  
+  useEffect(() => {
+    const refresh = window.localStorage.getItem('refresh')
+      if (refresh === null) {
+        setTimeout(() => {
+        window.location.reload()    
+        window.localStorage.setItem('refresh', "1")  
+        }, 1000) 
+      }
+  }, [])
   const newArr = store.events.map(obj => {
     return {
       ...obj,
@@ -283,6 +297,7 @@ const Calendar = props => {
     dragScroll: true,
     dayMaxEvents: 6,
     navLinks: true,
+    height: 1100,
     eventClassNames({ event: calendarEvent }) {
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
 
@@ -327,11 +342,6 @@ const Calendar = props => {
     //     ]
     //   }
     // },
-    eventClassNames({ event: calendarEvent }) {
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
-      return [`bg-${colorName}`]
-    },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
       handleAddEventSidebarToggle()

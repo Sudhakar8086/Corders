@@ -15,7 +15,24 @@ const MySwal = withReactContent(Swal)
 Amplify.configure(awsExports)
 const ValidateUser = process.env.NEXT_PUBLIC_SESSION_DEATAILS
 
-
+const users = [
+  {
+    id: 1,
+    role: 'admin',
+    password: 'admin',
+    fullName: 'John Doe',
+    username: 'johndoe',
+    email: 'admin@vuexy.com'
+  },
+  {
+    id: 2,
+    role: 'client',
+    password: 'client',
+    fullName: 'Jane Doe',
+    username: 'janedoe',
+    email: 'client@vuexy.com'
+  }
+]
 // ! These two secrets should be in .env file and not in any other file
 const jwtConfig = {
   secret: process.env.NEXT_PUBLIC_JWT_SECRET,
@@ -152,6 +169,7 @@ mock.onGet('/auth/me').reply(config => {
         const obj = { userData: { ...user, password: undefined } }
 
         // ** return 200 with user data
+        console.log(obj)
         response = [200, obj]
       }
     } else {

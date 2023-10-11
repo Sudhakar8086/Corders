@@ -9,6 +9,7 @@ import axios from 'axios'
 
 // ** Config
 import authConfig from 'src/configs/auth'
+import { Auth } from 'aws-amplify'
 
 // ** Defaults
 const defaultProvider = {
@@ -20,7 +21,7 @@ const defaultProvider = {
   logout: () => Promise.resolve()
 }
 const AuthContext = createContext(defaultProvider)
-
+const ValidateUser = process.env.NEXT_PUBLIC_SESSION_DEATAILS
 const AuthProvider = ({ children }) => {
   // ** States
   const [user, setUser] = useState(defaultProvider.user)
@@ -30,20 +31,30 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
+      const accessToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
+    const refreshToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
         setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
+        const user = await Auth.currentAuthenticatedUser()
+        console.log(user)
+        const response = await axios.post(ValidateUser, {
+          requestType:"ValidateUser",
+          userName:user.attributes.email
+      })
+      const UserData =  Object.assign(response.data, {ability:[
+        {
+      action :'manage',
+      subject : 'all'
+    }
+    ], 
+    role:'admin',accessToken : JSON.stringify(accessToken) , refreshToken : JSON.stringify(refreshToken)})
+          if (UserData) { 
             setLoading(false)
-            setUser({ ...response.data.userData })
-          })
-          .catch(() => {
+            console.log(UserData.data)
+            setUser({ ...UserData})
+          }
+          else {
             localStorage.removeItem('userData')
             localStorage.removeItem('refreshToken')
             localStorage.removeItem('accessToken')
@@ -51,8 +62,9 @@ const AuthProvider = ({ children }) => {
             setLoading(false)
             if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
               router.replace('/login')
-            }
-          })
+            } 
+            console.log('is aiht')
+          }
       } else {
         setLoading(false)
       }
@@ -81,6 +93,7 @@ const AuthProvider = ({ children }) => {
       role:'admin',accessToken : JSON.stringify(accessToken) , refreshToken : JSON.stringify(refreshToken)})
         console.log(JSON.stringify(UserData))
         setUser({ ...UserData })
+        console.log('login')
         params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(UserData)) : null
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
