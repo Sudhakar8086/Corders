@@ -9,6 +9,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import Image from 'next/image'
 import screen from '../../../public/images/pages/logo.jpeg'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 import { Controller, useForm } from 'react-hook-form'
@@ -17,6 +18,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -70,9 +72,11 @@ const ForgotPasswordV2 = () => {
   const MySwal = withReactContent(Swal)
   const router = useRouter();
 Amplify.configure(awsExports)
+
 const schema = yup.object().shape({
   email: yup.string().email().required()
 })
+
   const {
     control,
     setError,
@@ -82,6 +86,7 @@ const schema = yup.object().shape({
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
   const onSubmit = async (data) => {
     console.log(data)
     try {
@@ -99,6 +104,7 @@ const schema = yup.object().shape({
       })
   }
   }
+
   // ** Vars
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -116,6 +122,7 @@ const schema = yup.object().shape({
             borderRadius: '20px',
             justifyContent: 'center',
             backgroundColor: 'customColors.bodyBg',
+
             // margin: theme => theme.spacing(8, 0, 8, 8)
             width: '40%', // Adjust the width of the image container as needed
             margin: theme => theme.spacing(-30),
@@ -206,6 +213,7 @@ const schema = yup.object().shape({
 }
 ForgotPasswordV2.getLayout = page => <BlankLayout>{page}</BlankLayout>
 ForgotPasswordV2.guestGuard = true
+
 export default ForgotPasswordV2
 
 

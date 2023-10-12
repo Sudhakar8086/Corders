@@ -395,8 +395,8 @@ const MailLog = props => {
         data: JSON.stringify({
           requestType: 'LeaveApprovals',
           isHalfday: 0,
-          alteredBy: 9, //after we need to change
-          //alteredBy: userRole.userId,
+          //alteredBy: 9, //after we need to change
+          alteredBy: userRole.userId,
           providerId: scheduleData.providerId,
           date: scheduleData.scheduledDate,
           status: leaveStatus
@@ -436,8 +436,8 @@ const MailLog = props => {
           data: JSON.stringify({
             requestType: 'LeaveApprovals',
             isHalfday: 0,
-            alteredBy: 9,
-            // alteredBy: userRole.userId,
+            //alteredBy: 9,
+            alteredBy: userRole.userId,
             providerId: item.providerId,
             date: item.scheduledDate,
             status: 2
