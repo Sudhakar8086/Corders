@@ -36,6 +36,7 @@ import withReactContent from 'sweetalert2-react-content'
 import Swal from 'sweetalert2'
 import toast from 'react-hot-toast'
 import { Check, X } from 'react-feather'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -122,7 +123,9 @@ const MailLog = props => {
     } else {
       setShowScheduleButton(false) // Hide the Schedule button when collapsing
     }
+
   }
+
   const hideToClick = () => {
     setHide(true)
     setShowScheduleButton(false)
@@ -208,8 +211,10 @@ const MailLog = props => {
         console.error(err)
       }
     }
+
     HospitalFetch()
   }, [])
+
   const ScheduleFetch = async () => {
     try {
       const resp = await axios({
@@ -240,9 +245,7 @@ const MailLog = props => {
           }
         })
       }
-      //onScheduleClean('')
       {
-        // setScheduleData(resp.data.scheduleResponse);
         toast.success(resp.data.scheduleResponse.message, {
           position: 'bottom-right'
         })

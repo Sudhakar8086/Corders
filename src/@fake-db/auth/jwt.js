@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import awsExports from '../../aws-exports'
 import axios from 'axios'
+
 const MySwal = withReactContent(Swal)
 Amplify.configure(awsExports)
 const ValidateUser = process.env.NEXT_PUBLIC_SESSION_DEATAILS
@@ -33,7 +34,9 @@ const users = [
     email: 'client@vuexy.com'
   }
 ]
+
 // ! These two secrets should be in .env file and not in any other file
+
 const jwtConfig = {
   secret: process.env.NEXT_PUBLIC_JWT_SECRET,
   expirationTime: process.env.NEXT_PUBLIC_JWT_EXPIRATION,
@@ -45,6 +48,7 @@ const getDataValidate = async (username) => {
     requestType:"ValidateUser",
     userName:username
 })
+
 return data
 }
 mock.onPost('/jwt/login').reply( async (request)=> {
@@ -61,6 +65,7 @@ mock.onPost('/jwt/login').reply( async (request)=> {
       role:'admin',
       }
       )
+
     return [200, getData]  
   } else {
     MySwal.fire({
@@ -72,8 +77,10 @@ mock.onPost('/jwt/login').reply( async (request)=> {
       },
       buttonsStyling: false
     })
+
   return [400, { error }]
   }  
+  
   // const user = users.find(u => u.email === email && u.password === password)
   // if (user) {
   //   const accessToken = jwt.sign({ id: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expirationTime })

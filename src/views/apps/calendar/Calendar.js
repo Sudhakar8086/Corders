@@ -8,9 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import interactionPlugin from '@fullcalendar/interaction'
-// import Box from '@mui/material/Box';
-// import Modal from '@mui/material/Modal';
-// import Button from '@mui/material/Button';
+
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -19,17 +17,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 // import Paper from '@mui/material/Paper';
 import DatePicker from 'react-multi-date-picker'
-// import { Menu, Plus, X, Filter } from 'react-feather'
 
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Switch from '@mui/material/Switch';
-// import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert'
 // ** Third Party Style Import
 import { CheckCircle } from 'react-bootstrap-icons'
@@ -41,24 +29,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import MultiDatePicker from 'react-multi-date-picker'
 import Icon from 'src/@core/components/icon'
-// import {
-//   Dialog,
-//   DialogTitle,
-//   DialogContent,
-//   DialogActions,
-//   Tabs,
-//   Tab,
-//   Box,
-//   TextField,
-//   FormControlLabel,
-//   Switch,
-//   Button,
-//   List,
-//   ListItem,
-//   ListItemText,
-//   ListItemSecondaryAction,
-//   IconButton,
-// } from "@mui/material";
+
 import {
   Modal,
   Tab,
@@ -86,17 +57,7 @@ import {
 import axios from 'axios'
 import { width } from '@mui/system'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4
-}
+
 //API calls
 const LeaveStatusCheck = process.env.NEXT_PUBLIC_LEAVE_DETAILS
 const AdminManagement = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
@@ -144,9 +105,7 @@ const Calendar = props => {
   const [selectedPreviousMonth, setSelectedPreviousMonth] = useState()
   const [selectedMonth, setSelectedMonth] = useState()
   const [formModal, setFormModal] = useState(false)
-  // const [halfDay, setHalfDay] = useState("1")
-  // const [leaves, setLeaves] = useState([])
-  // const [picker, setPicker] = useState([])
+
   const [metricsModalOpen, setMetricsModalOpen] = useState(false)
   const [oneClickScheduleModalOpen, setOneClickScheduleModalOpen] = useState(false)
   const [oneClickScheduleData, setOneClickScheduleData] = useState()
@@ -241,11 +200,7 @@ const Calendar = props => {
     }
     setSelectedPreviousMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0') - 1}`)
     setSelectedMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-    // if (date.getMonth() === today.getMonth() + 1) {
-    //   setCurrentMonth(false)
-    // } else {
-    //   setCurrentMonth(true)
-    // }
+
   }
   
   useEffect(() => {
@@ -258,16 +213,7 @@ const Calendar = props => {
       }
   }, [])
 
-  // useEffect(() => {
-  //   const refresh = window.localStorage.getItem('refresh');
-  
-  //   if (refresh !== '1') {
-  //     window.localStorage.setItem('refresh', '1');
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 1000);
-  //   }
-  // }, []);
+
   
 
   const newArr = store.events.map(obj => {
@@ -279,7 +225,6 @@ const Calendar = props => {
   const AdminArrr = store.events.map(obj => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
-  console.log(store)
   // ** calendarOptions(Props)
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
@@ -311,51 +256,16 @@ const Calendar = props => {
     height: 1100,
     eventClassNames({ event: calendarEvent }) {
       // @ts-ignore
+      console.log(typeof calendarEvent)
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-    //  console.log(colorName)
+     console.log(colorName)
+     console.log(calendarEvent)
       return [
         // Background Color
         `bg-${colorName}`
       ]
     },
-    // eventClassNames({ event: calendarEvent }) {
-    //   // eslint-disable-next-line no-underscore-dangle
-    //   const colorName =
-    //     calendarsColor[calendarEvent._def.extendedProps.calendar]
-    //   console.log('COLORNAME', colorName)
-    //   //  background: rgba($color_value, 0.12) !important;
-    //   // color: $color_value !important;
-    //   // if(colorName)
-    //   // `back-${colorName}`
-    //   if (colorName == 'primary') {
-    //     return ['back-info']
-    //   } else {
 
-    //     return [
-    //       // Background Color
-    //       'back-error'
-    //     ]
-    //   }
-    // },
-    // eventClassNames({ event: calendarEvent }) {
-    //   // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
-    //   // return [`bg-${colorName}`]
-    //   // eslint-disable-next-line no-underscore-dangle
-    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-    //   console.log('COLORNAME', colorName)
-    //   //  background: rgba($color_value, 0.12) !important;
-    //   // color: $color_value !important;
-    //   // if(colorName)
-    //   // `back-${colorName}`
-    //   if (colorName == 'primary') {
-    //     return ['back-info']
-    //   } else {
-    //     return [
-    //       // Background Color
-    //       'back-error'
-    //     ]
-    //   }
     // },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
@@ -365,22 +275,10 @@ const Calendar = props => {
     eventClick({ event: clickedEvent }) {
       handleClickedEvent(clickedEvent)
 
-      // * Only grab required field otherwise it goes in infinity loop
-      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
-      // event.value = grabEventDataFromEventApi(clickedEvent)
-
-      // eslint-disable-next-line no-use-before-define
-      // isAddNewEventSidebarActive.value = true
     },
     dateClick(info) {
       console.log(info)
       handleClick(info)
-      // const ev = { ...blankEvent }
-      // ev.start = info.date
-      // ev.end = info.date
-      // ev.allDay = true
-      // // dispatch(handleSelectEvent(ev))
-      // handleAddEventSidebarToggle()
     },
     eventDrop({ event: droppedEvent }) {
       dispatch(updateEvent(droppedEvent))
@@ -641,8 +539,7 @@ const Calendar = props => {
 
   //------------Leave------------------
   const [formModalOpen, setFormModalOpen] = useState(false)
-  // const [active, setActive] = useState("1");
-  // const [selectedDate, setSelectedDate] = useState("");
+
   const [halfDay, setHalfDay] = useState(0)
   const [picker, setPicker] = useState([])
   const [leaves, setLeaves] = useState([])
@@ -654,71 +551,6 @@ const Calendar = props => {
     setSelectedDate(e.target.value)
   }
 
-  // const onChange = (e) => {
-  //   setHalfDay(e.target.checked);
-  // };
-
-  // const onChange = () => {
-  //   setHalfDay(!halfDay)
-  // }
-  // Check Leave status
-  // const handleSelection = (dates) => {
-  //   // console.log(datePickerRef, dates)
-  //   // setDatePicker(dates.target.value);
-  //   axios
-  //     .post(LeaveStatusCheck, {
-  //       requestType: "LeaveStatusCheck",
-  //       date: dates.toString(),
-  //       providerId: userRole.id
-  //     })
-  //     .then((res) => {
-  //       console.log(res,"res from handle selection")
-  //       if (
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
-  //       ) {
-  //         setPicker(dates)
-  //         console.log(setPicker(dates), "setPicker(dates)")
-  //       } else {
-  //         MySwal.fire({
-  //           icon: "error",
-  //           title: "Already Applied!",
-  //           text: "Your already applied for leaves this days!",
-  //           customClass: {
-  //             confirmButton: "btn btn-success"
-  //           }
-  //         })
-  //       }
-  //     })
-  // }
-  // const handleSelection = dates => {
-  //   axios
-  //     .post(LeaveStatusCheck, {
-  //       requestType: 'LeaveStatusCheck',
-  //       date: dates.toString(),
-  //       providerId: userRole.userId
-  //     })
-  //     .then(res => {
-  //       if (
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
-  //       ) {
-  //         setPicker(dates)
-  //         console.log(setPicker(dates), 'setPicker(dates)')
-  //       } else {
-  //         MySwal.fire({
-  //           icon: 'error',
-  //           title: 'Already Applied!',
-  //           text: 'Your already applied for leaves this days!',
-  //           customClass: {
-  //             confirmButton: 'btn btn-success'
-  //           }
-  //         })
-  //       }
-  //     })
-  // }
 
   const handleSelection = dates => {
     axios
@@ -736,48 +568,11 @@ const Calendar = props => {
           setPicker(dates)
           console.log(setPicker(dates), 'setPicker(dates)')
         } else {
-          // Open SweetAlert dialog here, after the existing Dialog is closed.
-          // setFormModal(false) // Close the existing Dialog first
-          // setTimeout(() => {
-          //   MySwal.fire({
-          //     icon: 'error',
-          //     title: 'Already Applied!',
-          //     text: 'You have already applied for leaves on these days!',
-          //     customClass: {
-          //       confirmButton: 'btn btn-success'
-          //     }
-          //   })
-          // }, 100)
           setNestedModal(true)
         }
       })
   }
 
-  // Leave Apply
-  // const handleSuccess = () => {
-  //   axios.post(LeaveStatusCheck, {
-  //     requestType: 'LeaveApply',
-  //     isHalfday: halfDay,
-  //     date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
-  //     providerId: userRole.userId
-  //   })
-  //   return MySwal.fire({
-  //     title: 'Are you Sure ?',
-  //     text: 'You want to take leave!',
-  //     icon: 'info',
-  //     confirmButtonText: 'Confirm',
-  //     showCancelButton: true,
-  //     customClass: {
-  //       confirmButton: 'btn btn-primary',
-  //       cancelButton: 'btn btn-outline-danger ms-1'
-  //     },
-  //     buttonsStyling: false
-  //   }).then(function (result) {
-  //     if (result.value) {
-  //       setFormModal(!formModal)
-  //     }
-  //   })
-  // }
   const handleSuccess = () => {
     axios
       .post(LeaveStatusCheck, {
@@ -907,14 +702,7 @@ const Calendar = props => {
       setSelectedDate('')
     }
   }
-  // const handleRemoveDate = (dateToRemove) => {
-  //   setSelectedDates(selectedDates.filter((date) => date !== dateToRemove));
-  // };
-  // const handleRemoveDate = (index) => {
-  //   const updatedPicker = [...picker];
-  //   updatedPicker.splice(index, 1);
-  //   setPicker(updatedPicker);
-  // };
+
   const handleRemoveDate = index => {
     const newPicker = [...picker]
     newPicker.splice(index, 1)
@@ -1105,22 +893,6 @@ const Calendar = props => {
                     <Typography variant='h6' gutterBottom mt={2}>
                       Selected Dates
                     </Typography>
-                    {/* <List style={{display:"flex", justifyContent:"space-evenly"}}>
-                      {picker.map((date, index) => (
-                        <ListItem key={index} style={{border:"contain", backgroundColor:"red"}}>
-                          <span >{date.format('YYYY-MM-DD')}</span>
-                          <Button
-                            type="button"
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleRemoveDate(index)}
-                            style={{ marginLeft: '8px' }}
-                          >
-                            ⨉
-                          </Button>
-                        </ListItem>
-                      ))}
-                    </List> */}
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                       {picker.map((date, index) => (
                         <div key={date} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
@@ -1153,14 +925,6 @@ const Calendar = props => {
                       ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px' }}>
-                      {/* <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={() => handleSuccess()}
-                        disabled={picker.length === 0}
-                      >
-                        Proceed
-                      </Button> */}
                       <ChildModal />
                       <Button variant='contained' color='primary' onClick={() => setFormModal(!formModal)}>
                         Close
@@ -1437,7 +1201,323 @@ const Calendar = props => {
                 One Click Schedule
               </Button>
             ) : null}
-            {/* <Dialog
+          </div>
+          <FullCalendar {...calendarOptions} />
+        </div>
+      </>
+    )
+  } else {
+    return null
+  }
+}
+
+export default Calendar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Menu, Plus, X, Filter } from 'react-feather'
+
+// import Dialog from '@mui/material/Dialog';
+// import DialogActions from '@mui/material/DialogActions';
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogContentText from '@mui/material/DialogContentText';
+// import DialogTitle from '@mui/material/DialogTitle';
+// import TextField from '@mui/material/TextField';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Switch from '@mui/material/Switch';
+// import Snackbar from '@mui/material/Snackbar';
+
+
+// import Box from '@mui/material/Box';
+// import Modal from '@mui/material/Modal';
+// import Button from '@mui/material/Button';
+// import {
+//   Dialog,
+//   DialogTitle,
+//   DialogContent,
+//   DialogActions,
+//   Tabs,
+//   Tab,
+//   Box,
+//   TextField,
+//   FormControlLabel,
+//   Switch,
+//   Button,
+//   List,
+//   ListItem,
+//   ListItemText,
+//   ListItemSecondaryAction,
+//   IconButton,
+// } from "@mui/material";
+
+
+
+  // const [halfDay, setHalfDay] = useState("1")
+  // const [leaves, setLeaves] = useState([])
+  // const [picker, setPicker] = useState([])
+
+    // if (date.getMonth() === today.getMonth() + 1) {
+    //   setCurrentMonth(false)
+    // } else {
+    //   setCurrentMonth(true)
+    // }
+
+
+  // useEffect(() => {
+  //   const refresh = window.localStorage.getItem('refresh');
+  
+  //   if (refresh !== '1') {
+  //     window.localStorage.setItem('refresh', '1');
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 1000);
+  //   }
+  // }, []);
+
+
+  // const [active, setActive] = useState("1");
+  // const [selectedDate, setSelectedDate] = useState("");
+
+    // eventClassNames({ event: calendarEvent }) {
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const colorName =
+    //     calendarsColor[calendarEvent._def.extendedProps.calendar]
+    //   console.log('COLORNAME', colorName)
+    //   //  background: rgba($color_value, 0.12) !important;
+    //   // color: $color_value !important;
+    //   // if(colorName)
+    //   // `back-${colorName}`
+    //   if (colorName == 'primary') {
+    //     return ['back-info']
+    //   } else {
+
+    //     return [
+    //       // Background Color
+    //       'back-error'
+    //     ]
+    //   }
+    // },
+    // eventClassNames({ event: calendarEvent }) {
+    //   // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+
+    //   // return [`bg-${colorName}`]
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+    //   console.log('COLORNAME', colorName)
+    //   //  background: rgba($color_value, 0.12) !important;
+    //   // color: $color_value !important;
+    //   // if(colorName)
+    //   // `back-${colorName}`
+    //   if (colorName == 'primary') {
+    //     return ['back-info']
+    //   } else {
+    //     return [
+    //       // Background Color
+    //       'back-error'
+    //     ]
+    //   }
+
+
+
+      // * Only grab required field otherwise it goes in infinity loop
+      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
+      // event.value = grabEventDataFromEventApi(clickedEvent)
+
+      // eslint-disable-next-line no-use-before-define
+      // isAddNewEventSidebarActive.value = true
+
+
+    
+  // const onChange = (e) => {
+  //   setHalfDay(e.target.checked);
+  // };
+
+  // const onChange = () => {
+  //   setHalfDay(!halfDay)
+  // }
+  // Check Leave status
+  // const handleSelection = (dates) => {
+  //   // console.log(datePickerRef, dates)
+  //   // setDatePicker(dates.target.value);
+  //   axios
+  //     .post(LeaveStatusCheck, {
+  //       requestType: "LeaveStatusCheck",
+  //       date: dates.toString(),
+  //       providerId: userRole.id
+  //     })
+  //     .then((res) => {
+  //       console.log(res,"res from handle selection")
+  //       if (
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
+  //       ) {
+  //         setPicker(dates)
+  //         console.log(setPicker(dates), "setPicker(dates)")
+  //       } else {
+  //         MySwal.fire({
+  //           icon: "error",
+  //           title: "Already Applied!",
+  //           text: "Your already applied for leaves this days!",
+  //           customClass: {
+  //             confirmButton: "btn btn-success"
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
+
+
+  // const handleSelection = dates => {
+  //   axios
+  //     .post(LeaveStatusCheck, {
+  //       requestType: 'LeaveStatusCheck',
+  //       date: dates.toString(),
+  //       providerId: userRole.userId
+  //     })
+  //     .then(res => {
+  //       if (
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
+  //       ) {
+  //         setPicker(dates)
+  //         console.log(setPicker(dates), 'setPicker(dates)')
+  //       } else {
+  //         MySwal.fire({
+  //           icon: 'error',
+  //           title: 'Already Applied!',
+  //           text: 'Your already applied for leaves this days!',
+  //           customClass: {
+  //             confirmButton: 'btn btn-success'
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
+
+          // Open SweetAlert dialog here, after the existing Dialog is closed.
+          // setFormModal(false) // Close the existing Dialog first
+          // setTimeout(() => {
+          //   MySwal.fire({
+          //     icon: 'error',
+          //     title: 'Already Applied!',
+          //     text: 'You have already applied for leaves on these days!',
+          //     customClass: {
+          //       confirmButton: 'btn btn-success'
+          //     }
+          //   })
+          // }, 100)
+
+
+
+  // Leave Apply
+  // const handleSuccess = () => {
+  //   axios.post(LeaveStatusCheck, {
+  //     requestType: 'LeaveApply',
+  //     isHalfday: halfDay,
+  //     date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
+  //     providerId: userRole.userId
+  //   })
+  //   return MySwal.fire({
+  //     title: 'Are you Sure ?',
+  //     text: 'You want to take leave!',
+  //     icon: 'info',
+  //     confirmButtonText: 'Confirm',
+  //     showCancelButton: true,
+  //     customClass: {
+  //       confirmButton: 'btn btn-primary',
+  //       cancelButton: 'btn btn-outline-danger ms-1'
+  //     },
+  //     buttonsStyling: false
+  //   }).then(function (result) {
+  //     if (result.value) {
+  //       setFormModal(!formModal)
+  //     }
+  //   })
+  // }
+
+
+  // const handleRemoveDate = (dateToRemove) => {
+  //   setSelectedDates(selectedDates.filter((date) => date !== dateToRemove));
+  // };
+  // const handleRemoveDate = (index) => {
+  //   const updatedPicker = [...picker];
+  //   updatedPicker.splice(index, 1);
+  //   setPicker(updatedPicker);
+  // };
+
+
+                    {/* <List style={{display:"flex", justifyContent:"space-evenly"}}>
+                      {picker.map((date, index) => (
+                        <ListItem key={index} style={{border:"contain", backgroundColor:"red"}}>
+                          <span >{date.format('YYYY-MM-DD')}</span>
+                          <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleRemoveDate(index)}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            ⨉
+                          </Button>
+                        </ListItem>
+                      ))}
+                    </List> */}
+
+
+                      {/* <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => handleSuccess()}
+                        disabled={picker.length === 0}
+                      >
+                        Proceed
+                      </Button> */}
+
+
+     {/* <Dialog
               className='container'
               open={oneClickScheduleModalOpen} // Conditionally render based on oneClickScheduleModalOpen state
               onClose={handleCloseOneClickScheduleModal}
@@ -1492,14 +1572,3 @@ const Calendar = props => {
                 </Button>
               </DialogActions>
             </Dialog> */}
-          </div>
-          <FullCalendar {...calendarOptions} />
-        </div>
-      </>
-    )
-  } else {
-    return null
-  }
-}
-
-export default Calendar
