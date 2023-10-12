@@ -69,6 +69,7 @@ const AddEventSidebar = props => {
   // ** Props
   const {
     store,
+    open,
     dispatch,
     addEvent,
     updateEvent,
@@ -256,14 +257,32 @@ const AddEventSidebar = props => {
   const facilityData = facility !== null ? facility.map((v, i) => ({ label: v.hospitalName, id: v.hospitalId, value: v.hospitalName, color: color[i] })) : null
   const providerData = provider !== null ? provider.map((v, i) => ({ label: v.firstName, id: v.userId, value: v.firstName, color: color[i] })) : null
   console.log(providerData, "provider data")
+  console.log(facilityData, "facility data")
   //API 
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
   const LeaveDetails = process.env.NEXT_PUBLIC_LEAVE_DETAILS
   const ScheduleApi = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
   // ** Set sidebar fields
+
+
+  const handleCalendarLabelChange = (data) => {
+    setPreviousCalendarLabel(calendarLabel)
+    setCalendarLabel(data)
+  }
+
+   // ** Reset Input Values on Close
+   const handleResetInputValues = () => {
+    dispatch(selectEvent({}))
+    setValue('title', '')
+    setCalendarLabel([{ value: 'Valley', label: 'Valley', color: 'primary' }])
+    setStartPicker()
+    setLeaves([])
+    setPreviousCalendarLabel()
+  }
   const handleSelectedEvent = async () => {
+    console.log('handleSelectedEvent')
     if (!isObjEmpty(selectedEvent)) {
-      console.log(selectEvent, "selectedEvent")
+      console.log(selectedEvent, "selectedEvent")
       const calendar = selectedEvent.extendedProps.calendar
       const resolveLabel = () => {
         if (calendar.length === undefined) {
@@ -286,6 +305,15 @@ const AddEventSidebar = props => {
 
     await showLeaves(selectedEvent.start)
   }
+
+  useEffect(() => {
+      console.log('addEventSidebarOpen', addEventSidebarOpen)
+      if(addEventSidebarOpen == true) {
+        handleSelectedEvent() 
+      }
+  },[addEventSidebarOpen])
+
+ 
 
   // ** React Select Theme Colors
   const selectThemeColors = theme => ({
@@ -321,10 +349,6 @@ const AddEventSidebar = props => {
   }
 
 
-  const handleCalendarLabelChange = (data) => {
-    setPreviousCalendarLabel(calendarLabel)
-    setCalendarLabel(data)
-  }
 
   const OptionComponent = ({ data, ...props }) => {
     return (
@@ -352,15 +376,7 @@ const AddEventSidebar = props => {
 
 
 
-  // ** Reset Input Values on Close
-  const handleResetInputValues = () => {
-    dispatch(selectEvent({}))
-    setValue('title', '')
-    setCalendarLabel([{ value: 'Valley', label: 'Valley', color: 'primary' }])
-    setStartPicker()
-    setLeaves([])
-    setPreviousCalendarLabel()
-  }
+ 
 
   const style = {
     position: 'absolute',
@@ -591,7 +607,7 @@ const AddEventSidebar = props => {
 
   useEffect(() => {
     // This code will run when the component mounts
-    handleSelectedEvent();
+    // handleSelectedEvent();
 
     // This code will run when the component unmounts
     return () => {
@@ -654,7 +670,6 @@ const AddEventSidebar = props => {
       className='modal-dialog-centered'
       toggle={handleAddEventSidebarToggle}
     // onClosed={handleResetInputValues}
-    // onOpened={handleSelectedEvent}
     >
       <Box sx={style}>
         <div >
@@ -663,6 +678,7 @@ const AddEventSidebar = props => {
             id='modal-modal-title'
           // style={{ backgroundColor: '#F8F8F8',  borderRadius: '5px', margin:"4px" }}
           >
+            {console.log('store', store, facilityData, calendarLabel[0], store, store)}
             {store.selectedEvent !== null && store.selectedEvent.title && store.selectedEvent.title.length ? 'Update Event' : 'Add Event'}
             <Icon onClick={handleAddEventSidebarToggle} icon='tabler:x' fontSize={20} style={{ color: '#7367F0', cursor: 'pointer' }} />
           </div>
@@ -744,6 +760,7 @@ const AddEventSidebar = props => {
                     }}
                     isDisabled={getValues('title').label === 'Unassigned'} // Conditionally disable the select
                   />
+                  
                 </div>
                 <div style={{ marginTop: "20px" }}>
                   <Label className='form-label' for='startDate'>
@@ -778,6 +795,7 @@ const AddEventSidebar = props => {
               <div style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", margin: "20px" }}>
                 <List>
                   <h3 style={{ marginLeft: "12px", marginTop: "-5px" }}>Physician  On Leave</h3>
+                  {console.log(leaves, "leave")}
                   {leaves.length > 0 ? (
                     leaves.map((dt) => (
                       <ListItem key={dt.id} >
