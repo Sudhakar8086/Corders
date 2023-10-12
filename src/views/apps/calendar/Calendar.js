@@ -86,17 +86,7 @@ import {
 import axios from 'axios'
 import { width } from '@mui/system'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4
-}
+
 //API calls
 const LeaveStatusCheck = process.env.NEXT_PUBLIC_LEAVE_DETAILS
 const AdminManagement = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
@@ -279,7 +269,6 @@ const Calendar = props => {
   const AdminArrr = store.events.map(obj => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
-  console.log(store)
   // ** calendarOptions(Props)
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
@@ -311,8 +300,10 @@ const Calendar = props => {
     height: 1100,
     eventClassNames({ event: calendarEvent }) {
       // @ts-ignore
+      console.log(typeof calendarEvent)
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-    //  console.log(colorName)
+     console.log(colorName)
+     console.log(calendarEvent)
       return [
         // Background Color
         `bg-${colorName}`
@@ -1437,61 +1428,6 @@ const Calendar = props => {
                 One Click Schedule
               </Button>
             ) : null}
-            {/* <Dialog
-              className='container'
-              open={oneClickScheduleModalOpen} // Conditionally render based on oneClickScheduleModalOpen state
-              onClose={handleCloseOneClickScheduleModal}
-              aria-labelledby="one-click-schedule-modal-title"
-              aria-describedby="one-click-schedule-modal-description"
-              style={{ padding: "20px" }}
-            >
-              <DialogTitle id="alert-dialog-title">
-                <i class="bi bi-question-lg" style={questionMark()}></i>
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <h1 style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>Are you sure?</h1>
-                  <h3 style={{ fontWeight: "lighter" }}>You want to Schedule for {monthNameAndYear}</h3>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-                <Button onClick={handleClose} style={{ border: "content", backgroundColor: "#7066e0", color: "white" }}>
-                  Confirm
-                </Button>
-                <Button style={{ border: "content", backgroundColor: "#6e7881", color: "white" }} onClick={handleCloseOneClickScheduleModal}>Cancel</Button>
-              </DialogActions>
-            </Dialog> */}
-            {/* Dialog for confirming scheduling */}
-
-            {/* <Dialog open={openDialog} onClose={handleDialogClose}>
-              <DialogTitle>
-                <Question style={questionMark()} />
-              </DialogTitle>
-              <DialogContent>
-                <h1 style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>Are you sure?</h1>
-                <h3 style={{ fontWeight: "lighter" }}>You want to Schedule for {getCurrentMonthNameAndYear()}</h3>
-              </DialogContent>
-              <DialogActions style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-                <Button onClick={handleAutoSchedule} style={{ border: "content", backgroundColor: "#7066e0", color: "white" }}>
-                  Confirm
-                </Button>
-                <Button style={{ border: "content", backgroundColor: "#6e7881", color: "white" }} onClick={handleDialogClose}>Cancel</Button>
-              </DialogActions>
-            </Dialog>
-            <Dialog open={openModal} onClose={handleModalClose}>
-              <DialogTitle>{modalIcon}</DialogTitle>
-              <DialogContent>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                  <h1>{modalTitle}</h1>
-                  <h3 style={{ fontWeight: "lighter" }}>{subTitle}</h3>
-                </div>
-              </DialogContent>
-              <DialogActions style={{ display: "flex", justifyContent: "center" }}>
-                <Button onClick={handleModalClose} style={{ border: "content", backgroundColor: "#7066e0", color: "white", }}>
-                  Ok
-                </Button>
-              </DialogActions>
-            </Dialog> */}
           </div>
           <FullCalendar {...calendarOptions} />
         </div>

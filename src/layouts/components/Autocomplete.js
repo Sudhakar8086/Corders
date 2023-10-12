@@ -430,6 +430,7 @@ const AutocompleteComponent = ({ hidden, settings }) => {
                 onInputChange={(event, value) => setSearchValue(value)}
                 onChange={(event, obj) => handleOptionClick(obj)}
                 noOptionsText={<NoResult value={searchValue} setOpenDialog={setOpenDialog} />}
+                
                 // getOptionLabel={option => option.title || ''}
                 groupBy={option => (searchValue.length ? categoryTitle[option.category] : '')}
                 sx={{

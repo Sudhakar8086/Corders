@@ -77,7 +77,6 @@ const EmailAppLayout = ({ folder, label }) => {
         borderRadius: 1,
         overflow: 'hidden',
         position: 'relative',
-        // boxShadow: skin === 'bordered' ? 0 : 6,
 
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
