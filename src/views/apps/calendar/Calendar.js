@@ -187,22 +187,18 @@ const Calendar = props => {
 
   const handleClick = info => {
     if (
-      userRole &&
-      userRole.userValidation &&
-      userRole.userValidation.rolesList &&
-      Array.isArray(userRole.userValidation.rolesList)
+      userRole.userValidation.rolesList
+        .map((dat) => dat.roleName)
+        .includes("Admin")
     ) {
-      const rolesList = userRole.userValidation.rolesList
-      console.log(rolesList, 'rolelist')
-      if (rolesList.map(dat => dat.roleName).includes('Admin')) {
-        const ev = blankEvent
-        // const ev = { ...blankEvent }
+      const ev = { ...blankEvent }
         ev.start = info.date
-        console.log(ev.start, 'ev')
         ev.end = info.date
+        ev.allDay = true
+
+        // @ts-ignore
         dispatch(selectEvent(ev))
-        handleAddEventSidebar()
-      }
+        handleAddEventSidebarToggle()
     }
   }
 
@@ -261,6 +257,19 @@ const Calendar = props => {
         }, 1000) 
       }
   }, [])
+
+  // useEffect(() => {
+  //   const refresh = window.localStorage.getItem('refresh');
+  
+  //   if (refresh !== '1') {
+  //     window.localStorage.setItem('refresh', '1');
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 1000);
+  //   }
+  // }, []);
+  
+
   const newArr = store.events.map(obj => {
     return {
       ...obj,
@@ -287,6 +296,8 @@ const Calendar = props => {
       start: 'sidebarToggle, prev, title, next',
       end: 'dayGridMonth,listMonth'
     },
+    selectable: true,
+    displayEventTime: false,
     views: {
       week: {
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
@@ -299,9 +310,13 @@ const Calendar = props => {
     navLinks: true,
     height: 1100,
     eventClassNames({ event: calendarEvent }) {
+      // @ts-ignore
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
-      return [`bg-${colorName}`]
+    //  console.log(colorName)
+      return [
+        // Background Color
+        `bg-${colorName}`
+      ]
     },
     // eventClassNames({ event: calendarEvent }) {
     //   // eslint-disable-next-line no-underscore-dangle
