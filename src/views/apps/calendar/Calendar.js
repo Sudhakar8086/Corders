@@ -154,6 +154,7 @@ const Calendar = props => {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const [nestedModal, setNestedModal] = useState(false)
+  const [modalVisible, setModalVisible] = useState(true)
   const [responseData, setResponseData] = useState({
     data: {
       providersDetails: []
@@ -176,6 +177,7 @@ const Calendar = props => {
   const [openDialog, setOpenDialog] = useState(false)
   const [active, setActive] = useState('1')
   const [datePicker, setDatePicker] = useState('')
+  const [divVisible, setDivVisible] = useState(true)
 
   // You should set the selectedPreviousMonth as needed
   console.log(month, 'month')
@@ -235,13 +237,29 @@ const Calendar = props => {
     console.log(today.getMonth() + 1)
     console.log(date.getMonth())
     if (today.getMonth() + 1 !== date.getMonth()) {
-      localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+      localStorage.setItem(
+        'monthChange',
+        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00')
+          ? `${date.getFullYear() - 1}-12`
+          : `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`
+      )
+      setMonthChange(
+        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00')
+          ? `${date.getFullYear() - 1}-12`
+          : `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`
+      )
+      setMonth(
+        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00')
+          ? `${date.getFullYear() - 1}-12`
+          : `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`
+      )
     } else {
-      localStorage.setItem('monthChange',`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
-      setMonthChange(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
-      setMonth(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
+      localStorage.setItem(
+        'monthChange',
+        `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`
+      )
+      setMonthChange(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`)
+      setMonth(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`)
     }
     setSelectedPreviousMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0') - 1}`)
     setSelectedMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
@@ -251,15 +269,15 @@ const Calendar = props => {
     //   setCurrentMonth(true)
     // }
   }
-  
+
   useEffect(() => {
     const refresh = window.localStorage.getItem('refresh')
-      if (refresh === null) {
-        setTimeout(() => {
-        window.location.reload()    
-        window.localStorage.setItem('refresh', "1")  
-        }, 1000) 
-      }
+    if (refresh === null) {
+      setTimeout(() => {
+        window.location.reload()
+        window.localStorage.setItem('refresh', '1')
+      }, 1000)
+    }
   }, [])
   const newArr = store.events.map(obj => {
     return {
@@ -763,6 +781,7 @@ const Calendar = props => {
   //     }
   //   })
   // }
+
   const handleSuccess = () => {
     axios
       .post(LeaveStatusCheck, {
@@ -773,6 +792,12 @@ const Calendar = props => {
       })
       .then(res => console.log(res, 'res from handlesuccess'))
       .catch(err => console.log(err, 'err from handlesuccess'))
+    //added here
+    setTimeout(() => {
+      setModalVisible(false)
+      setFormModal(!formModal)
+    }, 1000)
+    //fetchLeaveDetails()
   }
 
   const removeElement = index => {
@@ -801,6 +826,15 @@ const Calendar = props => {
     fetchLeaveDetails()
   }, [])
   const removeLeave = data => {
+    // Set the z-index for .swal2-container
+    // const swal2Container = document.querySelector('.swal2')
+    // if (swal2Container) {
+    //   swal2Container.style.zIndex = ' 20000 !important'
+    // }
+    setTimeout(() => {
+      setFormModal(false)
+    }, 500)
+
     return MySwal.fire({
       title: `Leave Cancel`,
       text: `Are you sure you want to cancel Leave on ${data}`,
@@ -808,9 +842,9 @@ const Calendar = props => {
       showCancelButton: true,
       customClass: {
         confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
+        cancelButton: 'btn btn-outline-danger ms-1',
+        swal2: 'z-index-20000'
+      }
     }).then(function (result) {
       if (result.value) {
         axios
@@ -858,7 +892,7 @@ const Calendar = props => {
     return `${year}-${month}-${day}`
   }
 
-  // // set Half day
+  // set Half day
   const onChange = e => {
     if (e.target.checked) {
       setHalfDay('0')
@@ -927,7 +961,7 @@ const Calendar = props => {
 
     return (
       <div>
-        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleChildOpen}>
+        {/* <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleChildOpen}>
           Proceed
         </Button>
         <Modal
@@ -956,7 +990,35 @@ const Calendar = props => {
               </Button>
             </div>
           </Box>
-        </Modal>
+        </Modal> */}
+        {modalVisible && (
+          <Box
+            sx={{ ...style, width: 450 }}
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div style={{ marginTop: '13px' }}>
+              <Info style={info()} />
+            </div>
+            <div>
+              <h2 id='child-modal-title'>Are you Sure ? </h2>
+              <p style={{ fontWeight: 'lighter' }}> You want to take leave!</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
+              {picker.length > 0 ? (
+                <Button color='primary' variant='contained' onClick={handleSuccess}>
+                  Proceed
+                </Button>
+              ) : (
+                <Button color='primary' disabled>
+                  Proceed
+                </Button>
+              )}
+              <Button variant='outlined' color='error' onClick={handleClose}>
+                Cancel
+              </Button>
+            </div>
+          </Box>
+        )}
       </div>
     )
   }
@@ -975,7 +1037,7 @@ const Calendar = props => {
       transform: 'translate(-50%, -50%)',
       width: 600,
       bgcolor: 'background.paper',
-      border: '2px solid #000',
+      //border: '2px solid #000',
       boxShadow: 24,
       pt: 2,
       px: 4,
@@ -1006,15 +1068,15 @@ const Calendar = props => {
             <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
               {picker.length > 0 ? (
                 <Button color='primary' variant='contained' onClick={() => handleSuccess()}>
-                  Proceed
+                  Confirm
                 </Button>
               ) : (
                 <Button color='primary' disabled>
-                  Proceed
+                  Confirm
                 </Button>
               )}
               <Button variant='outlined' color='error' onClick={handleClose}>
-                Cancle
+                Cancel
               </Button>
             </div>
           </Box>
