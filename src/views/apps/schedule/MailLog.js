@@ -36,6 +36,7 @@ import withReactContent from 'sweetalert2-react-content'
 import Swal from 'sweetalert2'
 import toast from 'react-hot-toast'
 import { Check, X } from 'react-feather'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -122,7 +123,9 @@ const MailLog = props => {
     } else {
       setShowScheduleButton(false) // Hide the Schedule button when collapsing
     }
+
   }
+
   const hideToClick = () => {
     setHide(true)
     setShowScheduleButton(false)
@@ -208,8 +211,10 @@ const MailLog = props => {
         console.error(err)
       }
     }
+
     HospitalFetch()
   }, [])
+
   const ScheduleFetch = async () => {
     try {
       const resp = await axios({
@@ -240,9 +245,7 @@ const MailLog = props => {
           }
         })
       }
-      //onScheduleClean('')
       {
-        // setScheduleData(resp.data.scheduleResponse);
         toast.success(resp.data.scheduleResponse.message, {
           position: 'bottom-right'
         })
@@ -626,7 +629,8 @@ const MailLog = props => {
                             <button onClick={increaseMonth}>{'>'}</button>
                           </div>
                         )}
-                        minDate={today}
+                        //minDate={today}
+                        minDate={startDateModal}
                       />
                     </div>
                     <div style={{ borderTop: '1px solid #ebeae8' }}></div>
@@ -746,6 +750,7 @@ const MailLog = props => {
                         <button onClick={increaseMonth}>{'>'}</button>
                       </div>
                     )}
+                    minDate={startDate}
                   />
                 </Grid>
 
@@ -982,9 +987,9 @@ const MailLog = props => {
                                             style={{
                                               backgroundColor: '#82868B',
                                               color: '#fff',
-                                              borderRadius: '0.65rem',
-                                              fontSize: '0.80rem',
-                                              padding: '0.1rem',
+                                              borderRadius: '0.70rem',
+                                              fontSize: '0.82rem',
+                                              padding: '0.24rem',
                                               backgroundColor: new Date(i.date) > new Date() ? '#7367F0' : '#808080'
                                             }}
                                             // className={`miui-schedule-badge ${

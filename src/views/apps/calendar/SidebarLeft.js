@@ -56,6 +56,7 @@ const SidebarLeft = props => {
     handleAddEventSidebarToggle()
     dispatch(handleSelectEvent(null))
   }
+  
   // if (renderFilters) {
   //   return (
   //     <Drawer

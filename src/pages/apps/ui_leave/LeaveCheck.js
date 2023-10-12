@@ -3,6 +3,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import moment from "moment"
 import Spinner from 'src/@core/components/spinner'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import DatePicker from 'react-datepicker'
@@ -20,6 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography';
 import CustomInput from 'src/views/forms/form-elements/pickers/PickersCustomInput'
 import 'react-datepicker/dist/react-datepicker.css'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { width } from '@mui/system'
@@ -180,9 +182,9 @@ const LeaveCheck = ({ popperPlacement }) => {
 
                         <Loading />
                         {isSearched ? (
-                            // <div  lg="3" md="2" xs="1" >
                             <div style={styles.fetchedDataContainer}>
                                 <Grid container spacing={1} style={{ padding: '5px', backgroundColor: "#E7EAEC " }}>
+                                    
                                     {/* <div style={{ maxHeight: '800px', display: 'flex',margin:'14px', padding: '10px', flexWrap: 'wrap' }}> */}
                                     {leaveData?.length && !loading ? (
                                         leaveData?.map((i, index) => (

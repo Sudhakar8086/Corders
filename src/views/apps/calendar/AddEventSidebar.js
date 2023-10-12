@@ -69,6 +69,7 @@ const AddEventSidebar = props => {
   // ** Props
   const {
     store,
+    open,
     dispatch,
     addEvent,
     updateEvent,
@@ -245,25 +246,43 @@ const AddEventSidebar = props => {
   const [calendarLabel, setCalendarLabel] = useState([])
   const [previousCalendarLabel, setPreviousCalendarLabel] = useState()
   const [leaves, setLeaves] = useState([])
- 
+
 
   // ** Select Options
   const facility = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('facility')) : null
   const provider = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('provider')) : null
   const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userData")) : null
-console.log(facility, "facility")
+  console.log(facility, "facility")
   const color = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'primary', 'primary']
   const facilityData = facility !== null ? facility.map((v, i) => ({ label: v.hospitalName, id: v.hospitalId, value: v.hospitalName, color: color[i] })) : null
   const providerData = provider !== null ? provider.map((v, i) => ({ label: v.firstName, id: v.userId, value: v.firstName, color: color[i] })) : null
-console.log(facilityData, "facilitydata")
+  console.log(providerData, "provider data")
+  console.log(facilityData, "facility data")
   //API 
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
   const LeaveDetails = process.env.NEXT_PUBLIC_LEAVE_DETAILS
   const ScheduleApi = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
   // ** Set sidebar fields
+
+
+  const handleCalendarLabelChange = (data) => {
+    setPreviousCalendarLabel(calendarLabel)
+    setCalendarLabel(data)
+  }
+
+   // ** Reset Input Values on Close
+   const handleResetInputValues = () => {
+    dispatch(selectEvent({}))
+    setValue('title', '')
+    setCalendarLabel([{ value: 'Valley', label: 'Valley', color: 'primary' }])
+    setStartPicker()
+    setLeaves([])
+    setPreviousCalendarLabel()
+  }
   const handleSelectedEvent = async () => {
+    console.log('handleSelectedEvent')
     if (!isObjEmpty(selectedEvent)) {
-      console.log(selectEvent, "selectedEvent")
+      console.log(selectedEvent, "selectedEvent")
       const calendar = selectedEvent.extendedProps.calendar
       const resolveLabel = () => {
         if (calendar.length === undefined) {
@@ -280,12 +299,21 @@ console.log(facilityData, "facilitydata")
       }
       setCalendarLabel([resolveLabel()])
       console.log(String(selectedEvent.start).includes('India'), "String(selectedEvent.start).includes('India')")
-      console.log(selectEvent.start,"selected")
+      console.log(selectEvent.start, "selected")
       console.log(new Date(String(selectedEvent._instance.range.end)), "set")
     }
 
     await showLeaves(selectedEvent.start)
   }
+
+  useEffect(() => {
+      console.log('addEventSidebarOpen', addEventSidebarOpen)
+      if(addEventSidebarOpen == true) {
+        handleSelectedEvent() 
+      }
+  },[addEventSidebarOpen])
+
+ 
 
   // ** React Select Theme Colors
   const selectThemeColors = theme => ({
@@ -320,11 +348,7 @@ console.log(facilityData, "facilitydata")
     }
   }
 
-  
-  const handleCalendarLabelChange = (data) => {
-    setPreviousCalendarLabel(calendarLabel)
-    setCalendarLabel(data)
-  }
+
 
   const OptionComponent = ({ data, ...props }) => {
     return (
@@ -351,16 +375,8 @@ console.log(facilityData, "facilitydata")
   }
 
 
-  
-  // ** Reset Input Values on Close
-  const handleResetInputValues = () => {
-    dispatch(selectEvent({}))
-    setValue('title', '')
-    setCalendarLabel([{ value: 'Valley', label: 'Valley', color: 'primary' }])
-    setStartPicker()
-    setLeaves([])
-    setPreviousCalendarLabel()
-  }
+
+ 
 
   const style = {
     position: 'absolute',
@@ -469,8 +485,8 @@ console.log(facilityData, "facilitydata")
     }
   }
 
-   // ** (UI) updateEventInCalendar
-   const updateEventInCalendar = (updatedEventData, propsToUpdate, extendedPropsToUpdate) => {
+  // ** (UI) updateEventInCalendar
+  const updateEventInCalendar = (updatedEventData, propsToUpdate, extendedPropsToUpdate) => {
     const existingEvent = calendarApi.getEventById(updatedEventData.id)
 
     // ** Set event properties except date related
@@ -591,7 +607,7 @@ console.log(facilityData, "facilitydata")
 
   useEffect(() => {
     // This code will run when the component mounts
-    handleSelectedEvent();
+    // handleSelectedEvent();
 
     // This code will run when the component unmounts
     return () => {
@@ -611,13 +627,13 @@ console.log(facilityData, "facilitydata")
     if (isObjEmpty(selectedEvent) || (!isObjEmpty(selectedEvent) && !selectedEvent.title.length)) {
       return (
         <Fragment>
-          {getValues('title') && calendarLabel && getValues('title').label !== undefined && calendarLabel.label !== undefined 
-          ? 
-          <Button  variant="contained" color='primary'> Add </Button>
-           : 
-           <Button  type='submit' disabled> Add </Button>}
+          {getValues('title') && calendarLabel && getValues('title').label !== undefined && calendarLabel.label !== undefined
+            ?
+            <Button variant="contained" color='primary'> Add </Button>
+            :
+            <Button type='submit' disabled> Add </Button>}
 
-          <Button  type='reset' onClick={handleAddEventSidebarToggle} variant="outlined" color="error">
+          <Button type='reset' onClick={handleAddEventSidebarToggle} variant="outlined" color="error">
             Cancel
           </Button>
         </Fragment>
@@ -625,18 +641,18 @@ console.log(facilityData, "facilitydata")
     } else {
       return (
         <Fragment>
-          {getValues('title') 
-          ?
-          <Button  variant="contained" color='primary' onClick={handleUpdateEvent}>
-            Assign
-          </Button> 
-          :
-          <Button disabled> Assign </Button>}
-          {getValues('title').label !== 'Unassigned' && !shouldHideUpdateButton ? previousCalendarLabel !== undefined && getValues('title').id === undefined 
-          ? 
-          <Button  variant="contained" color='primary' onClick={handleEditEvent}> Update </Button>
-           : 
-           <Button disabled> Update </Button> : null}
+          {getValues('title')
+            ?
+            <Button variant="contained" color='primary' onClick={handleUpdateEvent}>
+              Assign
+            </Button>
+            :
+            <Button disabled> Assign </Button>}
+          {getValues('title').label !== 'Unassigned' && !shouldHideUpdateButton ? previousCalendarLabel !== undefined && getValues('title').id === undefined
+            ?
+            <Button variant="contained" color='primary' onClick={handleEditEvent}> Update </Button>
+            :
+            <Button disabled> Update </Button> : null}
 
           <Button variant="outlined" color="error" onClick={handleDeleteEvent}>
             Cancel
@@ -653,16 +669,16 @@ console.log(facilityData, "facilitydata")
       // onClose={handleSidebarClose}
       className='modal-dialog-centered'
       toggle={handleAddEventSidebarToggle}
-      // onClosed={handleResetInputValues}
-      // onOpened={handleSelectedEvent}
+    // onClosed={handleResetInputValues}
     >
       <Box sx={style}>
         <div >
           <div
-            style={{padding:"10px", backgroundColor: "#f8f8f8", display: "flex", justifyContent: "space-between", alignContent: "center", alignItems: "center" }}
+            style={{ padding: "10px", backgroundColor: "#f8f8f8", display: "flex", justifyContent: "space-between", alignContent: "center", alignItems: "center" }}
             id='modal-modal-title'
           // style={{ backgroundColor: '#F8F8F8',  borderRadius: '5px', margin:"4px" }}
           >
+            {console.log('store', store, facilityData, calendarLabel[0], store, store)}
             {store.selectedEvent !== null && store.selectedEvent.title && store.selectedEvent.title.length ? 'Update Event' : 'Add Event'}
             <Icon onClick={handleAddEventSidebarToggle} icon='tabler:x' fontSize={20} style={{ color: '#7367F0', cursor: 'pointer' }} />
           </div>
@@ -683,115 +699,118 @@ console.log(facilityData, "facilitydata")
           >
             
           </div> */}
-          <div style={{padding:"20px"}}>
-          <FormControl
-          className='container'
-            sx={{ width: '100%' }}
-            onSubmit={handleSubmit(data => {
-              if (data.title.label.length) {
-                if (isObjEmpty(errors)) {
-                  if (isObjEmpty(selectedEvent) || (!isObjEmpty(selectedEvent) && !selectedEvent.title.length)) {
-                    ScheduleFetch()
-                    handleAddEvent()
-                  } else {
-                    handleUpdateEvent()
+          <div style={{ padding: "20px" }}>
+            <FormControl
+              className='container'
+              sx={{ width: '100%' }}
+              onSubmit={handleSubmit(data => {
+                if (data.title.label.length) {
+                  if (isObjEmpty(errors)) {
+                    if (isObjEmpty(selectedEvent) || (!isObjEmpty(selectedEvent) && !selectedEvent.title.length)) {
+                      ScheduleFetch()
+                      handleAddEvent()
+                    } else {
+                      handleUpdateEvent()
+                    }
+                    handleAddEventSidebarToggle()
                   }
-                  handleAddEventSidebarToggle()
+                } else {
+                  setError('title', {
+                    type: 'manual'
+                  })
                 }
-              } else {
-                setError('title', {
-                  type: 'manual'
-                })
-              }
-            })}
-          >
-            <div >
-              <div style={{ marginTop: "20px" }}>
-                <Label className='form-label' for='title'>
-                  Providers <span className='text-danger'>*</span>
-                </Label>
-                <Controller
-                  name='title'
-                  id='title'
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      id='title'
-                      value={{ label: getValues('title'), value: getValues('title'), color: "success" }}
-                      options={providerData}
-                      theme={selectThemeColors}
-                      isClearable={false}
-                      onInputChange={ScheduleCheck(getValues())}
-                      {...field}
-                    />
-                  )}
-                />
+              })}
+            >
+              <div >
+                <div style={{ marginTop: "20px" }}>
+                  <Label className='form-label' for='title'>
+                    Providers <span className='text-danger'>*</span>
+                  </Label>
+                  <Controller
+                    name='title'
+                    id='title'
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        id='title'
+                        value={{ label: getValues('title'), value: getValues('title'), color: "success" }}
+                        options={providerData}
+                        theme={selectThemeColors}
+                        isClearable={false}
+                        onInputChange={ScheduleCheck(getValues())}
+                        {...field}
+                      />
+                    )}
+                  />
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <Label className='form-label' htmlFor='label'>
+                    Hospitals
+                  </Label>
+                  <Select
+                    id='label'
+                    placeholder='Hospital list'
+                    value={calendarLabel[0]}
+                    options={facilityData}
+                    theme={selectThemeColors}
+                    isClearable={false}
+                    onChange={(data) => handleCalendarLabelChange(data)}
+                    components={{
+                      Option: OptionComponent
+                    }}
+                    isDisabled={getValues('title').label === 'Unassigned'} // Conditionally disable the select
+                  />
+                  
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <Label className='form-label' for='startDate'>
+                    Date
+                  </Label>
+                  <Flatpickr
+                    required
+                    id='startDate'
+                    name='startDate'
+                    className='form-control'
+                    disabled
+                    onChange={date => setStartPicker(date[0])}
+                    value={startPicker}
+                    placeholder={startPicker === undefined ? null : `${startPicker.getFullYear()}-${(startPicker.getMonth() + 1)}-${startPicker.getDate()}`}
+                    options={{
+                      enableTime: false,
+                      dateFormat: 'Y-m-d',
+                      enable: [startPicker]
+                    }}
+                  />
+                  {console.log(startPicker, "startpicker")}
+                </div>
               </div>
-              <div style={{ marginTop: "20px" }}>
-                <Label className='form-label' htmlFor='label'>
-                  Hospitals
-                </Label>
-                 <Select
-                id='label'
-                placeholder='Hospital list'
-                value={calendarLabel[0]}
-                options={facilityData}
-                theme={selectThemeColors}
-                isClearable={false}
-                onChange={(data) => handleCalendarLabelChange(data)}
-                components={{
-                  Option: OptionComponent
-                }}
-                isDisabled={getValues('title').label === 'Unassigned'} // Conditionally disable the select
-              />
+              <div style={{ marginTop: '10px' }}>
+                <EventActions />
               </div>
-              <div style={{ marginTop: "20px" }}>
-                <Label className='form-label' for='startDate'>
-                  Date
-                </Label>
-                <Flatpickr
-                required
-                id='startDate'
-                name='startDate'
-                className='form-control'
-                disabled
-                onChange={date => setStartPicker(date[0])}
-                value={startPicker}
-                placeholder={startPicker === undefined ? null : `${startPicker.getFullYear()}-${(startPicker.getMonth() + 1)}-${startPicker.getDate()}`}
-                options={{
-                  enableTime: false,
-                  dateFormat: 'Y-m-d',
-                  enable: [startPicker]
-                }}
-              />
-              {console.log(startPicker, "startpicker")}
-              </div>
-            </div>
-            <div style={{ marginTop: '10px' }}>
-              <EventActions />
-            </div>
-          </FormControl>
+            </FormControl>
           </div>
           <div >
             <Card >
               {/* <CardContent> */}
-             <div style={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", margin:"20px"}}>
-              <List>
-              <h3 style={{ marginLeft: "12px", marginTop:"-5px" }}>Physician  On Leave</h3>
-                {leaves.length > 0 ? (
-                  leaves.map((dt) => (
-                    <ListItem key={dt.id} disableGutters>
-                      <Badge color='light-primary' badgeContent={dt.firstName}>
-                        <ListItemText primary={dt.firstName} />
-                      </Badge>
+              <div style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", margin: "20px" }}>
+                <List>
+                  <h3 style={{ marginLeft: "12px", marginTop: "-5px" }}>Physician  On Leave</h3>
+                  {console.log(leaves, "leave")}
+                  {leaves.length > 0 ? (
+                    leaves.map((dt) => (
+                      <ListItem key={dt.id} >
+                        <div color='light-primary' >
+                          {/* <ListItemText primary={dt.firstName} /> */}
+                          {dt.firstName}
+                        </div>
+                      </ListItem>
+                    ))
+                  ) : (
+                    <ListItem style={{ marginTop: "-20px" }}>
+                      <ListItemText primary='No one on Leave' />
                     </ListItem>
-                  ))
-                ) : (
-                  <ListItem style={{marginTop:"-20px"}}>
-                    <ListItemText primary='No one on Leave' />
-                  </ListItem>
-                )}
-              </List>
+                  )}
+                </List>
               </div>
 
               {/* </CardContent> */}

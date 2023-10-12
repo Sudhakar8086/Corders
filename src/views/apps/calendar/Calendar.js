@@ -8,9 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import interactionPlugin from '@fullcalendar/interaction'
-// import Box from '@mui/material/Box';
-// import Modal from '@mui/material/Modal';
-// import Button from '@mui/material/Button';
+
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -19,17 +17,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 // import Paper from '@mui/material/Paper';
 import DatePicker from 'react-multi-date-picker'
-// import { Menu, Plus, X, Filter } from 'react-feather'
 
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Switch from '@mui/material/Switch';
-// import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert'
 // ** Third Party Style Import
 import { CheckCircle } from 'react-bootstrap-icons'
@@ -40,24 +28,8 @@ import { XLg } from 'react-bootstrap-icons'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import MultiDatePicker from 'react-multi-date-picker'
-// import {
-//   Dialog,
-//   DialogTitle,
-//   DialogContent,
-//   DialogActions,
-//   Tabs,
-//   Tab,
-//   Box,
-//   TextField,
-//   FormControlLabel,
-//   Switch,
-//   Button,
-//   List,
-//   ListItem,
-//   ListItemText,
-//   ListItemSecondaryAction,
-//   IconButton,
-// } from "@mui/material";
+import Icon from 'src/@core/components/icon'
+
 import {
   Modal,
   Tab,
@@ -85,17 +57,7 @@ import {
 import axios from 'axios'
 import { width } from '@mui/system'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4
-}
+
 //API calls
 const LeaveStatusCheck = process.env.NEXT_PUBLIC_LEAVE_DETAILS
 const AdminManagement = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
@@ -143,15 +105,14 @@ const Calendar = props => {
   const [selectedPreviousMonth, setSelectedPreviousMonth] = useState()
   const [selectedMonth, setSelectedMonth] = useState()
   const [formModal, setFormModal] = useState(false)
-  // const [halfDay, setHalfDay] = useState("1")
-  // const [leaves, setLeaves] = useState([])
-  // const [picker, setPicker] = useState([])
+
   const [metricsModalOpen, setMetricsModalOpen] = useState(false)
   const [oneClickScheduleModalOpen, setOneClickScheduleModalOpen] = useState(false)
   const [oneClickScheduleData, setOneClickScheduleData] = useState()
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [nestedModal, setNestedModal] = useState(false)
   const [responseData, setResponseData] = useState({
     data: {
       providersDetails: []
@@ -176,46 +137,45 @@ const Calendar = props => {
   const [datePicker, setDatePicker] = useState('')
 
   // You should set the selectedPreviousMonth as needed
-  console.log(month, "month")
+  console.log(month, 'month')
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current?.getApi())
     }
   }, [calendarApi, setCalendarApi])
 
-  const handleClick = (info) => {
+  const handleClick = info => {
     if (
-      userRole &&
-      userRole.userValidation &&
-      userRole.userValidation.rolesList &&
-      Array.isArray(userRole.userValidation.rolesList)
+      userRole.userValidation.rolesList
+        .map((dat) => dat.roleName)
+        .includes("Admin")
     ) {
-      const rolesList = userRole.userValidation.rolesList;
-      console.log(rolesList, "rolelist")
-      if (rolesList.map((dat) => dat.roleName).includes("Admin")) {
-        const ev = blankEvent;
-        // const ev = { ...blankEvent }
-        ev.start = info.date;
-        console.log(ev.start, "ev")
-        ev.end = info.date;
-        dispatch(selectEvent(ev));
-        handleAddEventSidebar();
-      }
+      const ev = { ...blankEvent }
+        ev.start = info.date
+        ev.end = info.date
+        ev.allDay = true
+
+        // @ts-ignore
+        dispatch(selectEvent(ev))
+        handleAddEventSidebarToggle()
     }
   }
 
-  const handleClickedEvent = (clickedEvent) => {
-    if (userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin")) {
-      if ((new Date(clickedEvent.start) > new Date()) || (new Date(clickedEvent.start).getDate() === new Date().getDate())) {
+  const handleClickedEvent = clickedEvent => {
+    if (userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')) {
+      if (
+        new Date(clickedEvent.start) > new Date() ||
+        new Date(clickedEvent.start).getDate() === new Date().getDate()
+      ) {
         dispatch(selectEvent(clickedEvent))
         handleAddEventSidebarToggle()
       } else {
         return MySwal.fire({
           title: `Not Accessible`,
           text: `Date before current date is not been Changed`,
-          icon: "info",
+          icon: 'info',
           customClass: {
-            confirmButton: "btn btn-success"
+            confirmButton: 'btn btn-success'
           },
           buttonsStyling: false
         })
@@ -223,48 +183,66 @@ const Calendar = props => {
     }
   }
 
-
-
   const handleMonthChange = payload => {
     console.log(payload, 'payload')
     const today = new Date()
     const date = new Date(payload.endStr)
+    console.log(today.getMonth() + 1)
+    console.log(date.getMonth())
     if (today.getMonth() + 1 !== date.getMonth()) {
-      localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonthChange(
-        `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}`
-      )
-      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-      setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate()}`)
+      localStorage.setItem('monthChange', `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+      setMonthChange(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+      setMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`.includes('00') ? `${date.getFullYear()-1}-12` :   `${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
+    } else {
+      localStorage.setItem('monthChange',`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
+      setMonthChange(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
+      setMonth(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`)
     }
     setSelectedPreviousMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0') - 1}`)
     setSelectedMonth(`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}`)
-    // if (date.getMonth() === today.getMonth() + 1) {
-    //   setCurrentMonth(false)
-    // } else {
-    //   setCurrentMonth(true)
-    // }
-  }
 
-  const newArr = store.events.map((obj) => {
+  }
+  
+  useEffect(() => {
+    const refresh = window.localStorage.getItem('refresh')
+      if (refresh === null) {
+        setTimeout(() => {
+        window.location.reload()    
+        window.localStorage.setItem('refresh', "1")  
+        }, 1000) 
+      }
+  }, [])
+
+
+  
+
+  const newArr = store.events.map(obj => {
     return {
       ...obj,
-      title: obj.Leave === "" ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
+      title: obj.Leave === '' ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
     }
   })
-  const AdminArrr = store.events.map((obj) => {
+  const AdminArrr = store.events.map(obj => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
   // ** calendarOptions(Props)
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
-    events: userRole.userValidation.rolesList.map((dat) => dat.roleName).includes("Admin") ? AdminArrr.length ? AdminArrr : [] : newArr.length ? newArr : [],
+    events: userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')
+      ? AdminArrr.length
+        ? AdminArrr
+        : []
+      : newArr.length
+      ? newArr
+      : [],
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
       start: 'sidebarToggle, prev, title, next',
       end: 'dayGridMonth,listMonth'
     },
+    selectable: true,
+    displayEventTime: false,
     views: {
       week: {
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
@@ -275,30 +253,20 @@ const Calendar = props => {
     dragScroll: true,
     dayMaxEvents: 6,
     navLinks: true,
-    // eventClassNames({ event: calendarEvent }) {
-    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
-    //   return [`bg-${colorName}`]
-    // },
+    height: 1100,
     eventClassNames({ event: calendarEvent }) {
-      // eslint-disable-next-line no-underscore-dangle
-      const colorName =
-        calendarsColor[calendarEvent._def.extendedProps.calendar]
-      console.log('COLORNAME', colorName)
-      //  background: rgba($color_value, 0.12) !important;
-      // color: $color_value !important;
-      // if(colorName)
-      // `back-${colorName}`
-      if (colorName == 'primary') {
-        return ['back-info']
-      } else {
-
-        return [
-          // Background Color
-          'back-error'
-        ]
-      }
+      // @ts-ignore
+      console.log(typeof calendarEvent)
+      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+     console.log(colorName)
+     console.log(calendarEvent)
+      return [
+        // Background Color
+        `bg-${colorName}`
+      ]
     },
+
+    // },
     eventClick({ event: clickedEvent }) {
       dispatch(handleSelectEvent(clickedEvent))
       handleAddEventSidebarToggle()
@@ -307,22 +275,10 @@ const Calendar = props => {
     eventClick({ event: clickedEvent }) {
       handleClickedEvent(clickedEvent)
 
-      // * Only grab required field otherwise it goes in infinity loop
-      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
-      // event.value = grabEventDataFromEventApi(clickedEvent)
-
-      // eslint-disable-next-line no-use-before-define
-      // isAddNewEventSidebarActive.value = true
     },
     dateClick(info) {
       console.log(info)
       handleClick(info)
-      // const ev = { ...blankEvent }
-      // ev.start = info.date
-      // ev.end = info.date
-      // ev.allDay = true
-      // // dispatch(handleSelectEvent(ev))
-      // handleAddEventSidebarToggle()
     },
     eventDrop({ event: droppedEvent }) {
       dispatch(updateEvent(droppedEvent))
@@ -583,8 +539,7 @@ const Calendar = props => {
 
   //------------Leave------------------
   const [formModalOpen, setFormModalOpen] = useState(false)
-  // const [active, setActive] = useState("1");
-  // const [selectedDate, setSelectedDate] = useState("");
+
   const [halfDay, setHalfDay] = useState(0)
   const [picker, setPicker] = useState([])
   const [leaves, setLeaves] = useState([])
@@ -596,44 +551,7 @@ const Calendar = props => {
     setSelectedDate(e.target.value)
   }
 
-  // const onChange = (e) => {
-  //   setHalfDay(e.target.checked);
-  // };
 
-  // const onChange = () => {
-  //   setHalfDay(!halfDay)
-  // }
-  // Check Leave status
-  // const handleSelection = (dates) => {
-  //   // console.log(datePickerRef, dates)
-  //   // setDatePicker(dates.target.value);
-  //   axios
-  //     .post(LeaveStatusCheck, {
-  //       requestType: "LeaveStatusCheck",
-  //       date: dates.toString(),
-  //       providerId: userRole.id
-  //     })
-  //     .then((res) => {
-  //       console.log(res,"res from handle selection")
-  //       if (
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
-  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
-  //       ) {
-  //         setPicker(dates)
-  //         console.log(setPicker(dates), "setPicker(dates)")
-  //       } else {
-  //         MySwal.fire({
-  //           icon: "error",
-  //           title: "Already Applied!",
-  //           text: "Your already applied for leaves this days!",
-  //           customClass: {
-  //             confirmButton: "btn btn-success"
-  //           }
-  //         })
-  //       }
-  //     })
-  // }
   const handleSelection = dates => {
     axios
       .post(LeaveStatusCheck, {
@@ -650,51 +568,21 @@ const Calendar = props => {
           setPicker(dates)
           console.log(setPicker(dates), 'setPicker(dates)')
         } else {
-          MySwal.fire({
-            icon: 'error',
-            title: 'Already Applied!',
-            text: 'Your already applied for leaves this days!',
-            customClass: {
-              confirmButton: 'btn btn-success'
-            }
-          })
+          setNestedModal(true)
         }
       })
   }
-  // Leave Apply
-  // const handleSuccess = () => {
-  //   axios.post(LeaveStatusCheck, {
-  //     requestType: 'LeaveApply',
-  //     isHalfday: halfDay,
-  //     date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
-  //     providerId: userRole.userId
-  //   })
-  //   return MySwal.fire({
-  //     title: 'Are you Sure ?',
-  //     text: 'You want to take leave!',
-  //     icon: 'info',
-  //     confirmButtonText: 'Confirm',
-  //     showCancelButton: true,
-  //     customClass: {
-  //       confirmButton: 'btn btn-primary',
-  //       cancelButton: 'btn btn-outline-danger ms-1'
-  //     },
-  //     buttonsStyling: false
-  //   }).then(function (result) {
-  //     if (result.value) {
-  //       setFormModal(!formModal)
-  //     }
-  //   })
-  // }
+
   const handleSuccess = () => {
-    axios.post(LeaveStatusCheck, {
-      requestType: 'LeaveApply',
-      isHalfday: halfDay,
-      date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
-      providerId: userRole.userId
-    })
-      .then((res) => console.log(res, "res from handlesuccess"))
-      .catch((err) => console.log(err, "err from handlesuccess"))
+    axios
+      .post(LeaveStatusCheck, {
+        requestType: 'LeaveApply',
+        isHalfday: halfDay,
+        date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
+        providerId: userRole.userId
+      })
+      .then(res => console.log(res, 'res from handlesuccess'))
+      .catch(err => console.log(err, 'err from handlesuccess'))
   }
 
   const removeElement = index => {
@@ -722,8 +610,11 @@ const Calendar = props => {
   useEffect(() => {
     fetchLeaveDetails()
   }, [])
+  
   const removeLeave = data => {
-    return MySwal.fire({
+    return 
+    
+    MySwal.fire({
       title: `Leave Cancel`,
       text: `Are you sure you want to cancel Leave on ${data}`,
       icon: 'info',
@@ -781,11 +672,11 @@ const Calendar = props => {
   }
 
   // // set Half day
-  const onChange = (e) => {
+  const onChange = e => {
     if (e.target.checked) {
-      setHalfDay("0")
+      setHalfDay('0')
     } else {
-      setHalfDay("1")
+      setHalfDay('1')
     }
   }
   const handleLeaveOpenDialog = () => {
@@ -811,14 +702,7 @@ const Calendar = props => {
       setSelectedDate('')
     }
   }
-  // const handleRemoveDate = (dateToRemove) => {
-  //   setSelectedDates(selectedDates.filter((date) => date !== dateToRemove));
-  // };
-  // const handleRemoveDate = (index) => {
-  //   const updatedPicker = [...picker];
-  //   updatedPicker.splice(index, 1);
-  //   setPicker(updatedPicker);
-  // };
+
   const handleRemoveDate = index => {
     const newPicker = [...picker]
     newPicker.splice(index, 1)
@@ -849,27 +733,33 @@ const Calendar = props => {
 
     return (
       <div>
-        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleChildOpen}>Proceed</Button>
+        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleChildOpen}>
+          Proceed
+        </Button>
         <Modal
           open={childOpen}
           onClose={handleChildClose}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
+          aria-labelledby='child-modal-title'
+          aria-describedby='child-modal-description'
         >
-          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
-            <div>
-              <h2 id="child-modal-title">Leave Cancel </h2>
-              <p style={{ fontWeight: "lighter" }}>`Are you sure you want to cancel Leave on ${data}`</p>
+          <Box
+            sx={{ ...style, width: 450 }}
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div style={{ marginTop: '13px' }}>
+              <Info style={info()} />
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
-              
-                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
-                  Ok
-                </Button>
-                <Button variant="outlined" color="error" onClick={handleChildClose}>Cancle</Button>
-              
-              
+            <div>
+              <h2 id='child-modal-title'>Leave Cancel </h2>
+              <p style={{ fontWeight: 'lighter' }}>`Are you sure you want to cancel Leave on ${data}`</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
+              <Button color='primary' variant='contained' onClick={() => handleSuccess()}>
+                Ok
+              </Button>
+              <Button variant='outlined' color='error' onClick={handleChildClose}>
+                Cancle
+              </Button>
             </div>
           </Box>
         </Modal>
@@ -899,30 +789,39 @@ const Calendar = props => {
     }
     return (
       <div>
-        <Button variant="contained" color="primary" style={{ marginRight: "5px" }} onClick={handleOpen}>Proceed</Button>
+        <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleOpen}>
+          Proceed
+        </Button>
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
+          aria-labelledby='child-modal-title'
+          aria-describedby='child-modal-description'
         >
-          <Box sx={{ ...style, width: 450 }} style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ marginTop: "13px" }}><Info style={info()} /></div>
-            <div>
-              <h2 id="child-modal-title">Are you Sure ? </h2>
-              <p style={{ fontWeight: "lighter" }}> You want to take leave!</p>
+          <Box
+            sx={{ ...style, width: 450 }}
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <div style={{ marginTop: '13px' }}>
+              <Info style={info()} />
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+            <div>
+              <h2 id='child-modal-title'>Are you Sure ? </h2>
+              <p style={{ fontWeight: 'lighter' }}> You want to take leave!</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
               {picker.length > 0 ? (
-                <Button color="primary" variant='contained' onClick={() => handleSuccess()}>
+                <Button color='primary' variant='contained' onClick={() => handleSuccess()}>
                   Proceed
                 </Button>
               ) : (
-                <Button color="primary" disabled>
+                <Button color='primary' disabled>
                   Proceed
                 </Button>
               )}
-              <Button variant="outlined" color="error" onClick={handleClose}>Cancle</Button>
+              <Button variant='outlined' color='error' onClick={handleClose}>
+                Cancle
+              </Button>
             </div>
           </Box>
         </Modal>
@@ -947,8 +846,8 @@ const Calendar = props => {
               onClose={() => setFormModal(false)}
               aria-labelledby='modal-title'
               aria-describedby='modal-description'
-            // fullWidth
-            // maxWidth="sm"
+              // fullWidth
+              // maxWidth="sm"
             >
               <DialogTitle>
                 <Tabs value={active} onChange={(_, newValue) => setActive(newValue)} centered>
@@ -994,22 +893,6 @@ const Calendar = props => {
                     <Typography variant='h6' gutterBottom mt={2}>
                       Selected Dates
                     </Typography>
-                    {/* <List style={{display:"flex", justifyContent:"space-evenly"}}>
-                      {picker.map((date, index) => (
-                        <ListItem key={index} style={{border:"contain", backgroundColor:"red"}}>
-                          <span >{date.format('YYYY-MM-DD')}</span>
-                          <Button
-                            type="button"
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleRemoveDate(index)}
-                            style={{ marginLeft: '8px' }}
-                          >
-                            ⨉
-                          </Button>
-                        </ListItem>
-                      ))}
-                    </List> */}
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                       {picker.map((date, index) => (
                         <div key={date} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
@@ -1042,14 +925,6 @@ const Calendar = props => {
                       ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px' }}>
-                      {/* <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={() => handleSuccess()}
-                        disabled={picker.length === 0}
-                      >
-                        Proceed
-                      </Button> */}
                       <ChildModal />
                       <Button variant='contained' color='primary' onClick={() => setFormModal(!formModal)}>
                         Close
@@ -1057,47 +932,105 @@ const Calendar = props => {
                     </div>
                   </Box>
                 )}
-                {active === '2' &&
+                {active === '2' && (
                   <Box>
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                      {leaves && leaves.map((dt, index) => (
-                        <div key={dt} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
-                          <div
-                            style={{
-                              display: 'flex',
-                              backgroundColor: '#ccf5fa',
-                              justifyContent: 'space-between',
-                              padding: '8px',
-                              border: '1px solid #b6dbe1'
-                            }}
-                          >
-                            <span key={index}>{dt}</span>
-                            <button
-                              type='button'
-                              className='btn btn-close'
-                              aria-label='Close'
-                              onClick={() => removeLeave(dt)}
+                      {leaves &&
+                        leaves.map((dt, index) => (
+                          <div key={dt} style={{ flexBasis: '50%', padding: '8px', boxSizing: 'border-box' }}>
+                            <div
                               style={{
-                                borderRadius: '10px',
-                                border: 'none',
-                                backgroundColor: '#7367f0',
-                                color: 'white',
-                                cursor: "pointer"
+                                display: 'flex',
+                                backgroundColor: '#ccf5fa',
+                                justifyContent: 'space-between',
+                                padding: '8px',
+                                border: '1px solid #b6dbe1'
                               }}
                             >
-                              ⨉
-                            </button>
+                              <span key={index}>{dt}</span>
+                              <button
+                                type='button'
+                                className='btn btn-close'
+                                aria-label='Close'
+                                onClick={() => removeLeave(dt)}
+                                style={{
+                                  borderRadius: '10px',
+                                  border: 'none',
+                                  backgroundColor: '#7367f0',
+                                  color: 'white',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                ⨉
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
-                    <Button variant='contained' style={{ float: "right" }} color='primary' onClick={() => setFormModal(!formModal)}>
+                    <Button
+                      variant='contained'
+                      style={{ float: 'right' }}
+                      color='primary'
+                      onClick={() => setFormModal(!formModal)}
+                    >
                       Close
                     </Button>
-                  </Box>}
+                  </Box>
+                )}
               </DialogContent>
+              <div>
+                <Modal
+                  open={nestedModal}
+                  onClose={() => setNestedModal(false)}
+                  aria-labelledby='modal-title'
+                  aria-describedby='modal-description'
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 550,
+                    height: 250,
+                    boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+                    borderRadius: '15px'
+                  }}
+                >
+                  <div
+                    className='modal-content'
+                    style={{
+                      backgroundColor: '#ffff',
+                      height: '250px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div
+                      style={{
+                        borderRadius: '50%',
+                        border: '2px solid red',
+                        padding: '8px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <Icon icon='tabler:x' fontSize={40} color='red' />
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <h1>Already Applied!</h1>
+                      <div className='modal-body'>Your already applied for leaves on these days!</div>
+                    </div>
+                    <div className='modal-footer ' style={{ marginTop: '10px' }}>
+                      <Button variant='contained' color='success' onClick={() => setNestedModal(false)}>
+                        OK
+                      </Button>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
             </Dialog>
-
             <button className='btn btn-primary mr-2' style={BtnStyle()} onClick={handleOpenMetricsModal}>
               Metrics
             </button>
@@ -1268,7 +1201,323 @@ const Calendar = props => {
                 One Click Schedule
               </Button>
             ) : null}
-            {/* <Dialog
+          </div>
+          <FullCalendar {...calendarOptions} />
+        </div>
+      </>
+    )
+  } else {
+    return null
+  }
+}
+
+export default Calendar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Menu, Plus, X, Filter } from 'react-feather'
+
+// import Dialog from '@mui/material/Dialog';
+// import DialogActions from '@mui/material/DialogActions';
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogContentText from '@mui/material/DialogContentText';
+// import DialogTitle from '@mui/material/DialogTitle';
+// import TextField from '@mui/material/TextField';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Switch from '@mui/material/Switch';
+// import Snackbar from '@mui/material/Snackbar';
+
+
+// import Box from '@mui/material/Box';
+// import Modal from '@mui/material/Modal';
+// import Button from '@mui/material/Button';
+// import {
+//   Dialog,
+//   DialogTitle,
+//   DialogContent,
+//   DialogActions,
+//   Tabs,
+//   Tab,
+//   Box,
+//   TextField,
+//   FormControlLabel,
+//   Switch,
+//   Button,
+//   List,
+//   ListItem,
+//   ListItemText,
+//   ListItemSecondaryAction,
+//   IconButton,
+// } from "@mui/material";
+
+
+
+  // const [halfDay, setHalfDay] = useState("1")
+  // const [leaves, setLeaves] = useState([])
+  // const [picker, setPicker] = useState([])
+
+    // if (date.getMonth() === today.getMonth() + 1) {
+    //   setCurrentMonth(false)
+    // } else {
+    //   setCurrentMonth(true)
+    // }
+
+
+  // useEffect(() => {
+  //   const refresh = window.localStorage.getItem('refresh');
+  
+  //   if (refresh !== '1') {
+  //     window.localStorage.setItem('refresh', '1');
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 1000);
+  //   }
+  // }, []);
+
+
+  // const [active, setActive] = useState("1");
+  // const [selectedDate, setSelectedDate] = useState("");
+
+    // eventClassNames({ event: calendarEvent }) {
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const colorName =
+    //     calendarsColor[calendarEvent._def.extendedProps.calendar]
+    //   console.log('COLORNAME', colorName)
+    //   //  background: rgba($color_value, 0.12) !important;
+    //   // color: $color_value !important;
+    //   // if(colorName)
+    //   // `back-${colorName}`
+    //   if (colorName == 'primary') {
+    //     return ['back-info']
+    //   } else {
+
+    //     return [
+    //       // Background Color
+    //       'back-error'
+    //     ]
+    //   }
+    // },
+    // eventClassNames({ event: calendarEvent }) {
+    //   // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+
+    //   // return [`bg-${colorName}`]
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+    //   console.log('COLORNAME', colorName)
+    //   //  background: rgba($color_value, 0.12) !important;
+    //   // color: $color_value !important;
+    //   // if(colorName)
+    //   // `back-${colorName}`
+    //   if (colorName == 'primary') {
+    //     return ['back-info']
+    //   } else {
+    //     return [
+    //       // Background Color
+    //       'back-error'
+    //     ]
+    //   }
+
+
+
+      // * Only grab required field otherwise it goes in infinity loop
+      // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
+      // event.value = grabEventDataFromEventApi(clickedEvent)
+
+      // eslint-disable-next-line no-use-before-define
+      // isAddNewEventSidebarActive.value = true
+
+
+    
+  // const onChange = (e) => {
+  //   setHalfDay(e.target.checked);
+  // };
+
+  // const onChange = () => {
+  //   setHalfDay(!halfDay)
+  // }
+  // Check Leave status
+  // const handleSelection = (dates) => {
+  //   // console.log(datePickerRef, dates)
+  //   // setDatePicker(dates.target.value);
+  //   axios
+  //     .post(LeaveStatusCheck, {
+  //       requestType: "LeaveStatusCheck",
+  //       date: dates.toString(),
+  //       providerId: userRole.id
+  //     })
+  //     .then((res) => {
+  //       console.log(res,"res from handle selection")
+  //       if (
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
+  //       ) {
+  //         setPicker(dates)
+  //         console.log(setPicker(dates), "setPicker(dates)")
+  //       } else {
+  //         MySwal.fire({
+  //           icon: "error",
+  //           title: "Already Applied!",
+  //           text: "Your already applied for leaves this days!",
+  //           customClass: {
+  //             confirmButton: "btn btn-success"
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
+
+
+  // const handleSelection = dates => {
+  //   axios
+  //     .post(LeaveStatusCheck, {
+  //       requestType: 'LeaveStatusCheck',
+  //       date: dates.toString(),
+  //       providerId: userRole.userId
+  //     })
+  //     .then(res => {
+  //       if (
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck === null ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 3 ||
+  //         res.data.leaveStatusCheckResponse.leaveStatusCheck.status === 2
+  //       ) {
+  //         setPicker(dates)
+  //         console.log(setPicker(dates), 'setPicker(dates)')
+  //       } else {
+  //         MySwal.fire({
+  //           icon: 'error',
+  //           title: 'Already Applied!',
+  //           text: 'Your already applied for leaves this days!',
+  //           customClass: {
+  //             confirmButton: 'btn btn-success'
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
+
+          // Open SweetAlert dialog here, after the existing Dialog is closed.
+          // setFormModal(false) // Close the existing Dialog first
+          // setTimeout(() => {
+          //   MySwal.fire({
+          //     icon: 'error',
+          //     title: 'Already Applied!',
+          //     text: 'You have already applied for leaves on these days!',
+          //     customClass: {
+          //       confirmButton: 'btn btn-success'
+          //     }
+          //   })
+          // }, 100)
+
+
+
+  // Leave Apply
+  // const handleSuccess = () => {
+  //   axios.post(LeaveStatusCheck, {
+  //     requestType: 'LeaveApply',
+  //     isHalfday: halfDay,
+  //     date: picker.map(dat => dat.format('YYYY-MM-DD')).toString(),
+  //     providerId: userRole.userId
+  //   })
+  //   return MySwal.fire({
+  //     title: 'Are you Sure ?',
+  //     text: 'You want to take leave!',
+  //     icon: 'info',
+  //     confirmButtonText: 'Confirm',
+  //     showCancelButton: true,
+  //     customClass: {
+  //       confirmButton: 'btn btn-primary',
+  //       cancelButton: 'btn btn-outline-danger ms-1'
+  //     },
+  //     buttonsStyling: false
+  //   }).then(function (result) {
+  //     if (result.value) {
+  //       setFormModal(!formModal)
+  //     }
+  //   })
+  // }
+
+
+  // const handleRemoveDate = (dateToRemove) => {
+  //   setSelectedDates(selectedDates.filter((date) => date !== dateToRemove));
+  // };
+  // const handleRemoveDate = (index) => {
+  //   const updatedPicker = [...picker];
+  //   updatedPicker.splice(index, 1);
+  //   setPicker(updatedPicker);
+  // };
+
+
+                    {/* <List style={{display:"flex", justifyContent:"space-evenly"}}>
+                      {picker.map((date, index) => (
+                        <ListItem key={index} style={{border:"contain", backgroundColor:"red"}}>
+                          <span >{date.format('YYYY-MM-DD')}</span>
+                          <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleRemoveDate(index)}
+                            style={{ marginLeft: '8px' }}
+                          >
+                            ⨉
+                          </Button>
+                        </ListItem>
+                      ))}
+                    </List> */}
+
+
+                      {/* <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => handleSuccess()}
+                        disabled={picker.length === 0}
+                      >
+                        Proceed
+                      </Button> */}
+
+
+     {/* <Dialog
               className='container'
               open={oneClickScheduleModalOpen} // Conditionally render based on oneClickScheduleModalOpen state
               onClose={handleCloseOneClickScheduleModal}
@@ -1323,14 +1572,3 @@ const Calendar = props => {
                 </Button>
               </DialogActions>
             </Dialog> */}
-          </div>
-          <FullCalendar {...calendarOptions} />
-        </div>
-      </>
-    )
-  } else {
-    return null
-  }
-}
-
-export default Calendar

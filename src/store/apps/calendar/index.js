@@ -3,11 +3,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-// userRole
-// const userRole = JSON.parse(localStorage.getItem('userData'))
 
 
-const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
+ const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
 
 
 
@@ -57,7 +55,7 @@ const fetchFacility = async () => {
   requestType:"Facility",
   accountId:"1"
 }).then(res => {
-  // localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
+  localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
   return res
 })
 }
@@ -70,7 +68,7 @@ const provider = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem
 
 // fetchEvents for calendar
 export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (calendars, { getState }) => {
-  console.log('FFFFFFFFFFFFFF')
+  const userRole = JSON.parse(localStorage.getItem('userData'))
   const monthChange = localStorage.getItem('monthChange')
   const providerFilter = calendars.a === null ? calendars.b : null
   const hospitalFilter = calendars.b === null ? calendars.a : null
