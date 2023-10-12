@@ -80,7 +80,8 @@ const AddEventSidebar = props => {
     addEventSidebarOpen,
     handleAddEventSidebarToggle,
     calendarsColor,
-    selectEvent
+    selectEvent,
+    refetchEvents
   } = props
 
   // ** States
@@ -300,7 +301,7 @@ const AddEventSidebar = props => {
       setCalendarLabel([resolveLabel()])
       console.log(String(selectedEvent.start).includes('India'), "String(selectedEvent.start).includes('India')")
       console.log(selectEvent.start, "selected")
-      console.log(new Date(String(selectedEvent._instance.range.end)), "set")
+     // console.log(new Date(String(selectedEvent._instance.range.end)), "set")
     }
 
     await showLeaves(selectedEvent.start)
@@ -523,7 +524,7 @@ const AddEventSidebar = props => {
     }
     dispatch(addEvent(obj))
     refetchEvents()
-    handleAddEventSidebar()
+    handleAddEventSidebarToggle()
     toast.success('Event Added')
   }
 
@@ -594,7 +595,7 @@ const AddEventSidebar = props => {
         })
       })
 
-      handleAddEventSidebar()
+      handleAddEventSidebarToggle()
       dispatch(fetchEvents(store.selectedCalendars))
       toast.success('Event Updated')
     } else {
@@ -629,7 +630,7 @@ const AddEventSidebar = props => {
         <Fragment>
           {getValues('title') && calendarLabel && getValues('title').label !== undefined && calendarLabel.label !== undefined
             ?
-            <Button variant="contained" color='primary'> Add </Button>
+            <Button variant="contained" color='primary' type='submit'> Add </Button>
             :
             <Button type='submit' disabled> Add </Button>}
 
@@ -682,31 +683,15 @@ const AddEventSidebar = props => {
             {store.selectedEvent !== null && store.selectedEvent.title && store.selectedEvent.title.length ? 'Update Event' : 'Add Event'}
             <Icon onClick={handleAddEventSidebarToggle} icon='tabler:x' fontSize={20} style={{ color: '#7367F0', cursor: 'pointer' }} />
           </div>
-          {/* <div
-            style={{
-              position: 'absolute',
-              left: '96%',
-              bottom: '94%',
-              boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-              borderRadius: '20%',
-              padding: '5px',
-              backgroundColor: '#fff',
-              cursor: 'pointer',
-              height: '30px',
-              width: '30px'
-            }}
-            onClick={handleSidebarClose}
-          >
-            
-          </div> */}
           <div style={{ padding: "20px" }}>
-            <FormControl
+            <form
               className='container'
               sx={{ width: '100%' }}
               onSubmit={handleSubmit(data => {
                 if (data.title.label.length) {
                   if (isObjEmpty(errors)) {
                     if (isObjEmpty(selectedEvent) || (!isObjEmpty(selectedEvent) && !selectedEvent.title.length)) {
+                    console.log('374')
                       ScheduleFetch()
                       handleAddEvent()
                     } else {
@@ -787,7 +772,7 @@ const AddEventSidebar = props => {
               <div style={{ marginTop: '10px' }}>
                 <EventActions />
               </div>
-            </FormControl>
+            </form>
           </div>
           <div >
             <Card >
