@@ -21,8 +21,8 @@ const themeConfig = {
   navSubItemIcon: 'mi:circle' /* Icon */,
   verticalNavToggleType: 'collapse' /* accordion | collapse /*! Note: This is for Vertical navigation menu only */,
   navCollapsed: true /* true | false /*! Note: This is for Vertical navigation menu only */,
-  navigationSize: 300 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
-  collapsedNavigationSize: 90 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
+  navigationSize: 280 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
+  collapsedNavigationSize: 85 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
   afterVerticalNavMenuContentPosition: 'static' /* fixed | static */,
   beforeVerticalNavMenuContentPosition: 'static' /* fixed | static */,
   horizontalMenuToggle: 'hover' /* click | hover /*! Note: This is for Horizontal navigation menu only */,
@@ -31,7 +31,7 @@ const themeConfig = {
   appBar: 'fixed' /* fixed | static | hidden /*! Note: hidden value will only work for Vertical Layout */,
   appBarBlur: false /* true | false */,
   // ** Other Configs
-  responsiveFontSizes: false /* true | false */,
+  responsiveFontSizes: true /* true | false */,
   disableRipple: false /* true | false */,
   disableCustomizer: false /* true | false */,
   toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */

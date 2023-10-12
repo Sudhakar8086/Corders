@@ -21,7 +21,9 @@ const defaultProvider = {
   logout: () => Promise.resolve()
 }
 const AuthContext = createContext(defaultProvider)
+
 const ValidateUser = process.env.NEXT_PUBLIC_SESSION_DEATAILS
+
 const AuthProvider = ({ children }) => {
   // ** States
   const [user, setUser] = useState(defaultProvider.user)
@@ -31,17 +33,20 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
-      const accessToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
-    const refreshToken = JSON.parse(localStorage.getItem('userCognito')) === null ? null : JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+   const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
+        const users = localStorage.getItem('userCognito')
+        const accessToken = users === null ? null : JSON.parse(users).accessToken.jwtToken
+      const refreshToken = users === null ? null : JSON.parse(users).refreshToken.token
         setLoading(true)
+
         const user = await Auth.currentAuthenticatedUser()
-        console.log(user)
+        
         const response = await axios.post(ValidateUser, {
           requestType:"ValidateUser",
           userName:user.attributes.email
       })
+
       const UserData =  Object.assign(response.data, {ability:[
         {
       action :'manage',
@@ -70,8 +75,11 @@ const AuthProvider = ({ children }) => {
       }
     }
     initAuth()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [])
+
   const handleLogin = (params, errorCallback) => {
     const accessToken = JSON.parse(localStorage.getItem('userCognito')).accessToken.jwtToken
     const refreshToken = JSON.parse(localStorage.getItem('userCognito')).refreshToken.token
@@ -79,11 +87,15 @@ const AuthProvider = ({ children }) => {
       .post(authConfig.loginEndpoint, params)
       .then(async response => {
         window.localStorage.setItem(authConfig.onTokenExpiration, refreshToken)
+
         params.rememberMe
           ? window.localStorage.setItem(authConfig.storageTokenKeyName, accessToken)
           : null
+
         const returnUrl = router.query.returnUrl
+
         console.log(response.data.data)
+
         const UserData =  Object.assign(response.data.data, {ability:[
           {
         action :'manage',
@@ -93,8 +105,7 @@ const AuthProvider = ({ children }) => {
       role:'admin',accessToken : JSON.stringify(accessToken) , refreshToken : JSON.stringify(refreshToken)})
         console.log(JSON.stringify(UserData))
         setUser({ ...UserData })
-        console.log('login')
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(UserData)) : null
+        window.localStorage.setItem('userData', JSON.stringify(UserData))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })

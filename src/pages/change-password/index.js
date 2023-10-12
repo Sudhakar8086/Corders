@@ -15,6 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import screen from '../../../public/images/pages/logo.jpeg'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -26,6 +27,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -39,11 +41,14 @@ import { Auth, Amplify} from 'aws-amplify'
 import awsExports from 'src/aws-exports'
 
 const schema = yup.object().shape({
+
   email: yup.string().email().required(),
   password: yup.string().min(5).required()
+
 })
 
 Amplify.configure(awsExports)
+
 const LoginIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
   maxHeight: 680,
@@ -83,6 +88,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 
 const ChangePasswordV2 = () => {
+
   // ** States
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -90,11 +96,13 @@ const ChangePasswordV2 = () => {
   // ** Hooks
   const theme = useTheme()
   const MySwal = withReactContent(Swal)
+
   // ** Vars
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
   const router = useRouter();
   const { username, password } = router.query;
+
   const {
     control,
     setError,
@@ -104,6 +112,7 @@ const ChangePasswordV2 = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
   const onSubmit = async (data) => {
     console.log(data)
     if (data.password === data.confirmPassword) {
@@ -147,6 +156,7 @@ const newimageSource = 'auth-v2-login-illustration'
           borderRadius: '20px',
           justifyContent: 'center',
           backgroundColor: 'customColors.bodyBg',
+
           // margin: theme => theme.spacing(8, 0, 8, 8)
           width: '40%', // Adjust the width of the image container as needed
           margin: theme => theme.spacing(-30),

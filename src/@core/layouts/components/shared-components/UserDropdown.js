@@ -14,7 +14,6 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Context
@@ -80,6 +79,7 @@ const UserDropdown = props => {
     handleDropdownClose()
   }
  const userData = JSON.parse(localStorage.getItem('userData'))
+ 
   return (
     <Fragment>
        <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>

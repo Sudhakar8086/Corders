@@ -5,8 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 
-
-// const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
+ const userRole = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData')) : null;
 
 
 
@@ -56,7 +55,7 @@ const fetchFacility = async () => {
   requestType:"Facility",
   accountId:"1"
 }).then(res => {
-  // localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
+  localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
   return res
 })
 }

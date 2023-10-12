@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
-// import '@styles/react/apps/app-calendar.scss'
 
 
 // ** FullCalendar & App Components Imports
@@ -77,7 +76,6 @@ const getAvatarStyles = (skinColor) => {
   avatarStyles = {
     color: `${skinColor} !important`,
     backgroundColor: `rgba(${skinColor}, 0.12) !important`
-    // background: rgba($color_value, 0.12) !important;
   }
 
   return avatarStyles
@@ -86,7 +84,7 @@ const getAvatarStyles = (skinColor) => {
 // ** CalendarColors
 const calendarsColor = {
   Valley: 'primary',
-  'Quail Run': 'secondary',
+  'Quail Run': 'info',
   'Copper Springs': 'success',
   Oasis: 'error',
   'Destiny Springs': 'warning',
@@ -131,6 +129,7 @@ const AppCalendar = () => {
       calendarApi.refetchEvents()
     }
   }
+
   // ** AddEventSidebar Toggle Function
   const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
@@ -147,7 +146,6 @@ const AppCalendar = () => {
         mdAbove={mdAbove}
         dispatch={dispatch}
         calendarApi={calendarApi}
-        // calendarsColor={calendarsColor}
         leftSidebarOpen={leftSidebarOpen}
         leftSidebarWidth={leftSidebarWidth}
         handleSelectEvent={handleSelectEvent}
@@ -158,7 +156,6 @@ const AppCalendar = () => {
         handleAddEventSidebar={handleAddEventSidebar}
         updateFilter={updateFilter}
         updateFiltertitle={updateFiltertitle}
-        // toggleSidebar={toggleSidebar}
         updateAllFilters={updateAllFilters}
         updateAllFilterTitle={updateAllFilterTitle}
       />
@@ -197,6 +194,7 @@ const AppCalendar = () => {
         addEvent={addEvent}
         updateEvent={updateEvent}
         removeEvent={removeEvent}
+        open={addSidebarOpen}
         calendarApi={calendarApi}
         drawerWidth={addEventSidebarWidth}
         handleSelectEvent={handleSelectEvent}
