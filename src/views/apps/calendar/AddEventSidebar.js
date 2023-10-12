@@ -82,7 +82,8 @@ const AddEventSidebar = props => {
     handleAddEventSidebarToggle,
     calendarsColor,
     selectEvent,
-    refetchEvents
+    refetchEvents,
+    fetchEvents
   } = props
 
   // ** States
