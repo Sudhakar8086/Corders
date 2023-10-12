@@ -15,10 +15,12 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+
 // import Paper from '@mui/material/Paper';
 import DatePicker from 'react-multi-date-picker'
 
 import MuiAlert from '@mui/material/Alert'
+
 // ** Third Party Style Import
 import { CheckCircle } from 'react-bootstrap-icons'
 import { Question } from 'react-bootstrap-icons'
@@ -53,6 +55,7 @@ import {
   DialogContent,
   DialogActions
 } from '@mui/material'
+
 // import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios'
 import { width } from '@mui/system'
@@ -61,6 +64,7 @@ import { width } from '@mui/system'
 //API calls
 const LeaveStatusCheck = process.env.NEXT_PUBLIC_LEAVE_DETAILS
 const AdminManagement = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
+
 const blankEvent = {
   title: '',
   start: '',
@@ -100,6 +104,7 @@ const Calendar = props => {
   const calendarRef = useRef()
   const MySwal = withReactContent(Swal)
   const datePickerRef = useRef()
+
   // const [monthChange, setMonthChange] = useState()
   const [month, setMonth] = useState()
   const [selectedPreviousMonth, setSelectedPreviousMonth] = useState()
@@ -114,6 +119,7 @@ const Calendar = props => {
   const handleClose = () => setOpen(false)
   const [nestedModal, setNestedModal] = useState(false)
   const [modalVisible, setModalVisible] = useState(true)
+
   const [responseData, setResponseData] = useState({
     data: {
       providersDetails: []
@@ -128,6 +134,7 @@ const Calendar = props => {
   const [halfDayLeave, setHalfDayLeave] = useState(false)
   const userRole = JSON.parse(localStorage.getItem('userData'))
   const [openModal, setOpenModal] = useState(false)
+
   // State for the modal
   const [modalIcon, setModalICon] = useState('')
   const [modalTitle, setModalTitle] = useState('')
@@ -240,10 +247,13 @@ const Calendar = props => {
       title: obj.Leave === '' ? `${obj.title}` : `${obj.title} - ${obj.Leave}`
     }
   })
+
   const AdminArrr = store.events.map(obj => {
     return { ...obj, title: `${obj.extendedProps.calendar} : ${obj.title}` }
   })
+
   // ** calendarOptions(Props)
+
   const calendarOptions = {
     // events: store.events.length ? store.events : [],
     events: userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')
@@ -278,6 +288,7 @@ const Calendar = props => {
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
      console.log(colorName)
      console.log(calendarEvent)
+
       return [
         // Background Color
         `bg-${colorName}`
@@ -321,6 +332,7 @@ const Calendar = props => {
       cursor: 'pointer'
     }
   }
+
   const BtnStyle1 = () => {
     return {
       padding: '8px',
@@ -334,6 +346,7 @@ const Calendar = props => {
       cursor: 'pointer'
     }
   }
+
   const getTextColorStyle = (value, color) => {
     return {
       color,
@@ -388,6 +401,7 @@ const Calendar = props => {
       border: '2px solid red'
     }
   }
+
   const scroolHide = () => {
     return {
       overflow: 'hidden',
@@ -397,6 +411,7 @@ const Calendar = props => {
       textAlign: 'center'
     }
   }
+
   const questionMark = () => {
     return {
       display: 'flex',
@@ -415,12 +430,15 @@ const Calendar = props => {
   const handleDialogOpen = () => {
     setOpenDialog(true)
   }
+
   const handleCloseOneClickScheduleModal = () => {
     setOneClickScheduleModalOpen(false)
   }
+
   const handleDialogClose = () => {
     setOpenDialog(false)
   }
+
   const handleOneClickSchedule = async () => {
     try {
       // Step 1: Check if data is scheduled for the previous month
@@ -441,6 +459,7 @@ const Calendar = props => {
       } else if (checkScheduledResponse.data.scheduleResponse.status === 'Success') {
         // Data is present, confirm scheduling
         const monthNameAndYear = getCurrentMonthNameAndYear()
+
         const confirmSchedule = await MySwal.fire({
           icon: 'question',
           title: 'Are you sure?',
@@ -488,13 +507,16 @@ const Calendar = props => {
     setModalMessage(message)
     setOpenModal(true)
   }
+
   const handleModalClose = () => {
     setOpenModal(false)
   }
+
   const isOneClickScheduleDisabled = () => {
     if (!selectedMonth) {
       return true // Disable if selectedMonth is not set
     }
+
     // Check if the selected month is the same as or after the current month
     const currentDate = new Date()
     const currentYear = currentDate.getFullYear()
@@ -524,6 +546,7 @@ const Calendar = props => {
     const currentDate = new Date()
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth() + 1
+
     // Format the date as "YYYY-MM"
     const formattedDate = `${year}-${month.toString().padStart(2, '0')}`
     console.log(formattedDate, 'formattedDate')
@@ -534,6 +557,7 @@ const Calendar = props => {
       })
       .then(response => {
         console.log(response, 'response from metric data')
+
         // setResponseData(response.data)
         setResponseData({ data: response.data, loading: false })
       })
@@ -565,6 +589,7 @@ const Calendar = props => {
   const toggle = tab => {
     setActive(tab)
   }
+
   const handleDateChange = e => {
     setSelectedDate(e.target.value)
   }
@@ -627,11 +652,13 @@ const Calendar = props => {
       })
       .then(res => console.log(res, 'res from handlesuccess'))
       .catch(err => console.log(err, 'err from handlesuccess'))
+
     //added here
     setTimeout(() => {
       setModalVisible(false)
       setFormModal(!formModal)
     }, 1000)
+
     //fetchLeaveDetails()
   }
 
@@ -639,6 +666,7 @@ const Calendar = props => {
     const newDates = picker.filter((_, i) => i !== index)
     setPicker(newDates)
   }
+
   const fetchLeaveDetails = async () => {
     await axios
       .post(LeaveStatusCheck, {
@@ -725,6 +753,7 @@ const Calendar = props => {
     if (day.length === 1) {
       day = '0' + day // Add leading zero if day is a single digit
     }
+
     return `${year}-${month}-${day}`
   }
 
@@ -736,6 +765,7 @@ const Calendar = props => {
       setHalfDay('1')
     }
   }
+
   const handleLeaveOpenDialog = () => {
     setLeaveDialogOPen(true)
   }
@@ -743,6 +773,7 @@ const Calendar = props => {
   const handleLeaveCloseDialog = () => {
     setLeaveDialogOPen(false)
   }
+
   const handleApplyLeave = () => {
     // Handle applying leave logic here
     setLeaveDialogOPen(false)
@@ -767,13 +798,12 @@ const Calendar = props => {
   }
 
   function leaveChildModal() {
-    const [childOpen, setChildOpen] = useState(false)
-    const handleChildOpen = () => {
-      setChildOpen(true)
-    }
+    
+
     const handleChildClose = () => {
       setOpen(false)
     }
+
     const style = {
       position: 'absolute',
       top: '50%',
@@ -851,14 +881,19 @@ const Calendar = props => {
       </div>
     )
   }
+
   function ChildModal() {
+
     const [open, setOpen] = useState(false)
+
     const handleOpen = () => {
       setOpen(true)
     }
+
     const handleClose = () => {
       setOpen(false)
     }
+
     const style = {
       position: 'absolute',
       top: '50%',
@@ -866,12 +901,14 @@ const Calendar = props => {
       transform: 'translate(-50%, -50%)',
       width: 600,
       bgcolor: 'background.paper',
+
       //border: '2px solid #000',
       boxShadow: 24,
       pt: 2,
       px: 4,
       pb: 3
     }
+
     return (
       <div>
         <Button variant='contained' color='primary' style={{ marginRight: '5px' }} onClick={handleOpen}>
@@ -917,7 +954,9 @@ const Calendar = props => {
   console.log(leaves, 'leaves')
 
   const monthNameAndYear = getCurrentMonthNameAndYear()
+
   if (store) {
+
     return (
       <>
         <div className='d-flex justify-content-between'>
@@ -931,6 +970,7 @@ const Calendar = props => {
               onClose={() => setFormModal(false)}
               aria-labelledby='modal-title'
               aria-describedby='modal-description'
+              
               // fullWidth
               // maxWidth="sm"
             >

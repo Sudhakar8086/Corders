@@ -130,6 +130,7 @@ const MailLog = props => {
     setHide(true)
     setShowScheduleButton(false)
   }
+
   const handleSearchButtonClick = () => {
     setSearchButtonClicked(true)
   }
@@ -254,6 +255,7 @@ const MailLog = props => {
       console.error(err)
     }
   }
+
   //search data api
   const SearchFetch = async () => {
     setLoading(true)
@@ -282,6 +284,7 @@ const MailLog = props => {
         setSearchData(resp.data.providerLeavesView)
       }
     } catch (err) {
+
       setIsSearched(true)
       setLoading(false)
       console.error(err)
@@ -382,7 +385,9 @@ const MailLog = props => {
       }
     })
   }
+
   // Leave Approval
+
   const LeaveApprovalFetch = async leaveStatus => {
     setLoading(true)
     try {
@@ -395,6 +400,7 @@ const MailLog = props => {
         data: JSON.stringify({
           requestType: 'LeaveApprovals',
           isHalfday: 0,
+
           //alteredBy: 9, //after we need to change
           alteredBy: userRole.userId,
           providerId: scheduleData.providerId,
@@ -410,6 +416,7 @@ const MailLog = props => {
       console.error(err)
     }
   }
+
   const handleDenial = async item => {
     MySwal.fire({
       title: 'Are you Sure?',
@@ -436,6 +443,7 @@ const MailLog = props => {
           data: JSON.stringify({
             requestType: 'LeaveApprovals',
             isHalfday: 0,
+
             //alteredBy: 9,
             alteredBy: userRole.userId,
             providerId: item.providerId,
@@ -471,9 +479,11 @@ const MailLog = props => {
             overflowX: 'visible',
             backgroundColor: '#ffffff',
             width: isExpand ? '100%' : '100%',
+
             // height: isExpand ? '20%' : 'auto',
             height: isExpand ? '20%' : searchButtonClicked ? 'auto' : '70%',
             padding: '16px',
+            
             //overflowY: isExpand ? '' : 'scroll'
             overflowY: searchButtonClicked ? 'scroll' : ''
           }}
@@ -545,6 +555,7 @@ const MailLog = props => {
                         value={providerDataModel}
                         onChange={(event, newValue) => {
                           setProviderDataModal(newValue)
+
                           // console.log('Selected Providers:', newValue)
                           // // Update the selected provider IDs as a comma-separated string
                           // if (Array.isArray(newValue)) {
@@ -575,6 +586,7 @@ const MailLog = props => {
                         onChange={(event, newValue) => {
                           setHospitalDataModal(newValue)
                           console.log('Selected his:', newValue)
+
                           // Update the selected hospital's hospitalId
                           if (newValue) {
                             setSelectedHospitalId(newValue.hospitalId)
@@ -629,6 +641,7 @@ const MailLog = props => {
                             <button onClick={increaseMonth}>{'>'}</button>
                           </div>
                         )}
+
                         //minDate={today}
                         minDate={startDateModal}
                       />
@@ -695,6 +708,7 @@ const MailLog = props => {
                     onChange={(event, newValue) => {
                       setHospitalData(newValue)
                       console.log('Selected his:', newValue)
+
                       // Update the selected hospital's hospitalId
                       if (newValue) {
                         setSelectedHospitalId(newValue.hospitalId)
@@ -781,6 +795,7 @@ const MailLog = props => {
                 <Grid
                   container
                   rowSpacing={6}
+
                   //columnSpacing={{ xs: 3, sm: 5, md: 6 }}
                   style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
                 >
@@ -967,6 +982,7 @@ const MailLog = props => {
                                                 ) : item.leaveDescription === 'Leave Approved' ? (
                                                   <Button
                                                     size='small'
+
                                                     //color='warning'
                                                     style={{ backgroundColor: '#FF9F43', color: '#ffffff' }}
                                                     onClick={() => {
@@ -992,6 +1008,7 @@ const MailLog = props => {
                                               padding: '0.24rem',
                                               backgroundColor: new Date(i.date) > new Date() ? '#7367F0' : '#808080'
                                             }}
+
                                             // className={`miui-schedule-badge ${
                                             //   new Date(i.date) > new Date() ? ' bg-primary' : 'miui-secondary'
                                             // }`}

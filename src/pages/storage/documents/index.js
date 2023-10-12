@@ -52,9 +52,11 @@ const MUITable = () => {
   const [showAdditionalRow, setShowAdditionalRow] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showAddDirectoryCard, setShowAddDirectoryCard] = useState(false);
+
   const togglePopup = () => { 
     setShowPopup(!showPopup);
   };
+
   const handleAddDirectoryClick = () => {
     setShowAddDirectoryCard(true);
   };
@@ -62,6 +64,7 @@ const MUITable = () => {
   const handleAddDirectoryCardClose = () => {
     setShowAddDirectoryCard(false);
   };
+
   const handleBackClick = () => {
     setShowSpecialRows(false);
     setShowCoderDocumentSystem(false);
@@ -301,6 +304,7 @@ const MUITable = () => {
         <input
           type="text"
           placeholder="Directory Name"
+          
           // Add appropriate onChange handler to capture input value
         />
         <div style={{ display: 'flex', alignItems: 'center' }}>

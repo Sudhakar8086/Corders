@@ -30,6 +30,7 @@ import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+
 // ** Icon Imports
 import Flatpickr from 'react-flatpickr'
 import { Label } from 'reactstrap'
@@ -102,6 +103,7 @@ const AddEventSidebar = props => {
 
   const handleSidebarClose = async () => {
     setValues(defaultState)
+
     // clearErrors()
     //dispatch(handleSelectEvent(null))
     handleAddEventSidebarToggle()
@@ -142,10 +144,12 @@ const AddEventSidebar = props => {
   const removeEventInCalendar = eventId => {
     calendarApi.getEventById(eventId).remove()
   }
+
   const handleDeleteEvent = () => {
     dispatch(removeEvent(selectedEvent.id))
     removeEventInCalendar(selectedEvent.id)
     handleAddEventSidebarToggle()
+
     //toast.error('Event Removed')
   }
 
@@ -259,10 +263,12 @@ const AddEventSidebar = props => {
   const providerData = provider !== null ? provider.map((v, i) => ({ label: v.firstName, id: v.userId, value: v.firstName, color: color[i] })) : null
   console.log(providerData, "provider data")
   console.log(facilityData, "facility data")
+  
   //API 
   const ProviderApi = process.env.NEXT_PUBLIC_FETCH_EVENTS_PROVIDERS
   const LeaveDetails = process.env.NEXT_PUBLIC_LEAVE_DETAILS
   const ScheduleApi = process.env.NEXT_PUBLIC_PHYSICIAN_SCHEDULING
+
   // ** Set sidebar fields
 
 
@@ -280,11 +286,13 @@ const AddEventSidebar = props => {
     setLeaves([])
     setPreviousCalendarLabel()
   }
+
   const handleSelectedEvent = async () => {
     console.log('handleSelectedEvent')
     if (!isObjEmpty(selectedEvent)) {
       console.log(selectedEvent, "selectedEvent")
       const calendar = selectedEvent.extendedProps.calendar
+
       const resolveLabel = () => {
         if (calendar.length === undefined) {
           return { value: 'Valley', label: 'Valley', color: 'primary' }
@@ -301,6 +309,7 @@ const AddEventSidebar = props => {
       setCalendarLabel([resolveLabel()])
       console.log(String(selectedEvent.start).includes('India'), "String(selectedEvent.start).includes('India')")
       console.log(selectEvent.start, "selected")
+
      // console.log(new Date(String(selectedEvent._instance.range.end)), "set")
     }
 
@@ -312,6 +321,7 @@ const AddEventSidebar = props => {
       if(addEventSidebarOpen == true) {
         handleSelectedEvent() 
       }
+
   },[addEventSidebarOpen])
 
  
@@ -329,6 +339,7 @@ const AddEventSidebar = props => {
     }
   })
   const ScheduleDate = moment(startPicker).format("YYYY-MM-DD")
+
   const ScheduleCheck = async (item) => {
     const resp = await axios({
       method: "POST",
@@ -359,6 +370,7 @@ const AddEventSidebar = props => {
       </components.Option>
     )
   }
+
   const showLeaves = async (date) => {
     const resp = await axios({
       method: "POST",
@@ -388,6 +400,7 @@ const AddEventSidebar = props => {
     bgcolor: 'background.paper',
     boxShadow: 20,
     borderRadius: '5px',
+
     // padding: "10px"
   }
 
@@ -421,6 +434,7 @@ const AddEventSidebar = props => {
         console.error(err)
       }
     }
+
     ProviderFetch()
   }, [])
 
@@ -442,6 +456,7 @@ const AddEventSidebar = props => {
         })
         setLoading(false)
         if ((Object.values(resp.data)[0] !== undefined || []) && resp.data.facilityList.length !== 0) {
+
           // Extract the provider data and set it in the state
           const hospitals = resp.data.facilityList.map(hos => ({
             hospitalName: hos.hospitalName,
@@ -454,9 +469,13 @@ const AddEventSidebar = props => {
         console.error(err)
       }
     }
+
     HospitalFetch()
+
   }, [])
+  
   const handleDateChange = (date) => {
+
     setSelectedDate(date);
   };
 
@@ -513,7 +532,9 @@ const AddEventSidebar = props => {
       existingEvent.setExtendedProp(propName, updatedEventData.extendedProps[propName])
     }
   }
+
   // ** Adds New Event
+
   const handleAddEvent = () => {
     const obj = {
       title: getValues('title'),
@@ -616,6 +637,7 @@ const AddEventSidebar = props => {
     };
   }, []);
   const isObjEmpty = obj => Object.keys(obj).length === 0
+
   // ** Event Action buttons
 
   const EventActions = () => {
@@ -667,9 +689,11 @@ const AddEventSidebar = props => {
   return (
     <Modal
       open={addEventSidebarOpen}
+
       // onClose={handleSidebarClose}
       className='modal-dialog-centered'
       toggle={handleAddEventSidebarToggle}
+
     // onClosed={handleResetInputValues}
     >
       <Box sx={style}>
@@ -677,6 +701,7 @@ const AddEventSidebar = props => {
           <div
             style={{ padding: "10px", backgroundColor: "#f8f8f8", display: "flex", justifyContent: "space-between", alignContent: "center", alignItems: "center" }}
             id='modal-modal-title'
+
           // style={{ backgroundColor: '#F8F8F8',  borderRadius: '5px', margin:"4px" }}
           >
             {console.log('store', store, facilityData, calendarLabel[0], store, store)}

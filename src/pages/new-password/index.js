@@ -15,11 +15,13 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import screen from '../../../public/images/pages/logo.jpeg'
+
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
@@ -136,6 +138,7 @@ const newimageSource = 'auth-v2-login-illustration'
           borderRadius: '20px',
           justifyContent: 'center',
           backgroundColor: 'customColors.bodyBg',
+
           // margin: theme => theme.spacing(8, 0, 8, 8)
           width: '40%', // Adjust the width of the image container as needed
           margin: theme => theme.spacing(-30),
@@ -219,6 +222,7 @@ const newimageSource = 'auth-v2-login-illustration'
                       onBlur={onBlur}
                       onChange={onChange}
                       placeholder='john@example.com'
+                      
                       // error={Boolean(errors.email)}
                       // {...(errors.email && { helperText: errors.email.message })}
                     />

@@ -139,8 +139,9 @@ const LoginPage = () => {
 
         // navigate('/change-password', { state: { username: email, Password: password } })
       }
+
       return user
-      
+
   } catch (error) {  
     console.log(error)
       MySwal.fire({
@@ -156,9 +157,12 @@ const LoginPage = () => {
         // navigate('/forgot-password')
         router.push('/forgot-password')
       }
+      
       return 'Invalid'
+
   }
   }
+
   const onSubmit = async (data) => {
     const { email, password } = data
     const cognito = await validate(email, password)
@@ -170,8 +174,10 @@ const LoginPage = () => {
       })
     })
   }
+
   //const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
   const newimageSource = 'auth-v2-login-illustration'
+
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
       {!hidden ? (
@@ -184,6 +190,7 @@ const LoginPage = () => {
             borderRadius: '20px',
             justifyContent: 'center',
             backgroundColor: 'customColors.bodyBg',
+
             // margin: theme => theme.spacing(8, 0, 8, 8)
             width: '40%', // Adjust the width of the image container as needed
             margin: theme => theme.spacing(-30),

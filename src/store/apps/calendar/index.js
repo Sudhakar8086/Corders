@@ -56,6 +56,7 @@ const fetchFacility = async () => {
   accountId:"1"
 }).then(res => {
   localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
+
   return res
 })
 }
@@ -75,6 +76,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
   const providerAllFilter = calendars.c === undefined ? null : calendars.c === 1 ? calendars.d : 1
   const hospitalAllFilter = calendars.e === undefined ? null : calendars.f === 1 ? calendars.e : 1
   console.log(hospitalAllFilter)
+
   // Admin Filter View
   if (userRole.userValidation.rolesList.map(dat => dat.roleName).includes('Admin')) {
     if (localStorage.getItem('key') === '1') {
@@ -86,6 +88,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
           accountId:1
         
       }, { calendars })
+
       const adminFilterData = response.data.filterViewInfo.map((dat, index) => ({
           id: index,
           url: '',
@@ -98,6 +101,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
           backgroundColor: 'white',
           borderColor: 'white'
       })) 
+
       return adminFilterData
     } else {
       //Admin Calendar
@@ -106,6 +110,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
     inputDate:monthChange === null ? input : monthChange,
     accountId:1
       }, { calendars })
+
       const adminData = response.data.adminCalendarView.map((dat, index) => ({
           id: index,
           url: '',
@@ -119,6 +124,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
           backgroundColor: 'white',
           borderColor: 'white'
       })) 
+
       return adminData
     }
   } else {
@@ -128,6 +134,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
       providerId:userRole.userId,
       inputDate:monthChange === null ? input : monthChange
   }, { calendars })
+
   const providerData = response.data.providerSchedulerView.map((dat, index) => ({ 
        id: index,
         url: '',
@@ -141,6 +148,7 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
         backgroundColor: 'white',
         borderColor: 'white'
   }))
+
   return providerData
   }
 })
@@ -148,28 +156,34 @@ export const fetchEvents = createAsyncThunk('appCalendar/fetchEvents', async (ca
 export const addEvent = createAsyncThunk('appCalendar/addEvent', async (event, { dispatch, getState }) => {
   await axios.post('/apps/calendar/add-event', { event })
   await dispatch(fetchEvents(getState().calendar.selectedCalendars))
+
   return event
 })
 
 export const updateEvent = createAsyncThunk('appCalendar/updateEvent', async (event, { dispatch, getState }) => {
   await axios.post('/apps/calendar/update-event', { event })
   await dispatch(fetchEvents(getState().calendar.selectedCalendars))
+
   return event
 })
+
 export const updateFilter = createAsyncThunk('appCalendar/updateFilter', async (filter, { dispatch, getState }) => {  
   if (getState().calendar.selectedCalendars.includes(filter)) {
     await dispatch(fetchEvents({a:filter, b:null}))
   } else {
     await dispatch(fetchEvents([...getState().calendar.selectedCalendars, filter]))
   }
+
   return filter
 })
+
 export const updateFiltertitle = createAsyncThunk('appCalendar/updateFiltertitle', async (filter, { dispatch, getState }) => {  
   if (getState().calendar.selectedtitle.includes(filter)) {
     await dispatch(fetchEvents({a:null, b:filter}))
   } else {
     await dispatch(fetchEvents([...getState().calendar.selectedtitle, filter]))
   }
+
   return filter
 })
 
@@ -179,19 +193,23 @@ export const updateAllFilters = createAsyncThunk('appCalendar/updateAllFilters',
   } else {
     await dispatch(fetchEvents({e:[], f:1}))
   }
+
   return value
 })
+
 export const updateAllFilterTitle = createAsyncThunk('appCalendar/updateAllFilterTitle', async (value, { dispatch }) => {
   if (value === true) {
     await dispatch(fetchEvents({c:1, d:provider !== null ? provider.map(data => data.userId) : []}))
   } else {
     await dispatch(fetchEvents({c:1, d:[]}))
   }
+
   return value
 })
 
 export const removeEvent = createAsyncThunk('appCalendar/removeEvent', async id => {
   await axios.delete('/apps/calendar/remove-event', { id })
+
   return id
 })
 
