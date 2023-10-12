@@ -51,22 +51,29 @@ const MUITable = () => {
   const [showCoderDocumentSystem, setShowCoderDocumentSystem] = useState(false);
   const [showAdditionalRow, setShowAdditionalRow] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const [showAddDirectoryCard, setShowAddDirectoryCard] = useState(false);
   const togglePopup = () => { 
     setShowPopup(!showPopup);
   };
+  const handleAddDirectoryClick = () => {
+    setShowAddDirectoryCard(true);
+  };
 
+  const handleAddDirectoryCardClose = () => {
+    setShowAddDirectoryCard(false);
+  };
   const handleBackClick = () => {
     setShowSpecialRows(false);
     setShowCoderDocumentSystem(false);
     setShowAdditionalRow(false);
   };
+ 
   const handleFishRoomClick = () => {
-    setShowSpecialRows(false);
-    setShowAdditionalRow(!showAdditionalRow);
-    console.log(showSpecialRows);
-    console.log(showAdditionalRow);
+    setShowSpecialRows(true);
+    setShowCoderDocumentSystem(false);
+    setShowAdditionalRow(true);
   };
+  
   const extraRows = [
     {
       icon: (
@@ -173,29 +180,27 @@ const MUITable = () => {
   
   return (
     <>
-   {showSpecialRows && (
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+    {showSpecialRows && (
       
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <div onClick={handleBackClick} style={{ cursor: 'pointer', marginRight: '10px' }}>
           <Icon icon="ci:chevron-left-duo" />
           Back
         </div>
-    
-
-<div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-|<Icon icon="ci:house-01" />
-        Home
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          |<Icon icon="ci:house-01" />
+          Home
+        </div>
+        <div onClick={togglePopup} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          |<Icon icon="mdi:application-edit-outline" />
+          <div style={{ marginLeft: '5px' }}>Add Document</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}  onClick={handleAddDirectoryClick}>
+          |<Icon icon="bx:file" />
+          <div style={{ marginLeft: '5px' }}>Add Directory</div>
+        </div>
       </div>
-      <div  onClick={togglePopup} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-       |<Icon icon="mdi:application-edit-outline" />
-        <div style={{ marginLeft: '5px' }}>Add Document</div>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-     |<Icon icon="bx:file" />
-        <div style={{ marginLeft: '5px' }}>Add Directory</div>
-      </div>
-      </div>
-        )}
+    )}
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
@@ -207,86 +212,111 @@ const MUITable = () => {
         <TableBody>
           {showSpecialRows ? (
             <>
+                {rowsToDisplay.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell>{row.icon}</StyledTableCell>
+                  <StyledTableCell>{row.label}</StyledTableCell>
+                </StyledTableRow>
+              ))}
               {extraRows.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell>{row.icon}</StyledTableCell>
                   <StyledTableCell>{row.label}</StyledTableCell>
                 </StyledTableRow>
               ))}
+           
             </>
-            
           ) : (
-            
             <StyledTableRow onClick={handleCoderDocumentClick}>
               <StyledTableCell>
                 <div className="icon-container">
-                <Icon icon="mdi:folder-open" />
+                  <Icon icon="mdi:folder-open" />
                 </div>
               </StyledTableCell>
               <StyledTableCell>
                 Coder document system
               </StyledTableCell>
               <StyledTableCell>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {name}
                   <div style={{ marginLeft: '-200PX' }}>
-                  <Icon icon="uil:edit-alt" />
+                    <Icon icon="uil:edit-alt" />
                     <div>Rename</div>
                   </div>
                 </div>
-      </StyledTableCell>
+              </StyledTableCell>
             </StyledTableRow>
-            
-     )}
-      {!showSpecialRows && (
+          )}
+          {!showSpecialRows && (
             <>
-         
-           <StyledTableRow >
-      <StyledTableCell>
-        <div className="icon-container">
-        <Icon icon="mdi:folder-open" />
-        </div>
-      </StyledTableCell>
-      <StyledTableCell>
-       External
-      </StyledTableCell>
-      <StyledTableCell>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-                 
-                  <div style={{ marginLeft: '-200PX' }}>
-                  <Icon icon="uil:edit-alt" />
-                    <div>Rename</div>
             
+              <StyledTableRow>
+                <StyledTableCell>
+                  <div className="icon-container">
+                    <Icon icon="mdi:folder-open" />
                   </div>
-                </div>
-      </StyledTableCell>
-    </StyledTableRow>
-    <StyledTableRow >
-      <StyledTableCell>
-        <div className="icon-container">
-        <Icon icon="mdi:folder-open" />
-        </div>
-      </StyledTableCell>
-      <StyledTableCell>
-      Internal
-      </StyledTableCell>
-      <StyledTableCell>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+                </StyledTableCell>
+                <StyledTableCell>
+                  External
+                </StyledTableCell>
+                <StyledTableCell>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ marginLeft: '-200PX' }}>
+                      <Icon icon="uil:edit-alt" />
+                      <div>Rename</div>
+                    </div>
+                  </div>
+                </StyledTableCell>
+              </StyledTableRow>
+              <StyledTableRow>
+                <StyledTableCell>
+                  <div className="icon-container">
+                    <Icon icon="mdi:folder-open" />
+                  </div>
+                </StyledTableCell>
+                <StyledTableCell>
+                  Internal
+                </StyledTableCell>
+                <StyledTableCell>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ marginLeft: '-200PX' }}>
+                      <Icon icon="uil:edit-alt" />
+                      <div>Rename</div>
+                    </div>
+                  </div>
+                </StyledTableCell>
+              </StyledTableRow>
               
-                  <div style={{ marginLeft: '-200PX' }}>
-                  <Icon icon="uil:edit-alt" />
-                    <div>Rename</div>
-                  </div>
-                </div>
-      </StyledTableCell>
-    </StyledTableRow>
-    </>
+            </>
           )}
         </TableBody>
       </Table>
     </TableContainer>
     {showPopup && <AddDocumentPopup />}
-    </>
+    {showAddDirectoryCard && (
+      <div style={{ padding: '16px', border: '1px solid #ccc', margin: '16px 0' }}>
+        <div className="icon-container">
+          <Icon icon="mdi:folder-open" />
+        </div>
+        <input
+          type="text"
+          placeholder="Directory Name"
+          // Add appropriate onChange handler to capture input value
+        />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginLeft: 'Auto' }}>
+            <Icon icon="openmoji:delete" />
+            <div>Archive</div>
+          </div>
+          <div style={{ marginLeft: '50PX' }}>
+            <Icon icon="uil:edit-alt" />
+            <div>Rename</div>
+          </div>
+        </div>
+        <button onClick={handleAddDirectoryCardClose}>Close</button>
+      </div>
+    )}
+  </>
   );
 };
 
