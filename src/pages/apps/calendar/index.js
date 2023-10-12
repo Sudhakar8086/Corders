@@ -131,6 +131,7 @@ const AppCalendar = () => {
       calendarApi.refetchEvents()
     }
   }
+
   // ** AddEventSidebar Toggle Function
   const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
 
