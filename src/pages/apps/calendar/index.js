@@ -86,7 +86,7 @@ const getAvatarStyles = (skinColor) => {
 // ** CalendarColors
 const calendarsColor = {
   Valley: 'primary',
-  'Quail Run': 'secondary',
+  'Quail Run': 'info',
   'Copper Springs': 'success',
   Oasis: 'error',
   'Destiny Springs': 'warning',
@@ -197,6 +197,7 @@ const AppCalendar = () => {
         addEvent={addEvent}
         updateEvent={updateEvent}
         removeEvent={removeEvent}
+        open={addSidebarOpen}
         calendarApi={calendarApi}
         drawerWidth={addEventSidebarWidth}
         handleSelectEvent={handleSelectEvent}

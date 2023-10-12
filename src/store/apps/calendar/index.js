@@ -55,7 +55,7 @@ const fetchFacility = async () => {
   requestType:"Facility",
   accountId:"1"
 }).then(res => {
-  // localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
+  localStorage.setItem('facility', JSON.stringify(res.data.facilityList))
   return res
 })
 }

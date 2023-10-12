@@ -800,8 +800,11 @@ const Calendar = props => {
   useEffect(() => {
     fetchLeaveDetails()
   }, [])
+  
   const removeLeave = data => {
-    return MySwal.fire({
+    return 
+    
+    MySwal.fire({
       title: `Leave Cancel`,
       text: `Are you sure you want to cancel Leave on ${data}`,
       icon: 'info',
