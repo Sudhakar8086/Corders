@@ -43,6 +43,7 @@ import awsExports from '../../aws-exports'
 import themeConfig from 'src/configs/themeConfig'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -109,6 +110,7 @@ const LoginPage = () => {
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
   const MySwal = withReactContent(Swal)
+
   // ** Vars
   const { skin } = settings
 
@@ -134,9 +136,11 @@ const LoginPage = () => {
             password: password, // Replace with the actual password
           },
         });
+
         // navigate('/change-password', { state: { username: email, Password: password } })
       }
       return user
+      
   } catch (error) {  
     console.log(error)
       MySwal.fire({
