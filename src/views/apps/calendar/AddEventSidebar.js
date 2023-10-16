@@ -657,7 +657,7 @@ const AddEventSidebar = props => {
             :
             <Button type='submit' disabled> Add </Button>}
 
-          <Button type='reset' onClick={handleAddEventSidebarToggle} variant="outlined" color="error">
+          <Button type='reset' onClick={handleAddEventSidebarToggle} variant="outlined" color="error" style={{marginLeft:"10px"}}>
             Cancel
           </Button>
         </Fragment>
@@ -674,11 +674,11 @@ const AddEventSidebar = props => {
             <Button disabled> Assign </Button>}
           {getValues('title').label !== 'Unassigned' && !shouldHideUpdateButton ? previousCalendarLabel !== undefined && getValues('title').id === undefined
             ?
-            <Button variant="contained" color='primary' onClick={handleEditEvent}> Update </Button>
+            <Button variant="contained" color='primary' onClick={handleEditEvent} style={{marginLeft:"10px"}}> Update </Button>
             :
-            <Button disabled> Update </Button> : null}
+            <Button disabled style={{marginLeft:"10px"}}> Update </Button> : null}
 
-          <Button variant="outlined" color="error" onClick={handleDeleteEvent}>
+          <Button variant="outlined" color="error" onClick={handleDeleteEvent} style={{marginLeft:"10px"}}>
             Cancel
           </Button>
         </Fragment>

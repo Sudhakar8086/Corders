@@ -27,7 +27,6 @@ import {
   fetchEvents,
   deleteEvent,
   updateEvent,
-  handleSelectEvent,
   handleAllCalendars,
   handleCalendarsUpdate,
   selectEvent,
@@ -148,7 +147,7 @@ const AppCalendar = () => {
         calendarApi={calendarApi}
         leftSidebarOpen={leftSidebarOpen}
         leftSidebarWidth={leftSidebarWidth}
-        handleSelectEvent={handleSelectEvent}
+        selectEvent={selectEvent}
         handleAllCalendars={handleAllCalendars}
         handleCalendarsUpdate={handleCalendarsUpdate}
         handleLeftSidebarToggle={handleLeftSidebarToggle}
@@ -181,7 +180,6 @@ const AppCalendar = () => {
           calendarsColor={calendarsColor}
           setCalendarApi={setCalendarApi}
           selectEvent={selectEvent}
-          handleSelectEvent={handleSelectEvent}
           handleLeftSidebarToggle={handleLeftSidebarToggle}
           handleAddEventSidebarToggle={handleAddEventSidebarToggle}
           setMonthChange={setMonthChange}
@@ -197,7 +195,7 @@ const AppCalendar = () => {
         open={addSidebarOpen}
         calendarApi={calendarApi}
         drawerWidth={addEventSidebarWidth}
-        handleSelectEvent={handleSelectEvent}
+       // selectEvent={selectEventelectEvent}
         addEventSidebarOpen={addEventSidebarOpen}
         handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         handleAddEventSidebar={handleAddEventSidebar}
