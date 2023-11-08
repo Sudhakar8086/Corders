@@ -35,3 +35,9 @@ code[class*='language-'] {
 /* .fc-daygrid-event-harness{
   background-color: aqua;
 } */
+
+.react-datepicker__day--outside-month {
+  color: transparent !important;
+  pointer-events: none;
+}
+   

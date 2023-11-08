@@ -91,6 +91,14 @@ const LeaveCheck = ({ popperPlacement }) => {
         }
     }
 
+    const handleStartDateChange = (date) => {
+        setPicker(date);
+        setMinEndDate(moment(date).toDate());
+    
+      };
+    
+      const isSearchButtonDisabled = !picker || !endPicker;
+
     const Loading = () => {
         if (loading)
             return (
@@ -149,13 +157,17 @@ const LeaveCheck = ({ popperPlacement }) => {
                                         popperPlacement={popperPlacement}
                                         id='basic-input'
                                         style={{ width: '100%' }}
-                                        placeholderText="Select Start Date"
-                                        onChange={(date) => {
-                                            setPicker(date)
-                                            setMinEndDate(moment(date).add(1, 'day').toDate()); // Set minimum end date
+                                        placeholderText='Select Start Date'
+                                        onChange={handleStartDateChange}
+                                        customInput={
+                                            <CustomInput
+                                                label='Start Date'
+                                                fullWidth
+                                                InputProps={{
+                                                    readOnly: true // Make the input field read-only
+                                                }}
+                                            />
                                         }
-                                        }
-                                        customInput={<CustomInput label='Start Date' fullWidth />}
                                         required
                                     />
                                 </Grid>
@@ -165,15 +177,29 @@ const LeaveCheck = ({ popperPlacement }) => {
                                         id='basic-input'
                                         style={{ width: '100%' }}
                                         popperPlacement={popperPlacement}
-                                        placeholderText="Select End Date"
-                                        onChange={(date) => setEndPicker(date)}
+                                        placeholderText='Select End Date'
+                                        onChange={date => setEndPicker(date)}
                                         minDate={minEndDate} // Set the minimum end date
-                                        customInput={<CustomInput label='End Date' fullWidth />}
+                                        customInput={
+                                            <CustomInput
+                                                label='End Date'
+                                                fullWidth
+                                                InputProps={{
+                                                    readOnly: true // Make the input field read-only
+                                                }}
+                                            />
+                                        }
                                         required
+                                        disabled={!picker} // Disable the second date picker until the first one is filled
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={4} style={{ display: 'flex', justifyContent: 'flex-end' }}> {/* Button aligned to the right */}
-                                    <Button variant='contained' size='medium' onClick={OnlyLeavesFetch}>
+                                    <Button
+                                        variant='contained'
+                                        size='medium'
+                                        onClick={OnlyLeavesFetch}
+                                        disabled={isSearchButtonDisabled} // Disable the button until all input fields are filled
+                                    >
                                         Search
                                     </Button>
                                 </Grid>
@@ -184,7 +210,7 @@ const LeaveCheck = ({ popperPlacement }) => {
                         {isSearched ? (
                             <div style={styles.fetchedDataContainer}>
                                 <Grid container spacing={1} style={{ padding: '5px', backgroundColor: "#E7EAEC " }}>
-                                    
+
                                     {/* <div style={{ maxHeight: '800px', display: 'flex',margin:'14px', padding: '10px', flexWrap: 'wrap' }}> */}
                                     {leaveData?.length && !loading ? (
                                         leaveData?.map((i, index) => (
