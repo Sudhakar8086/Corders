@@ -190,15 +190,16 @@ const LeaveCheck = ({ popperPlacement }) => {
                                             />
                                         }
                                         required
-                                        disabled={!picker} // Disable the second date picker until the first one is filled
+                                        disabled={!picker} 
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6} md={4} style={{ display: 'flex', justifyContent: 'flex-end' }}> {/* Button aligned to the right */}
+                                <Grid item xs={12} sm={6} md={3} style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '17px' }}> {/* Button aligned to the right */}
                                     <Button
                                         variant='contained'
                                         size='medium'
+                                        sx={{ width: '150px' }} 
                                         onClick={OnlyLeavesFetch}
-                                        disabled={isSearchButtonDisabled} // Disable the button until all input fields are filled
+                                        disabled={isSearchButtonDisabled} 
                                     >
                                         Search
                                     </Button>
